@@ -1,6 +1,7 @@
+// services/googleSheetsService.js
 export async function enviarAFirebaseAAppsScript(usuario) {
   try {
-    const respuesta = await fetch('http://localhost:4000/enviar-a-sheets', {
+    const respuesta = await fetch('/api/enviar-a-sheets', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
