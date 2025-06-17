@@ -1,4 +1,4 @@
-import Formulario from "./components/Formulario";
+import Formulario from "./components/Formulario/Formulario";
 
 
 function App() {

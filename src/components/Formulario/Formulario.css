@@ -1,0 +1,87 @@
+body {
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f5f2e9;
+  margin: 0;
+}
+
+.formulario-ti {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2rem;
+}
+
+.campo {
+  margin-bottom: 15px;
+}
+
+input[type="text"],
+input[type="number"],
+input {
+  display: block;
+  margin: 5px 0;
+  padding: 8px;
+  width: 100%;
+  border: 1px solid green;
+}
+
+.botones {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.btn,
+.btn-am {
+  flex: 1;
+  padding: 10px;
+  border-radius: 25px;
+  font-weight: bold;
+  border: none;
+}
+
+.btn {
+  background-color: green;
+  color: white;
+}
+
+.btn-am {
+  background-color: yellow;
+  border: 1px solid black;
+}
+
+.panel {
+  display: flex;
+  gap: 20px;
+  background-color: #ccc;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+section {
+  flex: 1;
+  background: #eee;
+  padding: 15px;
+  border-radius: 15px;
+}
+
+.checks,
+.reemplazo-checks {
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-enviar {
+  margin-top: 20px;
+  background-color: green;
+  color: white;
+  padding: 10px;
+  border: none;
+  width: 100%;
+  font-size: 1.2rem;
+  border-radius: 8px;
+}
