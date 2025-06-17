@@ -1,4 +1,4 @@
-import "./formulario.css";
+import "./Formulario.css";
 import { useState } from "react";
 import { guardarUsuario } from "../../controllers/userController";
 
