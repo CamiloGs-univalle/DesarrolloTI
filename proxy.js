@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 const PORT = 4000;
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyeodFI7nM5VrTDXii6Nr6kxMvmyA1InIj1c74YMYE2Ju65BPf0dEw4_wVPagWAZU-2/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycby_om7lhUi8o3kJy1lVMdwN0nRXT6ObcpkZtZLg9QoGXBJ39iEvLjNIRSLSFnuNuWhv/exec';
 
 app.post('/enviar-a-sheets', async (req, res) => {
   try {
