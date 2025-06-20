@@ -1,22 +1,34 @@
-// api/enviar-a-sheets.js
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Método no permitido' });
-  }
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycby_om7lhUi8o3kJy1lVMdwN0nRXT6ObcpkZtZLg9QoGXBJ39iEvLjNIRSLSFnuNuWhv/exec';
 
-  const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycby_om7lhUi8o3kJy1lVMdwN0nRXT6ObcpkZtZLg9QoGXBJ39iEvLjNIRSLSFnuNuWhv/exec';
+const datosFinales = {
+  nombreNuevo: formData.nombre,
+  cedulaNuevo: formData.cedula,
+  empresa: formData.empresa,
+  ciudad: formData.ciudad,
+  sistemas: {
+    sorttime: formData.sortime,
+    sap: formData.sap,
+    tr3: formData.tr3,
+    solvix: formData.solvix,
+  },
+  nombreReemplazo: formData.usuarioReemplazar,
+  equipo: formData.equipo,
+  celular: formData.celular,
+  correo: formData.correo,
+  solicitante: "Nombre del solicitante", // Opcional si deseas agregarlo
+};
 
-  try {
-    const response = await fetch(URL_APPS_SCRIPT, {
-      method: 'POST',
-      body: JSON.stringify(req.body),
-      headers: { 'Content-Type': 'application/json' },
-    });
+const response = await fetch(URL_APPS_SCRIPT, {
+  method: 'POST',
+  body: JSON.stringify(datosFinales),
+  headers: { 'Content-Type': 'application/json' },
+});
 
-    const data = await response.json();
-    return res.status(200).json({ mensaje: 'Datos enviados a Google Sheets', respuesta: data });
-  } catch (error) {
-    console.error('❌ Error:', error);
-    return res.status(500).json({ error: 'Error al reenviar a Apps Script' });
-  }
+const resultado = await response.json();
+console.log("📋 Respuesta del servidor:", resultado);
+
+if (resultado.exito) {
+  alert("✅ Enviado correctamente");
+} else {
+  alert("❌ Falló el envío");
 }
