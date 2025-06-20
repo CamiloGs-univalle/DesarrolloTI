@@ -1,0 +1,106 @@
+/* Estilos generales */
+.app-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+}
+
+/* Título principal */
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+  text-transform: uppercase;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Campo del solicitante */
+.solicitante-field {
+  margin-bottom: 25px;
+}
+
+.solicitante-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.solicitante-field input {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ff4444;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.solicitante-field input.active,
+.solicitante-field input:focus {
+  border-color: #00C851;
+  outline: none;
+}
+
+/* Panel principal */
+.main-panel {
+  display: flex;
+  gap: 20px;
+  min-height: 500px;
+}
+
+/* Panel de botones */
+.button-panel {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.button-panel button {
+  padding: 12px 15px;
+  background-color: #4285F4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 15px;
+  transition: all 0.3s;
+}
+
+.button-panel button:hover {
+  background-color: #3367D6;
+}
+
+.button-panel button.active {
+  background-color: #0d47a1;
+  font-weight: bold;
+}
+
+/* Panel del formulario */
+.form-panel {
+  flex: 1;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  padding: 20px;
+  border: 1px solid #ddd;
+}
+
+/* Vista vacía */
+.empty-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #777;
+  font-style: italic;
+  font-size: 18px;
+}
+
+/* Vista del formulario */
+.form-view {
+  height: 100%;
+}

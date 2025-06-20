@@ -1,11 +1,11 @@
-import Formulario from "./components/Formulario/Formulario";
+import Home from "./components/Home/Home";
 
 
 function App() {
   return (
     <div>
       <h1>Registro de Usuarios</h1>
-      <Formulario/>
+      <Home/>
     </div>
   );
 }
