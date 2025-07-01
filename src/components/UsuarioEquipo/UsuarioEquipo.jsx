@@ -6,9 +6,9 @@ import UsuarioNuevoForm from './nuevo_usuario/UsuarioNuevoForm';
 import UsuarioReemplazoForm from './Remplazo/UsuarioReemplazoForm';
 import CargoNuevoForm from './Nuevo_Cargo/CargoNuevoForm';
 
-
 export default function UsuarioEquipo() {
   const [formType, setFormType] = useState('reemplazo');
+
   const [formData, setFormData] = useState({
     nombre: '',
     cedula: '',
@@ -34,6 +34,20 @@ export default function UsuarioEquipo() {
     solvix: false,
   });
 
+  // ✅ Actualiza campos cuando se selecciona un usuario del autocompletado
+  const handleUsuarioSeleccionado = (usuario) => {
+    setFormData((prev) => ({
+      ...prev,
+      usuarioReemplazar: usuario.nombre || '',
+      equipo: usuario.cargo || '',
+      cedula: usuario.cedula || '',
+      empresa: usuario.empresa || '',
+      ciudad: usuario.ciudad || '',
+      proceso: usuario.proceso || ''
+    }));
+  };
+
+  // ✅ Manejador de cambios para todos los inputs
   const handleInputChange = (e) => {
     const { name, type, checked, value } = e.target;
     setFormData((prev) => ({
@@ -42,6 +56,7 @@ export default function UsuarioEquipo() {
     }));
   };
 
+  // ✅ Envía datos a Firebase y Google Sheets
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -111,12 +126,24 @@ export default function UsuarioEquipo() {
         </div>
 
         <div className="secciones">
-          <UsuarioNuevoForm formData={formData} onChange={handleInputChange} />
+          <UsuarioNuevoForm
+            formData={formData}
+            onChange={handleInputChange}
+          />
+
           {formType === 'reemplazo' && (
-            <UsuarioReemplazoForm formData={formData} onChange={handleInputChange} />
+            <UsuarioReemplazoForm
+              formData={formData}
+              onChange={handleInputChange}
+              onUsuarioSeleccionado={handleUsuarioSeleccionado} // ✅ AÑADIDO AQUÍ
+            />
           )}
+
           {formType === 'cargo' && (
-            <CargoNuevoForm formData={formData} onChange={handleInputChange} />
+            <CargoNuevoForm
+              formData={formData}
+              onChange={handleInputChange}
+            />
           )}
         </div>
 
