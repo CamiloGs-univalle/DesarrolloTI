@@ -1,15 +1,13 @@
+// src/components/Home/Home.jsx
 import { useState } from 'react';
 import './Home.css';
 import UsuarioEquipo from '../UsuarioEquipo/UsuarioEquipo';
 
-export default function Home() {
+export default function Home({ user }) {
   const [currentView, setCurrentView] = useState(null);
   const [nombreSolicitante, setNombreSolicitante] = useState('');
   const [solicitanteActive, setSolicitanteActive] = useState(false);
 
-  /**
-   * Renderiza la vista actual basada en la selección del usuario
-   */
   const renderView = () => {
     switch(currentView) {
       case 'usuario-equipo':
@@ -27,10 +25,16 @@ export default function Home() {
 
   return (
     <div className="app-container">
-      {/* Título principal */}
       <h1>SOLICITUD AL AREA TI</h1>
       
-      {/* Campo del solicitante */}
+      {user && (
+        <div className="user-info">
+          <img src={user.photoURL} alt={user.displayName} />
+          <p>👤 {user.displayName}</p>
+          <p>✉️ {user.email}</p>
+        </div>
+      )}
+      
       <div className="solicitante-field">
         <label>Nombre Solicitante</label>
         <input
@@ -43,9 +47,7 @@ export default function Home() {
         />
       </div>
       
-      {/* Contenedor principal con botones y formulario */}
       <div className="main-panel">
-        {/* Panel de botones izquierdo */}
         <div className="button-panel">
           <button 
             onClick={() => setCurrentView('usuario-equipo')}
@@ -73,7 +75,6 @@ export default function Home() {
           </button>
         </div>
         
-        {/* Panel del formulario derecho */}
         <div className="form-panel">
           {renderView()}
         </div>

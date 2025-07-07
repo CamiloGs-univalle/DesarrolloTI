@@ -1,13 +1,15 @@
-import Home from "./components/Home/Home";
+// src/App.jsx
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./components/Login/LoginPage";
+import Home from "./components/Home/Home";
 
-
-function App() {
+export default function App() {
   return (
-    <div>
-      <LoginPage />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/home" element={<Home />} />
+      </Routes>
+    </Router>
   );
 }
-
-export default App;
