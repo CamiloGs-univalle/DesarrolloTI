@@ -5,6 +5,8 @@ import { enviarAFirebaseAAppsScript } from '../../services/googleSheetsService';
 import UsuarioNuevoForm from './nuevo_usuario/UsuarioNuevoForm';
 import UsuarioReemplazoForm from './Remplazo/UsuarioReemplazoForm';
 import CargoNuevoForm from './Nuevo_Cargo/CargoNuevoForm';
+import { guardarPeticionConUsuarioSiNoExiste } from '../../controllers/userController';
+
 
 export default function UsuarioEquipo() {
   const [formType, setFormType] = useState('reemplazo');
@@ -60,49 +62,58 @@ export default function UsuarioEquipo() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const datosFinales = {
-      solicitante: formData.nombre,
-      tipoSolicitud: formType,
-      fechaIngreso: formData.fechaIngreso,
-
-      nombreNuevo: formData.nombre,
-      cedulaNuevo: formData.cedula,
-      empresa: formData.empresa,
-      ciudad: formData.ciudad,
-
-      usuarioReemplazar: {
-        nombre: formData.usuarioReemplazar,
-        equipo: formData.equipo,
-        celular: formData.celular,
-        correo: formData.correo
-      },
-
-      cargoNuevo: {
-        cargo: formData.cargo,
-        alquilar: formData.alquilar,
-        asignar: formData.asignar,
-        nuevoCorreo: formData.nuevoCorreo,
-        nombreGerente: formData.nombreGerente,
-        comentario: formData.comentario
-      },
-
-      sistemas: {
-        sortime: formData.sortime,
-        tr3: formData.tr3,
-        sap: formData.sap,
-        solvix: formData.solvix
-      }
-    };
-
     try {
-      await guardarUsuario(datosFinales);
-      await enviarAFirebaseAAppsScript(datosFinales);
-      alert('✅ Datos guardados en Firebase y Sheets correctamente');
+      // 📌 Armar datos del USUARIO para la colección "usuarios"
+      const datosUsuario = {
+        nombre: formData.nombre,
+        cedula: formData.cedula,
+        correo: formData.correo,
+        empresa: formData.empresa,
+        ciudad: formData.ciudad,
+        fechaIngreso: formData.fechaIngreso
+      };
+
+      // 📌 Armar datos de la PETICIÓN para la colección "peticiones"
+      const datosPeticion = {
+        solicitante: formData.nombre,
+        tipoSolicitud: formType,
+        fechaIngreso: formData.fechaIngreso,
+
+        usuarioReemplazar: {
+          nombre: formData.usuarioReemplazar,
+          equipo: formData.equipo,
+          celular: formData.celular,
+          correo: formData.correo
+        },
+
+        cargoNuevo: {
+          cargo: formData.cargo,
+          alquilar: formData.alquilar,
+          asignar: formData.asignar,
+          nuevoCorreo: formData.nuevoCorreo,
+          nombreGerente: formData.nombreGerente,
+          comentario: formData.comentario
+        },
+
+        sistemas: {
+          sortime: formData.sortime,
+          tr3: formData.tr3,
+          sap: formData.sap,
+          solvix: formData.solvix
+        }
+      };
+
+      // ✅ Usar la función nueva para registrar usuario y petición
+      await guardarPeticionConUsuarioSiNoExiste(datosUsuario, datosPeticion);
+
+      alert('✅ Datos guardados correctamente en Firebase (usuarios y peticiones)');
+
     } catch (error) {
       console.error('❌ Error al enviar datos:', error);
       alert('❌ Error al guardar datos. Revisa la consola.');
     }
   };
+
 
   return (
     <div className="form-container">
