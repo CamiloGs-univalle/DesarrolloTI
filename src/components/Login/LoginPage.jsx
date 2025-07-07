@@ -9,7 +9,7 @@ export default function LoginPage() {
     <div className="login-page">
       <div className="login-card">
         <div className="login-header">
-          <img src="/logo-proservis.png" alt="Proservis Logo" className="logo" />
+          <img src="./public/logo/proservis.png" alt="Proservis" className="logo" />
           <h1>Bienvenido a Proservis TI</h1>
           <p>Inicia sesión con tu cuenta Google para continuar</p>
         </div>
