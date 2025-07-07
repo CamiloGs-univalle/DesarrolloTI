@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import './UsuarioEquipo.css';
-import { guardarUsuario } from '../../controllers/userController';
-import { enviarAFirebaseAAppsScript } from '../../services/googleSheetsService';
 import UsuarioNuevoForm from './nuevo_usuario/UsuarioNuevoForm';
 import UsuarioReemplazoForm from './Remplazo/UsuarioReemplazoForm';
 import CargoNuevoForm from './Nuevo_Cargo/CargoNuevoForm';

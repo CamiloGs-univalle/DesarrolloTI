@@ -1,11 +1,11 @@
 import Home from "./components/Home/Home";
+import LoginPage from "./components/Login/LoginPage";
 
 
 function App() {
   return (
     <div>
-      <h1>Registro de Usuarios</h1>
-      <Home/>
+      <LoginPage />
     </div>
   );
 }
