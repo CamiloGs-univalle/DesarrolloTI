@@ -15,10 +15,23 @@ export async function signInWithGoogle() {
     const user = result.user;
     console.log("✅ Usuario autenticado:", user);
     return user;
-  } catch (error) {
+  } catch (error)  {
     console.error("❌ Error en el login:", error);
     throw error;
   }
 }
 
 export { auth };
+
+
+import { signOut } from "firebase/auth";
+
+export async function logout() {
+  try {
+    await signOut(auth);
+    console.log("✅ Usuario cerró sesión");
+  } catch (error) {
+    console.error("❌ Error al cerrar sesión:", error);
+  }
+}
+

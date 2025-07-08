@@ -40,7 +40,7 @@ export default function UsuarioEquipo() {
       ...prev,
       usuarioReemplazar: usuario.nombre || '',
       equipo: usuario.cargo || '',
-      cedula: usuario.cedula || '',
+      
       empresa: usuario.empresa || '',
       ciudad: usuario.ciudad || '',
       proceso: usuario.proceso || ''

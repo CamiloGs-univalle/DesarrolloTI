@@ -1,11 +1,13 @@
 /* Estilos generales */
-.app-container {
-  width: 90%;
-  max-width: 1200px;
-  margin: 20px auto;
-  font-family: Arial, sans-serif;
+/* Estilo del encabezado */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 12px 20px;
+  border-bottom: 1px solid #ddd;
 }
-
 /* Título principal */
 h1 {
   text-align: center;
@@ -103,4 +105,84 @@ h1 {
 /* Vista del formulario */
 .form-view {
   height: 100%;
+}
+
+/* ----------------------------- */
+/* 👤 Estilos de avatar en barra */
+/* ----------------------------- */
+
+/* Imagen circular con tamaño fijo y transición */
+.header-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid #ccc;
+}
+
+/* Contenedor del avatar y título */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Espacio entre avatar y título */
+}
+
+.header-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+/* Si la imagen es de fallback (avatar generado), se muestra borde amarillo */
+.header-avatar.avatar-fallback {
+  border-color: #FFC107;
+}
+
+/* Contenedor de la imagen (por si se quiere añadir tooltip o icono en el futuro) */
+.avatar-container {
+  position: relative;
+}
+
+/* ----------------------------- */
+/* 🔽 Menú desplegable animado   */
+/* ----------------------------- */
+
+.dropdown-menu {
+  animation: fadeIn 0.2s ease-out;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  border-radius: 6px;
+  position: absolute;
+  right: 0;
+  top: 60px;
+  min-width: 220px;
+  z-index: 10;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ----------------------------- */
+/* ♿️ Mejoras de accesibilidad   */
+/* ----------------------------- */
+
+button:focus {
+  outline: 2px solid #4285F4;
+  outline-offset: 2px;
+}
+
+input:focus {
+  outline: 2px solid #4285F4;
+  outline-offset: 2px;
 }
