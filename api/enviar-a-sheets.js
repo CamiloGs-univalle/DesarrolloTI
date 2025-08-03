@@ -1,10 +1,11 @@
   // api/enviar-a-sheets.js
+  //
   export default async function handler(req, res) {
     if (req.method !== 'POST') {
       return res.status(405).json({ error: 'Método no permitido' });
     }
 
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycby_om7lhUi8o3kJy1lVMdwN0nRXT6ObcpkZtZLg9QoGXBJ39iEvLjNIRSLSFnuNuWhv/exec';
+    const URL_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbxIQEUMdtPREAFsS-6VoIPD_tVZKLZ2zOHvNrAd_A86UZxf6ufh353msiftDrFCHL26/exec';
 
     try {
       const response = await fetch(URL_APPS_SCRIPT, {
