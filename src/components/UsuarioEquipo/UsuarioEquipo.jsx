@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './UsuarioEquipo.css';
-import UsuarioNuevoForm from './Nuevo_usuario/UsuarioNuevoForm';
+import UsuarioNuevoForm from './Nuevo_usuario/UsuarioNuevoForm.jsx';
 import UsuarioReemplazoForm from './Remplazo/UsuarioReemplazoForm';
 import CargoNuevoForm from './Nuevo_Cargo/CargoNuevoForm';
 import { guardarPeticionConUsuarioSiNoExiste } from '../../controllers/userController';
