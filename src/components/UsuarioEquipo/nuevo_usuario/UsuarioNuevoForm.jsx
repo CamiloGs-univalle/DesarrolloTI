@@ -5,7 +5,18 @@ export default function UsuarioNuevoForm({ formData, onChange }) {
       <div className="grupo-campos">
         <div className="campo">
           <label htmlFor="nombre">Nombre Completo</label>
-          <input type="text" id="nombre" name="nombre" value={formData.nombre} onChange={onChange} required />
+          <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            value={formData.nombre}
+            onChange={(e) => {
+              e.target.value = e.target.value.toUpperCase();
+              onChange(e);
+            }}
+            required
+          />
+
         </div>
         <div className="campo">
           <label htmlFor="cedula">Cédula</label>

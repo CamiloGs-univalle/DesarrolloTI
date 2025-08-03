@@ -1,7 +1,7 @@
 // 📁 src/components/PruebaGoogle.jsx
 
 import React from 'react';
-import { enviarAFirebaseAAppsScript } from '../services/googleSheetsService';
+import { enviarAFirebaseAAppsScript } from '../services/UserGoogleExcel';
 
 export default function PruebaGoogle() {
 

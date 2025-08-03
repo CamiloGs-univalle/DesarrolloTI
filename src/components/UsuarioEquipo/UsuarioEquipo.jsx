@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './UsuarioEquipo.css';
-import UsuarioNuevoForm from './nuevo_usuario/UsuarioNuevoForm';
+import UsuarioNuevoForm from './Nuevo_usuario/UsuarioNuevoForm';
 import UsuarioReemplazoForm from './Remplazo/UsuarioReemplazoForm';
 import CargoNuevoForm from './Nuevo_Cargo/CargoNuevoForm';
 import { guardarPeticionConUsuarioSiNoExiste } from '../../controllers/userController';
@@ -40,7 +40,7 @@ export default function UsuarioEquipo() {
       ...prev,
       usuarioReemplazar: usuario.nombre || '',
       equipo: usuario.cargo || '',
-      
+      correo: usuario.correo || '',
       empresa: usuario.empresa || '',
       ciudad: usuario.ciudad || '',
       proceso: usuario.proceso || ''
