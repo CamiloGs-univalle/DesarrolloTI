@@ -16,8 +16,8 @@ export default function UsuarioReemplazoForm({ formData, onChange, onUsuarioSele
       <div className="form-reemplazo">
         <h2 className="titulo-seccion">Usuario a Reemplazar</h2>
 
-        <div className="campo">
-          <label htmlFor="usuarioReemplazar">Nombre</label>
+        <div className="campo_autocomplete">
+       
           {loading ? (
             <CircularProgress size={24} />
           ) : (
@@ -66,7 +66,7 @@ export default function UsuarioReemplazoForm({ formData, onChange, onUsuarioSele
         </div>
 
         <div className="campo">
-          <label htmlFor="correo">Comentario</label>
+          <label htmlFor="correo">Correo</label>
           <input
             type="email"
             id="correo"

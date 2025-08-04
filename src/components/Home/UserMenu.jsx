@@ -1,41 +1,56 @@
 import { useState, useRef, useEffect } from "react";
 import { auth, signInWithGoogle } from "../../firebase/authService";
+import { useNavigate } from "react-router-dom";
 import "./UserMenu.css";
 
 export default function UserMenu({ user, nombreSolicitante }) {
   const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef();
   const [avatarUrl, setAvatarUrl] = useState("");
+  const menuRef = useRef();
+  const navigate = useNavigate();
 
-  // Efecto para manejar la URL del avatar
+  // Generar avatar o usar foto del usuario
   useEffect(() => {
     if (!user) return;
 
-    // Verificar si hay photoURL válida
     if (user?.photoURL?.trim()) {
       setAvatarUrl(user.photoURL);
     } else {
-      // Generar avatar inicial con las iniciales
       const name = user?.displayName || "Usuario";
-      const generatedUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
-      setAvatarUrl(generatedUrl);
+      const fallbackUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        name
+      )}&background=random`;
+      setAvatarUrl(fallbackUrl);
     }
   }, [user]);
 
-  // Cierra el menú si se da clic fuera
+  // Cerrar menú al hacer clic fuera
   useEffect(() => {
-    function handleClickOutside(event) {
+    const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsOpen(false);
       }
-    }
+    };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Fallback de imagen si falla el avatar
   const handleImageError = (e) => {
     const name = user?.displayName || "Usuario";
-    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
+    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      name
+    )}&background=random`;
+  };
+
+  // Cerrar sesión y redirigir al login
+  const handleSignOut = async () => {
+    try {
+      await auth.signOut();
+      navigate("/login"); // Redirecciona al login
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
   };
 
   if (!user) {
@@ -63,7 +78,7 @@ export default function UserMenu({ user, nombreSolicitante }) {
           </div>
           <hr />
           <button onClick={signInWithGoogle}>Cambiar de cuenta</button>
-          <button onClick={() => auth.signOut()}>Cerrar sesión</button>
+          <button onClick={handleSignOut}>Cerrar sesión</button>
         </div>
       )}
     </div>

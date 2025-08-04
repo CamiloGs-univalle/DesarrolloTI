@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import './Home.css';
 import UsuarioEquipo from '../UsuarioEquipo/UsuarioEquipo';
 import { auth, signInWithGoogle } from '../../firebase/authService';
+import InactivacionUsuario from '../InactivacionUsuario/InactivacionUsuario';
 
 // Logger configurado para desarrollo
 const logger = {
@@ -105,7 +106,7 @@ export default function Home({ user }) {
       case 'usuario-equipo':
         return <UsuarioEquipo user={user} />;
       case 'inactivacion-usuario':
-        return <div className="form-view">Formulario de Inactivación de Usuario</div>;
+        return <InactivacionUsuario />;
       case 'asignacion-equipo':
         return <div className="form-view">Formulario de Asignación de Equipo</div>;
       case 'asignacion-correo':
@@ -117,37 +118,39 @@ export default function Home({ user }) {
 
   return (
     <div className="home-wrapper">
-     <header className="app-header">
-  <div className="header-left">
-    {user && (
-      <img
-        src={avatarUrl}
-        alt={user.displayName || user.email}
-        className={`header-avatar ${avatarLoadError ? 'avatar-fallback' : ''}`}
-        onClick={() => setMenuOpen(!menuOpen)}
-        onError={handleImageError}
-        loading="lazy"
-      />
-    )}
-    <h1 className="header-title">Solicitud al Área TI</h1>
-  </div>
+      <header className="app-header">
+        <h1 className="header-title">Solicitud al Área TI</h1>
+        <div className="header-left">
+          {user && (
+            <img
+              src={avatarUrl}
+              alt={user.displayName || user.email}
+              className={`header-avatar ${avatarLoadError ? 'avatar-fallback' : ''}`}
+              onClick={() => setMenuOpen(!menuOpen)}
+              onError={handleImageError}
+              loading="lazy"
+            />
+          )}
 
-  {user ? (
-    menuOpen && (
-      <div className="dropdown-menu" ref={menuRef}>
-        <div className="dropdown-user-info">
-          <strong>{user.displayName || 'Usuario'}</strong>
-          <p>{user.email || 'No tiene email'}</p>
-          <p>Solicitante: {nombreSolicitante || 'No definido'}</p>
         </div>
-        <button onClick={signInWithGoogle}>Cambiar de cuenta</button>
-        <button onClick={() => auth.signOut()}>Cerrar sesión</button>
-      </div>
-    )
-  ) : (
-    <div className="user-loading">Autenticando...</div>
-  )}
-</header>
+
+
+        {user ? (
+          menuOpen && (
+            <div className="dropdown-menu" ref={menuRef}>
+              <div className="dropdown-user-info">
+                <strong>{user.displayName || 'Usuario'}</strong>
+                <p>{user.email || 'No tiene email'}</p>
+                <p>Solicitante: {nombreSolicitante || 'No definido'}</p>
+              </div>
+              <button onClick={signInWithGoogle}>Cambiar de cuenta</button>
+              <button onClick={() => auth.signOut()}>Cerrar sesión</button>
+            </div>
+          )
+        ) : (
+          <div className="user-loading">Autenticando...</div>
+        )}
+      </header>
 
 
       <div className="app-container">

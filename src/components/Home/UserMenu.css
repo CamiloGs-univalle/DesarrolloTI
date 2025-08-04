@@ -3,42 +3,106 @@
   display: inline-block;
 }
 
+/* Avatar de usuario */
 .user-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   cursor: pointer;
+  border: 2px solid #ccc;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.user-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Menú desplegable */
 .user-dropdown-menu {
   position: absolute;
-  top: 45px;
+  top: 48px;
   right: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 12px;
-  min-width: 220px;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
-  z-index: 100;
+  background-color: #ffffff;
+  border: 1px solid #d0d0d0;
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 240px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Información del menú */
 .menu-info {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-size: 0.9rem;
+  color: #333;
+  line-height: 1.4;
+}
+
+.menu-info strong {
+  font-size: 1rem;
+  color: #111;
+}
+
+.menu-info em {
+  color: #555;
+  font-style: normal;
+  font-weight: 500;
+}
+
+/* Separador */
+.user-dropdown-menu hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 12px 0;
+}
+
+/* Botones del menú */
+.user-dropdown-menu button {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+  font-weight: 500;
   color: #333;
 }
 
-.user-dropdown-menu button {
-  width: 100%;
-  padding: 8px;
-  border: none;
-  background-color: #f0f0f0;
-  margin-top: 6px;
-  cursor: pointer;
-  border-radius: 4px;
+.user-dropdown-menu button:hover {
+  background-color: #eaeaea;
+  border-color: #bbb;
 }
 
-.user-dropdown-menu button:hover {
-  background-color: #e0e0e0;
+/* Responsive */
+@media (max-width: 500px) {
+  .user-dropdown-menu {
+    right: 50%;
+    transform: translateX(50%);
+    min-width: 90vw;
+  }
+
+  .menu-info {
+    text-align: center;
+  }
+
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+  }
 }

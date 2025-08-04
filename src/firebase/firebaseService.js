@@ -6,7 +6,8 @@ import {
   where,
   getDocs,
   addDoc,
-  serverTimestamp
+  serverTimestamp,
+  Timestamp
 } from 'firebase/firestore';
 
 export class FirestoreService {
@@ -22,7 +23,7 @@ export class FirestoreService {
       }
 
       const q = query(
-        collection(db, 'usuarios'), 
+        collection(db, 'usuarios'),
         where('cedula', '==', cedula.trim())
       );
       const snapshot = await getDocs(q);
@@ -82,6 +83,25 @@ export class FirestoreService {
     } catch (error) {
       console.error('❌ Error al guardar petición:', error.message);
       throw new Error(`Error al guardar petición: ${error.message}`);
+    }
+  }
+
+  /**
+   * Guarda una inactivación
+   * @param {Object} datosInactivacion - Datos de la inactivación
+   * @returns {Promise<{ success: boolean, id?: string, error?: any }>}
+   */
+  static async guardarInactivacion(datosInactivacion) {
+    try {
+      const docRef = await addDoc(collection(db, 'inactivaciones'), {
+        ...datosInactivacion,
+        fechaSolicitud: Timestamp.now(),
+      });
+      console.log('✅ Inactivación guardada con ID:', docRef.id);
+      return { success: true, id: docRef.id };
+    } catch (error) {
+      console.error('❌ Error guardando inactivación en Firebase:', error);
+      return { success: false, error };
     }
   }
 }

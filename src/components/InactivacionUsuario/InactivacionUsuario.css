@@ -1,0 +1,162 @@
+/* src/components/InactivacionUsuario/InactivacionUsuario.css */
+
+/* Contenedor principal del formulario */
+.form-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background-color: #dcdcdc;
+  border-radius: 10px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+}
+
+/* Contenedor horizontal flexible para secciones */
+.secciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+}
+
+/* Cada sección con diseño de tarjeta */
+.seccion {
+  flex: 1 1 300px; /* Crece, reduce, mínimo 300px */
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+/* Título de cada sección */
+.titulo-seccion {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Grid para agrupar campos en columnas */
+.grupo-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.5rem;
+}
+
+/* Campo individual */
+.campo {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Etiqueta del campo */
+.campo label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Estilo de inputs y textarea */
+.campo input,
+.campo textarea {
+  padding: 0.625rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  transition: border 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Efecto al enfocar */
+.campo input:focus,
+.campo textarea:focus {
+  border-color: #136f00;
+  outline: none;
+}
+
+/* Validación de campos requeridos */
+.campo input:required:invalid {
+  border: 2px solid red;
+}
+
+/* Área de texto */
+textarea {
+  resize: none;
+  min-height: 100px;
+}
+
+/* Contenedor del botón enviar */
+.submit-container {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* Estilo del botón enviar */
+.enviar-btn {
+  background-color: #136f00;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.enviar-btn:hover {
+  background-color: #0d5000;
+}
+
+/* Selector de tipo (arriba del formulario) */
+.tipo-selector {
+  display: flex;
+  justify-content: end;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.tipo-selector button {
+  padding: 0.625rem 1.25rem;
+  border: 1px solid #444;
+  background-color: #f0f0f0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.tipo-selector button.active {
+  background-color: #136f00;
+  color: white;
+  border-color: #136f00;
+}
+
+/* 💡 Ajustes para pantallas pequeñas */
+@media (max-width: 600px) {
+  .titulo-seccion {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tipo-selector {
+    justify-content: center;
+  }
+
+  .submit-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .enviar-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+}

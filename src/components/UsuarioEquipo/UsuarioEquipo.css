@@ -38,7 +38,56 @@
     grid-template-columns: 1fr 1fr;
     gap: 15px;
     margin-bottom: 20px;
+    padding: 8px;
+    border: 1px solid hsl(0, 0%, 80%);
+    border-radius: 4px;
   }
+
+  .campo_autocomplete {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+
+  .campo_autocomplete label {
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .campo_autocomplete input:required:invalid {
+    border: 1px solid red;
+  }
+
+  /* Campos editables con botón */
+  .campo_autocomplete-editable {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .campo_autocomplete-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* en tu archivo CSS (ej. UsuarioReemplazoForm.css) */
+  .campo_autocomplete .MuiInputBase-input {
+    color: rgb(0, 0, 0) !important;
+    font-size: 16px !important;
+    padding: 0px !important;
+    text-align: top !important;
+  }
+
+  .campo_autocomplete .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: rgb(0, 0, 0) !important;
+  }
+
+  .campo_autocomplete .MuiOutlinedInput-notchedOutline {
+    border-color: rgb(7, 7, 7) !important;
+  }
+
 
   .campo {
     display: flex;
@@ -84,6 +133,11 @@
     cursor: pointer;
   }
 
+  /* Asegurar que todo el campo tenga un solo borde */
+  .campo .MuiOutlinedInput-root {
+    border-radius: 6px;
+  }
+
   .edit-btn:hover {
     background-color: #088a08;
   }
@@ -123,23 +177,23 @@
   }
 
   .tipo-selector {
-  display: flex;
-  justify-content: end;
-  gap: 15px;
-  margin-bottom: 20px;
-}
+    display: flex;
+    justify-content: end;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
 
-.tipo-selector button {
-  padding: 10px 20px;
-  border: 1px solid #444;
-  background-color: #f0f0f0;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-}
+  .tipo-selector button {
+    padding: 10px 20px;
+    border: 1px solid #444;
+    background-color: #f0f0f0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+  }
 
-.tipo-selector button.active {
-  background-color: #136f00;
-  color: white;
-  border-color: #136f00;
-}
+  .tipo-selector button.active {
+    background-color: #136f00;
+    color: white;
+    border-color: #136f00;
+  }
