@@ -1,7 +1,7 @@
 // src/services/UserGoogleExcel.js
 
 // 🔗 URL del Apps Script para USUARIOS
-const URL_USUARIOS_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbzCSRPqTvZWxbuaq8pRqbGlS-Bz2KMt3ZvkAHlRoS_XS_-KBmXrIvBTxpLnhGr_et0xlA /exec';
+const URL_USUARIOS_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbzCSRPqTvZWxbuaq8pRqbGlS-Bz2KMt3ZvkAHlRoS_XS_-KBmXrIvBTxpLnhGr_et0xlA/exec';
 
 /**
  * Envía datos de USUARIOS a Google Sheets usando Apps Script.

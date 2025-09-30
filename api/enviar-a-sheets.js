@@ -5,7 +5,7 @@
       return res.status(405).json({ error: 'Método no permitido' });
     }
 
-    const URL_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbxIQEUMdtPREAFsS-6VoIPD_tVZKLZ2zOHvNrAd_A86UZxf6ufh353msiftDrFCHL26/exec';
+    const URL_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbzCSRPqTvZWxbuaq8pRqbGlS-Bz2KMt3ZvkAHlRoS_XS_-KBmXrIvBTxpLnhGr_et0xlA/exec';
 
     try {
       const response = await fetch(URL_APPS_SCRIPT, {
