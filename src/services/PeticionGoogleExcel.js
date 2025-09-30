@@ -1,5 +1,5 @@
 // src/services/PeticionGoogleExcel.js
-const URL_PETICIONES_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbybSH5UwnNEM0hqB59JB_3sZyvIBwoVKF1hv1h9p3Cd3MF1Gwc7kvV7G5HfnBDtJosy/exec';
+const URL_PETICIONES_APPS_SCRIPT = '/api/proxy';
 
 /**
  * Envía datos de PETICIONES a Google Sheets usando Apps Script.
