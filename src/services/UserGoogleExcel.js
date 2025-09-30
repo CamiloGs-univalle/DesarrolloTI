@@ -31,7 +31,7 @@ export async function enviarUsuarioAAppsScript(datos) {
     };
 
     // 3️⃣ REALIZAR PETICIÓN HTTP POST
-    const response = await fetch(URL_USUARIOS_APPS_SCRIPT, {
+    const response = await fetch('/api/proxy', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
