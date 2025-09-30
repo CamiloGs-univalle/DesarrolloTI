@@ -81,7 +81,7 @@ export async function probarConexionUsuario() {
       timestamp: new Date().toISOString()
     };
     
-    const response = await fetch(URL_USUARIOS_APPS_SCRIPT, {
+    const response = await fetch('api/proxy', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
