@@ -1,3 +1,4 @@
+// src/components/UsuarioEquipo/UsuarioReemplazoForm.jsx
 import { Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { useUsuarios } from "../../../hooks/useUsuarios";
 import React from "react";
@@ -17,13 +18,12 @@ export default function UsuarioReemplazoForm({ formData, onChange, onUsuarioSele
         <h2 className="titulo-seccion">Usuario a Reemplazar</h2>
 
         <div className="campo_autocomplete">
-       
           {loading ? (
             <CircularProgress size={24} />
           ) : (
             <Autocomplete
               options={usuarios}
-              getOptionLabel={(option) => option.nombre || ""}
+              getOptionLabel={(option) => option['NOMBRE / APELLIDO'] || option.nombre || "Sin nombre"}
               onChange={handleSeleccion}
               renderInput={(params) => (
                 <TextField
@@ -38,12 +38,12 @@ export default function UsuarioReemplazoForm({ formData, onChange, onUsuarioSele
         </div>
 
         <div className="campo">
-          <label htmlFor="equipo">Cargo</label>
+          <label htmlFor="cargo">Cargo</label>
           <input
             type="text"
-            id="equipo"
-            name="equipo"
-            value={formData.equipo}
+            id="cargo"
+            name="cargo"
+            value={formData.cargo}
             onChange={onChange}
           />
         </div>

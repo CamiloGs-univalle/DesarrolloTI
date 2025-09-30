@@ -5,7 +5,7 @@ import Home from "./components/Home/Home";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/authService";
-//import PruebaGoogle from "./components/PruebaGoogle";
+import PruebaGoogle from "./components/PruebaGoogle";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -26,10 +26,11 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LoginPage />} />
+        <Route path="/components" element={<PruebaGoogle />} />   
         <Route path="/home" element={<Home user={user} />} />
       </Routes>
     </Router>
   );
 }
 
-//     <Route path="/components" element={<PruebaGoogle />} />    
+   

@@ -7,38 +7,47 @@ export default function CargoNuevoForm({ formData, onChange }) {
   const [emailGH, setEmailGH] = useState("camilo13369@gmail.com");
   const esCorporativo = formData.correoCorporativo;
 
+  // components/UsuarioEquipo.jsx (parte relevante)
+
+  // En la función handleSubmit, asegúrate de incluir el cargo:
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.clear();
-    setEstadoEnvio("enviando");
-    
-    console.group("🚀 Iniciando proceso de solicitud");
-    console.log("📄 Datos del formulario:", formData);
-    console.log("📧 Email de GH:", emailGH);
+    setLoading(true);
 
     try {
-      if (esCorporativo) {
-        console.log("💼 Procesando correo corporativo...");
-        await enviarCorreoCorporativo(formData.nuevoCorreo, formData.comentario);
-      } else {
-        console.log("🆓 Procesando correo gratuito...");
-        await enviarCorreoGratuito(formData.nuevoCorreo, formData.comentario);
-      }
+      // PREPARAR DATOS DEL USUARIO CON CARGO
+      const datosUsuario = {
+        nombre: formData.nombre.trim(),
+        cedula: formData.cedula.trim(),
+        correo: formData.correo.trim(),
+        cargo: formData.cargo.trim(), // ✅ CARGO INCLUIDO
+        empresa: formData.empresa.trim(),
+        ciudad: formData.ciudad.trim(),
+        fechaIngreso: formData.fechaIngreso
+      };
 
-      setEstadoEnvio("enviado");
-      console.groupEnd();
-      alert("✅ Solicitud enviada correctamente.");
+      // PREPARAR DATOS DE LA PETICIÓN CON CARGO
+      const datosPeticion = {
+        solicitante: formData.nombre.trim(),
+        tipoSolicitud: formType,
+        cargo: formData.cargo.trim(), // ✅ CARGO INCLUIDO EN PETICIÓN TAMBIÉN
+        // ... resto de datos
+      };
+
+      // EJECUTAR LA FUNCIÓN PRINCIPAL
+      const resultado = await guardarPeticionConUsuarioSiNoExiste(datosUsuario, datosPeticion);
+
+      console.log('✅ Proceso completado. Cargo guardado:', resultado.cargo);
+
     } catch (error) {
-      setEstadoEnvio("error");
-      console.error("❌ Error en el proceso:", error);
-      console.groupEnd();
-      alert("❌ Error al enviar la solicitud.");
+      console.error('❌ Error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="seccion seccion-dinamica">
-      {/* Eliminamos el <form> y usamos un div con la misma clase */}
       <div className="form-cargo">
         <h2 className="titulo-seccion">Cargo Nuevo</h2>
 
@@ -51,6 +60,7 @@ export default function CargoNuevoForm({ formData, onChange }) {
             value={formData.cargo}
             onChange={onChange}
             required
+            placeholder="Se autocompleta con el cargo del usuario seleccionado"
           />
         </div>
 
@@ -105,6 +115,7 @@ export default function CargoNuevoForm({ formData, onChange }) {
             value={formData.nuevoCorreo}
             onChange={onChange}
             required
+            placeholder="Se autocompleta con el correo del usuario seleccionado"
           />
         </div>
 
@@ -115,13 +126,13 @@ export default function CargoNuevoForm({ formData, onChange }) {
             name="comentario"
             value={formData.comentario}
             onChange={onChange}
+            placeholder="Comentarios adicionales sobre el cargo nuevo"
           ></textarea>
         </div>
 
-        {/* Cambiamos el type="submit" por type="button" */}
         <div className="campo">
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="boton-enviar"
             onClick={handleSubmit}
           >
@@ -129,7 +140,6 @@ export default function CargoNuevoForm({ formData, onChange }) {
           </button>
         </div>
 
-        {/* Estado visual del envío */}
         {estadoEnvio === "enviando" && (
           <p className="mensaje-enviando">⏳ Enviando solicitud...</p>
         )}
