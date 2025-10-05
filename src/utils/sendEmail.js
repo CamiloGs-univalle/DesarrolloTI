@@ -1,106 +1,60 @@
-/**
- * Simulación mejorada de envío de correos electrónicos
- * @module sendEmail
- */
+// src/utils/sendEmail.js
 
 /**
- * Función para simular el envío de correos (en desarrollo)
- * @param {Object} params - Parámetros del correo
- * @param {string} params.to - Destinatario del correo
- * @param {string} params.subject - Asunto del correo
- * @param {string} params.body - Cuerpo del mensaje
- * @returns {Promise<Object>} Resultado de la operación
+ * Convierte una fecha ISO (YYYY-MM-DD) en "06 SEPTIEMBRE 2025"
  */
-async function sendEmail({ to, subject, body }) {
-  console.group("📤 Simulación de Envío de Correo");
-  console.log("➡️ Para:", to);
-  console.log("✉️ Asunto:", subject);
-  console.log("📝 Mensaje:\n", body);
-  console.groupEnd();
-
-  // Simulamos un retraso de red
-  await new Promise(resolve => setTimeout(resolve, 1500));
-
-  // En producción, aquí iría la conexión real con el servicio de correo
-  return { success: true, message: "Correo simulado enviado con éxito" };
+export function formatDateToSpanishUpper(dateISO) {
+  if (!dateISO) return "";
+  const meses = [
+    "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
+    "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
+  ];
+  const d = new Date(dateISO);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = meses[d.getMonth()];
+  const year = d.getFullYear();
+  return `${day} ${month} ${year}`;
 }
 
 /**
- * Envía solicitud de correo corporativo
- * @param {string} nuevoCorreo - Dirección de correo a crear
- * @param {string} comentario - Justificación de la solicitud
- * @returns {Promise<Object>} Resultado del envío
+ * Construye el cuerpo del correo en base a los datos del formulario
  */
-export async function enviarCorreoCorporativo(nuevoCorreo, comentario) {
-  const cuerpoGerencia = `
-    SOLICITUD DE APROBACIÓN - CORREO CORPORATIVO
+export function buildSolicitudEmailBody(data) {
+  const fechaTexto = formatDateToSpanishUpper(data.fechaIngreso);
 
-    📌 Detalles de la solicitud:
-    - Correo solicitado: ${nuevoCorreo}
-    - Justificación: ${comentario || "No especificado"}
+  return (
+`Buen día.
 
-    Por favor responder con:
-    - "APROBADO" para autorizar la creación
-    - "RECHAZADO" si no se aprueba (indicar motivo)
+Por favor tu apoyo con la gestión de Permisos, Equipo y Correo para la siguiente persona que ingresa el día ${fechaTexto}, en la ciudad de ${data.ciudad}.
 
-    Atentamente,
-    Gestión Humana
-    Proservis S.A.
-  `;
+Nombre: ${data.nombre}
+C.C.: ${data.cedula}
+Cargo: ${data.cargo}
+Ciudad: ${data.ciudad}
 
-  const cuerpoTI = `
-    NOTIFICACIÓN DE SOLICITUD RECIBIDA
+Licencia: Utilizaba ${data.usuarioReemplazar || 'N/A'}
+Permisos: Utilizaba ${data.usuarioReemplazar || 'N/A'}
+Correo: Utilizaba ${data.usuarioReemplazar || 'N/A'}
 
-    Se ha registrado una solicitud para creación de correo corporativo:
+Comentario: ${data.comentario || 'Sin comentarios'}
 
-    - Dirección: ${nuevoCorreo}
-    - Tipo: Corporativo
-    - Estado: Pendiente de aprobación
-
-    Por favor espere la confirmación de gerencia.
-  `;
-
-  // Envío a Gerencia (aprendiz.ti@proservis.com.co)
-  const resultadoGerencia = await sendEmail({
-    to: "aprendiz.ti@proservis.com.co",
-    subject: `[SOLICITUD] Aprobación correo: ${nuevoCorreo}`,
-    body: cuerpoGerencia
-  });
-
-  // Envío copia a Gestión Humana (camilo13369@gmail.com)
-  const resultadoGH = await sendEmail({
-    to: "camilo13369@gmail.com",
-    subject: `[COPIA] Solicitud enviada para ${nuevoCorreo}`,
-    body: cuerpoTI
-  });
-
-  return { resultadoGerencia, resultadoGH };
+Muchas gracias, quedamos atentos.`
+  );
 }
 
 /**
- * Envía solicitud de correo gratuito
- * @param {string} nuevoCorreo - Dirección de correo a crear
- * @param {string} comentario - Justificación de la solicitud
- * @returns {Promise<Object>} Resultado del envío
+ * Abre Gmail/cliente de correo con mailto
  */
-export async function enviarCorreoGratuito(nuevoCorreo, comentario) {
-  const cuerpoTI = `
-    SOLICITUD DE CORREO GRATUITO
+export function enviarSolicitudCorreo(destinatarios, data) {
+  const subject = `Solicitud nuevo usuario - ${data.nombre}`;
+  const body = buildSolicitudEmailBody(data);
 
-    📌 Detalles de la solicitud:
-    - Correo solicitado: ${nuevoCorreo}
-    - Justificación: ${comentario || "No especificado"}
+  const mailtoURL = `mailto:${destinatarios}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-    Por favor proceder con la creación del correo.
-
-    Atentamente,
-    Gestión Humana
-    Proservis S.A.
-  `;
-
-  return await sendEmail({
-    to: "aprendiz.ti@proservis.com.co",
-    subject: `[SOLICITUD] Creación correo gratuito: ${nuevoCorreo}`,
-    body: cuerpoTI
-  });
+  // 🪟 Ventana emergente para Gmail
+  window.open(
+    mailtoURL,
+    "_blank",
+    "width=850,height=650,left=200,top=100,noopener,noreferrer"
+  );
 }

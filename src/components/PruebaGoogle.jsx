@@ -1,219 +1,218 @@
-// 📁 src/components/PruebaGoogleSheets.jsx
+import React, { useState, useEffect } from "react";
+import { auth, signInWithGoogle, logout } from "../firebase/authService";
+import { onAuthStateChanged } from "firebase/auth";
 
-import React, { useState, useEffect } from 'react';
-import { GoogleSheetsService } from '../services/googleSheetsService';
+// 📬 Correos fijos de destino (pueden ser varios separados por coma)
+const DESTINATARIOS = "auxiliar.ti@proservis.com.co";
 
-export default function PruebaGoogleSheets() {
+/**
+ * 🗓️ Convierte una fecha ISO (YYYY-MM-DD) en formato: "06 SEPTIEMBRE 2025"
+ */
+function formatDateToSpanishUpper(dateISO) {
+  if (!dateISO) return "";
+  const meses = [
+    "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
+    "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
+  ];
+  const d = new Date(dateISO);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = meses[d.getMonth()];
+  const year = d.getFullYear();
+  return `${day} ${month} ${year}`;
+}
+
+export default function EnviarCorreo() {
+  // 👤 Usuario autenticado (Firebase)
+  const [user, setUser] = useState(null);
+
+  // 📝 Datos del formulario
   const [formData, setFormData] = useState({
-    cedula: '0000001',
-    nombre: 'PRUEBA 1',
-    correo: 'camilo@gmail.com',
-    empresa: 'PROSERVIS TEMPORALES',
-    ciudad: 'CALI',
-    estado: 'ACTIVO',
-    observacion: 'Prueba desde React'
+    nombre: "",
+    cedula: "",
+    cargo: "",
+    ciudad: "",
+    fechaIngreso: "",
+    usuarioReemplazar: "",
+    nota: "Esta es una prueba de envío."
   });
-  
-  const [respuesta, setRespuesta] = useState(null);
-  const [cargando, setCargando] = useState(false);
-  const [error, setError] = useState(null);
-  const [conexion, setConexion] = useState(null);
 
-  // Probar conexión al cargar el componente
+  // 👀 Detecta si hay sesión activa al cargar el componente
   useEffect(() => {
-    probarConexion();
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+      console.log("👤 Sesión detectada:", firebaseUser?.email || "No autenticado");
+    });
+    return () => unsubscribe();
   }, []);
 
-  const probarConexion = async () => {
-    try {
-      setCargando(true);
-      const resultado = await GoogleSheetsService.probarConexion();
-      setConexion({ estado: 'conectado', datos: resultado });
-    } catch (err) {
-      setConexion({ estado: 'error', error: err.message });
-    } finally {
-      setCargando(false);
-    }
-  };
-
-  const handleInputChange = (e) => {
+  // ✍️ Actualiza estado cuando se escriben los campos
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setCargando(true);
-    setError(null);
-    setRespuesta(null);
-    
+  // 🔐 Login con Google
+  const handleLogin = async () => {
     try {
-      const resultado = await GoogleSheetsService.enviarUsuario(formData);
-      setRespuesta(resultado);
-      
-      if (resultado.success) {
-        setFormData({
-          cedula: '',
-          nombre: '',
-          correo: '',
-          empresa: '',
-          ciudad: '',
-          estado: 'ACTIVO',
-          observacion: ''
-        });
-      }
-      
+      const loggedUser = await signInWithGoogle();
+      setUser(loggedUser);
     } catch (err) {
-      setError(err.message);
-      console.error('❌ Error en handleSubmit:', err);
-    } finally {
-      setCargando(false);
+      console.error("❌ Error iniciando sesión:", err);
     }
   };
 
-  const cargarDatosEjemplo = () => {
-    setFormData({
-      cedula: '000000' + Math.floor(Math.random() * 1000),
-      nombre: 'PRUEBA ' + Math.floor(Math.random() * 100),
-      correo: 'prueba' + Math.floor(Math.random() * 100) + '@gmail.com',
-      empresa: 'PROSERVIS TEMPORALES',
-      ciudad: 'CALI',
-      estado: 'ACTIVO',
-      observacion: 'Prueba automática desde React'
-    });
+  // 🚪 Logout
+  const handleLogout = async () => {
+    await logout();
+    setUser(null);
+  };
+
+  /**
+   * 🧾 Construye el cuerpo del correo con la plantilla oficial
+   */
+  const buildBody = (data) => {
+    const fechaTexto = formatDateToSpanishUpper(data.fechaIngreso);
+    return (
+`Buen día.
+
+Por favor tu apoyo con la gestión de Permisos, Equipo y Correo para la siguiente persona que ingresa el día ${fechaTexto}, en la ciudad de ${data.ciudad}.
+
+Nombre: ${data.nombre}
+C.C.: ${data.cedula}
+Cargo: ${data.cargo}
+Ciudad: ${data.ciudad}
+
+Licencia: Utilizaba ${data.usuarioReemplazar}
+Permisos: Utilizaba ${data.usuarioReemplazar}
+Correo: Utilizaba ${data.usuarioReemplazar}
+
+Nota: ${data.nota}
+
+Muchas gracias quedamos atentos.`
+    );
+  };
+
+  /**
+   * 📤 Maneja el envío → construye mailto y abre en ventana emergente
+   */
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!user) {
+      alert("Debes iniciar sesión con tu cuenta corporativa antes de enviar.");
+      return;
+    }
+
+    // 🧠 Log para debug como pro
+    console.log("✅ Preparando envío de correo...");
+    console.log("📨 Destinatario:", DESTINATARIOS);
+    console.log("👤 Usuario que envía:", user.email);
+    console.log("📋 Datos del formulario:", formData);
+
+    const subject = `Solicitud nuevo usuario - ${formData.nombre}`;
+    const body = buildBody(formData);
+
+    // 📎 Construcción segura de mailto
+    const mailto = `mailto:${DESTINATARIOS}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    console.log("🔗 URL mailto generada:", mailto);
+
+    // 🪟 ✨ Abrimos el Gmail en una ventanita emergente personalizada
+    window.open(
+      mailto,
+      "_blank",
+      "width=850,height=650,left=200,top=100,noopener,noreferrer"
+    );
   };
 
   return (
-    <div className="prueba-container">
-      <h2>🔧 Prueba de Envío a Google Sheets</h2>
-      
-      {/* Estado de conexión */}
-      <div className={`conexion-estado ${conexion?.estado}`}>
-        <strong>Estado de conexión:</strong> 
-        {conexion?.estado === 'conectado' ? '✅ Conectado' : '❌ Error'}
-        {conexion?.error && <span> - {conexion.error}</span>}
-        <button onClick={probarConexion} className="btn-reintentar">
-          🔄 Reintentar
+    <div className="max-w-md mx-auto p-4 bg-gray-50 rounded shadow mt-8">
+      <h2 className="text-xl font-bold mb-4">✉️ Envío de Solicitud - Ventana Emergente</h2>
+
+      {/* 🔐 Login / Logout */}
+      {!user ? (
+        <button
+          onClick={handleLogin}
+          className="bg-blue-600 text-white px-4 py-2 rounded mb-4 w-full"
+        >
+          Iniciar sesión con Google
         </button>
-      </div>
+      ) : (
+        <div className="mb-4 p-2 bg-green-50 border rounded">
+          <p className="mb-2 text-sm">Sesión iniciada como: <b>{user.email}</b></p>
+          <button
+            onClick={handleLogout}
+            className="bg-gray-600 text-white px-3 py-1 rounded text-sm"
+          >
+            Cerrar sesión
+          </button>
+        </div>
+      )}
 
-      {/* Botón para cargar datos de ejemplo */}
-      <button onClick={cargarDatosEjemplo} className="btn-ejemplo">
-        📋 Cargar Datos de Ejemplo (igual al error)
-      </button>
+      {/* 📝 Formulario */}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+        <input
+          name="nombre"
+          placeholder="Nombre completo"
+          value={formData.nombre}
+          onChange={handleChange}
+          required
+          className="border p-2 rounded"
+        />
+        <input
+          name="cedula"
+          placeholder="C.C."
+          value={formData.cedula}
+          onChange={handleChange}
+          required
+          className="border p-2 rounded"
+        />
+        <input
+          name="cargo"
+          placeholder="Cargo"
+          value={formData.cargo}
+          onChange={handleChange}
+          required
+          className="border p-2 rounded"
+        />
+        <input
+          name="ciudad"
+          placeholder="Ciudad"
+          value={formData.ciudad}
+          onChange={handleChange}
+          required
+          className="border p-2 rounded"
+        />
+        <input
+          type="date"
+          name="fechaIngreso"
+          value={formData.fechaIngreso}
+          onChange={handleChange}
+          required
+          className="border p-2 rounded"
+        />
+        <input
+          name="usuarioReemplazar"
+          placeholder="Usuario que se reemplaza"
+          value={formData.usuarioReemplazar}
+          onChange={handleChange}
+          className="border p-2 rounded"
+        />
+        <textarea
+          name="nota"
+          value={formData.nota}
+          onChange={handleChange}
+          rows={3}
+          className="border p-2 rounded"
+        />
 
-      {/* Formulario */}
-      <form onSubmit={handleSubmit} className="formulario-prueba">
-        <div className="campo">
-          <label>Cédula *</label>
-          <input
-            type="text"
-            name="cedula"
-            value={formData.cedula}
-            onChange={handleInputChange}
-            required
-            placeholder="0000001"
-          />
-        </div>
-        
-        <div className="campo">
-          <label>Nombre Completo *</label>
-          <input
-            type="text"
-            name="nombre"
-            value={formData.nombre}
-            onChange={handleInputChange}
-            required
-            placeholder="PRUEBA 1"
-          />
-        </div>
-        
-        <div className="campo">
-          <label>Correo Electrónico *</label>
-          <input
-            type="email"
-            name="correo"
-            value={formData.correo}
-            onChange={handleInputChange}
-            required
-            placeholder="camilo@gmail.com"
-          />
-        </div>
-        
-        <div className="campo">
-          <label>Empresa</label>
-          <input
-            type="text"
-            name="empresa"
-            value={formData.empresa}
-            onChange={handleInputChange}
-            placeholder="PROSERVIS TEMPORALES"
-          />
-        </div>
-        
-        <div className="campo">
-          <label>Ciudad</label>
-          <input
-            type="text"
-            name="ciudad"
-            value={formData.ciudad}
-            onChange={handleInputChange}
-            placeholder="CALI"
-          />
-        </div>
-        
-        <div className="campo">
-          <label>Estado</label>
-          <select name="estado" value={formData.estado} onChange={handleInputChange}>
-            <option value="ACTIVO">ACTIVO</option>
-            <option value="INACTIVO">INACTIVO</option>
-          </select>
-        </div>
-        
-        <div className="campo">
-          <label>Observación</label>
-          <textarea
-            name="observacion"
-            value={formData.observacion}
-            onChange={handleInputChange}
-            placeholder="Observaciones..."
-            rows="3"
-          />
-        </div>
-        
-        <button type="submit" disabled={cargando} className="btn-enviar">
-          {cargando ? '⏳ Enviando...' : '👤 Agregar Usuario'}
+        <button
+          type="submit"
+          className="bg-green-600 text-white p-2 rounded mt-2"
+        >
+          ✉ Enviar Solicitud
         </button>
       </form>
-
-      {/* Resultados */}
-      {error && (
-        <div className="resultado error">
-          <h3>❌ Error</h3>
-          <p>{error}</p>
-          <details>
-            <summary>Detalles técnicos</summary>
-            <pre>{error}</pre>
-          </details>
-        </div>
-      )}
-      
-      {respuesta && (
-        <div className={`resultado ${respuesta.success ? 'exito' : 'error'}`}>
-          <h3>{respuesta.success ? '✅ Éxito' : '⚠️ Advertencia'}</h3>
-          <p><strong>Mensaje:</strong> {respuesta.message}</p>
-          {respuesta.fila && <p><strong>Fila:</strong> {respuesta.fila}</p>}
-          {respuesta.datos_guardados && (
-            <div>
-              <strong>Datos guardados:</strong>
-              <pre>{JSON.stringify(respuesta.datos_guardados, null, 2)}</pre>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }

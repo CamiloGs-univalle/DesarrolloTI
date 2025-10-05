@@ -1,10 +1,9 @@
 import { useState } from "react";
 import './CargoNuevoForm.css';
-import { enviarCorreoCorporativo, enviarCorreoGratuito } from '../../../utils/sendEmail';
+import { guardarPeticionConUsuarioSiNoExiste } from '../../../controllers/userController.js';
 
 export default function CargoNuevoForm({ formData, onChange }) {
-  const [estadoEnvio, setEstadoEnvio] = useState("idle");
-  const [emailGH, setEmailGH] = useState("camilo13369@gmail.com");
+  const [estadoEnvio] = useState("idle");
   const esCorporativo = formData.correoCorporativo;
 
   // components/UsuarioEquipo.jsx (parte relevante)

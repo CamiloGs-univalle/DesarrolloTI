@@ -5,6 +5,8 @@ import UsuarioNuevoForm from './nuevo_usuario/UsuarioNuevoForm.jsx';
 import UsuarioReemplazoForm from './Remplazo/UsuarioReemplazoForm';
 import CargoNuevoForm from './Nuevo_Cargo/CargoNuevoForm';
 import { guardarPeticionConUsuarioSiNoExiste } from '../../controllers/userController.js';
+import { enviarSolicitudCorreo } from '../../utils/sendEmail.js';
+
 
 /**
  * Componente principal para gestionar usuarios y peticiones
@@ -14,7 +16,9 @@ export default function UsuarioEquipo() {
   // 1️⃣ ESTADOS DEL COMPONENTE
   const [formType, setFormType] = useState('reemplazo'); // 'reemplazo' o 'cargo'
   const [loading, setLoading] = useState(false);
-  
+  const DESTINATARIOS_CORREO = "auxiliar.ti@proservis.com.co";
+
+
   // 2️⃣ ESTADO PARA TODOS LOS DATOS DEL FORMULARIO
   const [formData, setFormData] = useState({
     // 📋 DATOS BÁSICOS DEL USUARIO
@@ -29,7 +33,7 @@ export default function UsuarioEquipo() {
     usuarioReemplazar: '',
     equipo: '',
     celular: '',
-    
+
     // 💼 DATOS PARA CARGO NUEVO
     cargo: '',
     alquilar: false,
@@ -43,7 +47,7 @@ export default function UsuarioEquipo() {
     tr3: false,
     sap: false,
     solvix: false,
-    
+
     // 📊 DATOS ADICIONALES
     proceso: ''
   });
@@ -56,11 +60,11 @@ export default function UsuarioEquipo() {
       empresa: usuario.EMPRESA || '',
       ciudad: usuario.CIUDAD || '',
       correo: usuario.CORREO || '',
-      
+
       // 👤 DATOS DE CARGO Y PUESTO
       cargo: usuario.CARGO || '',
       nuevoCorreo: usuario.CORREO || '',
-      
+
       // 🔄 DATOS PARA REEMPLAZO
       usuarioReemplazar: usuario['NOMBRE / APELLIDO'] || '',
       equipo: usuario.CARGO || '',
@@ -83,10 +87,10 @@ export default function UsuarioEquipo() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       console.log('🚀 Iniciando envío de formulario...');
-      
+
       // 5️⃣.1 VALIDAR DATOS MÍNIMOS
       if (!formData.cedula.trim()) {
         throw new Error('La cédula es requerida');
@@ -155,12 +159,19 @@ export default function UsuarioEquipo() {
 
       // 5️⃣.4 EJECUTAR LA FUNCIÓN PRINCIPAL DE GUARDADO
       const resultado = await guardarPeticionConUsuarioSiNoExiste(datosUsuario, datosPeticion);
-      
+
       console.log('✅ Proceso completado:', resultado);
-      
+
+      // 📨 Enviar correo automático
+      enviarSolicitudCorreo(DESTINATARIOS_CORREO, {
+        ...formData,
+        cargo: datosUsuario.cargo,       // Aseguramos que va limpio
+        fechaIngreso: datosUsuario.fechaIngreso
+      });
+
       // 5️⃣.5 MOSTRAR ALERTA DE ÉXITO
       alert(`✅ ${resultado.message}\nUsuario ID: ${resultado.usuarioId}\nPetición ID: ${resultado.peticionId}`);
-      
+
       // 5️⃣.6 LIMPIAR FORMULARIO DESPUÉS DE ÉXITO
       setFormData({
         nombre: '',
@@ -251,8 +262,8 @@ export default function UsuarioEquipo() {
 
         {/* 🚀 BOTÓN DE ENVÍO */}
         <div className="submit-container">
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="enviar-btn"
             disabled={loading}
           >
