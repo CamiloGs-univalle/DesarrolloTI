@@ -72,9 +72,6 @@ export default function UserMenu({ user, nombreSolicitante }) {
           <div className="menu-info">
             <strong>{user.displayName || "Usuario"}</strong>
             <p>{user.email || "No tiene email"}</p>
-            <p>
-              <em>Solicitante:</em> {nombreSolicitante || "No definido"}
-            </p>
           </div>
           <hr />
           <button onClick={signInWithGoogle}>Cambiar de cuenta</button>

@@ -5,8 +5,8 @@
   justify-content: space-between;
   align-items: center;
   background-color: #ffffff;
-  padding: 12px 20px;
-  border-bottom: 1px solid #ddd;
+  padding: 10px 5px;
+
   flex-wrap: wrap;
   gap: 10px;
 }
@@ -19,7 +19,7 @@ h1 {
   font-size: 24px;
   text-transform: uppercase;
   padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+
 }
 
 /* Campo del solicitante */
@@ -46,7 +46,7 @@ h1 {
 
 .solicitante-field input.active,
 .solicitante-field input:focus {
-  border-color: #00C851;
+  border-color: #21c800;
   outline: none;
 }
 
@@ -69,7 +69,7 @@ h1 {
 
 .button-panel button {
   padding: 12px 15px;
-  background-color: #4285F4;
+  background-color: #52ad06;
   color: white;
   border: none;
   border-radius: 4px;
@@ -80,11 +80,11 @@ h1 {
 }
 
 .button-panel button:hover {
-  background-color: #3367D6;
+  background-color: #46d633;
 }
 
 .button-panel button.active {
-  background-color: #0d47a1;
+  background-color: #0da114d5;
   font-weight: bold;
 }
 
@@ -125,7 +125,7 @@ h1 {
   border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
-  border: 2px solid #ccc;
+  border: 2px solid #5c5c5c;
   margin-left: auto;
 }
 
@@ -143,7 +143,7 @@ h1 {
 }
 
 .header-avatar.avatar-fallback {
-  border-color: #FFC107;
+  border-color: #77ff07;
 }
 
 .avatar-container {
@@ -162,7 +162,8 @@ h1 {
   border-radius: 6px;
   position: absolute;
   right: 0;
-  top: 60px;
+  top: 70px;
+  margin: 0px 10px 0;
   min-width: 220px;
   max-width: 95vw;
   z-index: 10;
@@ -230,6 +231,5 @@ input:focus {
 
 /* Mejora de espaciado superior general */
 .home-wrapper {
-  padding-top: 20px;
   box-sizing: border-box;
 }
