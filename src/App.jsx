@@ -53,9 +53,6 @@ export default function App() {
           }
         />
 
-        {/* 🔹 Ejemplo adicional */}
-        <Route path="/components" element={<PruebaGoogle />} />
-
         {/* 🔹 Ruta por defecto */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
