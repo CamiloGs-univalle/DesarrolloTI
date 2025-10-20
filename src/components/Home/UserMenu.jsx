@@ -6,6 +6,8 @@ import "./UserMenu.css";
 export default function UserMenu({ user, nombreSolicitante }) {
   const [isOpen, setIsOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [error, setError] = useState(null);
   const menuRef = useRef();
   const navigate = useNavigate();
 
@@ -32,7 +34,9 @@ export default function UserMenu({ user, nombreSolicitante }) {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   // Fallback de imagen si falla el avatar
@@ -45,13 +49,26 @@ export default function UserMenu({ user, nombreSolicitante }) {
 
   // Cerrar sesión y redirigir al login
   const handleSignOut = async () => {
+    if (isSigningOut) return;
+
     try {
+      setIsSigningOut(true);
+      setIsOpen(false);
+
       await auth.signOut();
-      navigate("/login"); // Redirecciona al login
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
+
+      // Redirigir a la ruta raíz (login)
+      setTimeout(() => {
+        navigate("/");
+      }, 100);
+    } catch (err) {
+      console.error("Error al cerrar sesión:", err);
+      setError("Hubo un problema al cerrar sesión. Intenta de nuevo.");
+    } finally {
+      setIsSigningOut(false);
     }
   };
+
 
   if (!user) {
     return <div className="user-menu-loading">Cargando usuario...</div>;
@@ -75,7 +92,10 @@ export default function UserMenu({ user, nombreSolicitante }) {
           </div>
           <hr />
           <button onClick={signInWithGoogle}>Cambiar de cuenta</button>
-          <button onClick={handleSignOut}>Cerrar sesión</button>
+          <button onClick={handleSignOut} disabled={isSigningOut}>
+            {isSigningOut ? "Cerrando sesión..." : "Cerrar sesión"}
+          </button>
+          {error && <p className="error-message">{error}</p>}
         </div>
       )}
     </div>
