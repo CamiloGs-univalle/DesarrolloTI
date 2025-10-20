@@ -15,15 +15,12 @@ export default function UserMenu({ user, nombreSolicitante }) {
   useEffect(() => {
     if (!user) return;
 
-    if (user?.photoURL?.trim()) {
-      setAvatarUrl(user.photoURL);
-    } else {
-      const name = user?.displayName || "Usuario";
-      const fallbackUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-        name
-      )}&background=random`;
-      setAvatarUrl(fallbackUrl);
-    }
+    const name = user.displayName?.trim() || "Usuario";
+    const fallbackUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      name
+    )}&background=random`;
+
+    setAvatarUrl(user.photoURL?.trim() || fallbackUrl);
   }, [user]);
 
   // Cerrar menú al hacer clic fuera
@@ -33,13 +30,12 @@ export default function UserMenu({ user, nombreSolicitante }) {
         setIsOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Fallback de imagen si falla el avatar
+  // Fallback si falla la imagen
   const handleImageError = (e) => {
     const name = user?.displayName || "Usuario";
     e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -56,11 +52,7 @@ export default function UserMenu({ user, nombreSolicitante }) {
       setIsOpen(false);
 
       await auth.signOut();
-
-      // Redirigir a la ruta raíz (login)
-      setTimeout(() => {
-        navigate("/");
-      }, 100);
+      navigate("/"); // 🔹 Redirige correctamente al LoginPage
     } catch (err) {
       console.error("Error al cerrar sesión:", err);
       setError("Hubo un problema al cerrar sesión. Intenta de nuevo.");
@@ -69,7 +61,7 @@ export default function UserMenu({ user, nombreSolicitante }) {
     }
   };
 
-
+  // Mostrar mensaje mientras carga el usuario
   if (!user) {
     return <div className="user-menu-loading">Cargando usuario...</div>;
   }
@@ -80,7 +72,7 @@ export default function UserMenu({ user, nombreSolicitante }) {
         src={avatarUrl}
         alt="Foto de usuario"
         className="user-avatar"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen((prev) => !prev)}
         onError={handleImageError}
       />
 
@@ -91,10 +83,12 @@ export default function UserMenu({ user, nombreSolicitante }) {
             <p>{user.email || "No tiene email"}</p>
           </div>
           <hr />
+
           <button onClick={signInWithGoogle}>Cambiar de cuenta</button>
           <button onClick={handleSignOut} disabled={isSigningOut}>
             {isSigningOut ? "Cerrando sesión..." : "Cerrar sesión"}
           </button>
+
           {error && <p className="error-message">{error}</p>}
         </div>
       )}
