@@ -141,6 +141,7 @@ export default function Home({ user }) {
               <div className="dropdown-user-info">
                 <strong>{user.displayName || 'Usuario'}</strong>
                 <p>{user.email || 'No tiene email'}</p>
+                <p>Solicitante: {nombreSolicitante || 'No definido'}</p>
               </div>
               <button onClick={signInWithGoogle}>Cambiar de cuenta</button>
               <button onClick={() => auth.signOut()}>Cerrar sesión</button>
@@ -153,7 +154,20 @@ export default function Home({ user }) {
 
 
       <div className="app-container">
-        
+        <div className="solicitante-field">
+          <label htmlFor="nombreSolicitante">Nombre Solicitante</label>
+          <input
+            id="nombreSolicitante"
+            name="nombreSolicitante"
+            type="text"
+            value={nombreSolicitante}
+            onChange={(e) => setNombreSolicitante(e.target.value)}
+            className={solicitanteActive || nombreSolicitante ? 'active' : ''}
+            onFocus={() => setSolicitanteActive(true)}
+            onBlur={() => setSolicitanteActive(false)}
+            autoComplete="name"
+          />
+        </div>
 
         <div className="main-panel">
           <div className="button-panel">
