@@ -19,9 +19,27 @@ export default function UsuarioNuevoForm({ formData, onChange }) {
 
         </div>
         <div className="campo">
-          <label htmlFor="cedula">Cédula</label>
-          <input type="text" id="cedula" name="cedula" value={formData.cedula} onChange={onChange} required />
-        </div>
+  <label htmlFor="cedula">Cédula</label>
+  <div className="campo">
+  <input
+    type="text"
+    id="cedula"
+    name="cedula"
+    value={formData.cedula}
+    onChange={(e) => {
+      // Elimina todo lo que no sea número y limita a 15 dígitos
+      const valor = e.target.value.replace(/[^0-9]/g, '').slice(0, 12);
+      onChange({ target: { name: 'cedula', value: valor } });
+    }}
+    inputMode="numeric"
+    pattern="[0-9]{1,15}"
+    maxLength={15}
+    required
+  />
+</div>
+
+</div>
+
         <div className="campo">
           <label htmlFor="empresa">Empresa</label>
           <input type="text" id="empresa" name="empresa" value={formData.empresa} onChange={onChange} required />
