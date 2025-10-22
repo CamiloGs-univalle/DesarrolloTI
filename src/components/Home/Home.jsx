@@ -153,21 +153,46 @@ export default function Home({ user }) {
 
 
       <div className="app-container">
-        
+
 
         <div className="main-panel">
           <div className="button-panel">
             <button
               onClick={() => setCurrentView('usuario-equipo')}
               className={currentView === 'usuario-equipo' ? 'active' : ''}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '100%', // opcional, para que ocupe todo el ancho disponible
+              }}
             >
               Usuario y Equipo
+              <img
+                src="/public/logo/icono_usuario.png"
+                alt="Icono Usuario"
+                style={{ width: '25px', height: '25px', marginRight: '8px', verticalAlign: 'middle' }}
+              />
+
             </button>
+
             <button
               onClick={() => setCurrentView('inactivacion-usuario')}
               className={currentView === 'inactivacion-usuario' ? 'active' : ''}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '100%', // opcional, para que ocupe todo el ancho disponible
+              }}
             >
-              Inactivación de Usuario
+              Inactivar Usuario
+              <img
+                src="/logo/icono-inactivar usuario.png"
+                alt="Icono derecha"
+                style={{ width: '25px', height: '25px', marginRight: '8px', verticalAlign: 'middle' }}
+              />
+
             </button>
             <button
               onClick={() => setCurrentView('asignacion-equipo')}

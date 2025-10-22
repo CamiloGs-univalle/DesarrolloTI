@@ -27,7 +27,7 @@ export default function UsuarioNuevoForm({ formData, onChange }) {
     name="cedula"
     value={formData.cedula}
     onChange={(e) => {
-      // Elimina todo lo que no sea número y limita a 15 dígitos
+      // Elimina todo lo que no sea número y limita a 12 dígitos
       const valor = e.target.value.replace(/[^0-9]/g, '').slice(0, 12);
       onChange({ target: { name: 'cedula', value: valor } });
     }}
