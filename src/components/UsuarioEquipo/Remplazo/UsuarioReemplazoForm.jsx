@@ -1,4 +1,3 @@
-// src/components/UsuarioEquipo/UsuarioReemplazoForm.jsx
 import { Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { useUsuarios } from "../../../hooks/useUsuarios";
 import React from "react";
@@ -12,6 +11,24 @@ export default function UsuarioReemplazoForm({ formData, onChange, onUsuarioSele
     }
   };
 
+  // 🔎 Función para detectar el logo según el correo o la empresa
+  const getLogoEmpresa = (texto) => {
+    if (!texto) return null;
+    const valor = texto.toLowerCase();
+
+    if (valor.includes("proservis")) return "/logo/ProservisTemporales.png";
+    if (valor.includes("affine")) return "/logo/Affine.png";
+    if (valor.includes("siamo")) return "/logo/Siamo.png";
+    if (valor.includes("mendiola")) return "/logo/Mendiola.png";
+    if (valor.includes("anfibia")) return "/logo/Anfibia.png";
+    if (valor.includes("samalo")) return "/logo/Samalo.png";
+
+    return null;
+  };
+
+  const logoEmpresa =
+    getLogoEmpresa(formData.empresa) || getLogoEmpresa(formData.correo);
+
   return (
     <div className="seccion seccion-dinamica">
       <div className="form-reemplazo">
@@ -23,7 +40,9 @@ export default function UsuarioReemplazoForm({ formData, onChange, onUsuarioSele
           ) : (
             <Autocomplete
               options={usuarios}
-              getOptionLabel={(option) => option['NOMBRE / APELLIDO'] || option.nombre || "Sin nombre"}
+              getOptionLabel={(option) =>
+                option["NOMBRE / APELLIDO"] || option.nombre || "Sin nombre"
+              }
               onChange={handleSeleccion}
               renderInput={(params) => (
                 <TextField
@@ -50,7 +69,7 @@ export default function UsuarioReemplazoForm({ formData, onChange, onUsuarioSele
 
         <div className="campo">
           <div className="checkboxes">
-            {['sortime', 'tr3', 'sap', 'solvix'].map((sistema) => (
+            {["sortime", "tr3", "sap", "solvix"].map((sistema) => (
               <div className="checkbox-group" key={sistema}>
                 <input
                   type="checkbox"
@@ -75,6 +94,29 @@ export default function UsuarioReemplazoForm({ formData, onChange, onUsuarioSele
             onChange={onChange}
           />
         </div>
+
+        {/* 👇 Aquí se muestra dinámicamente el logo de la empresa */}
+        {logoEmpresa && (
+          <div
+            className="campo logo-empresa"
+            style={{
+              textAlign: "center",
+              marginTop: "10px",
+            }}
+          >
+            <img
+              src={logoEmpresa}
+              alt="Logo de la empresa"
+              style={{
+                width: "180px",
+                maxWidth: "100%",
+                height: "auto",
+                borderRadius: "10px",
+                objectFit: "contain",
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
