@@ -194,18 +194,6 @@ export default function Home({ user }) {
               />
 
             </button>
-            <button
-              onClick={() => setCurrentView('asignacion-equipo')}
-              className={currentView === 'asignacion-equipo' ? 'active' : ''}
-            >
-              Asignación de Equipo
-            </button>
-            <button
-              onClick={() => setCurrentView('asignacion-correo')}
-              className={currentView === 'asignacion-correo' ? 'active' : ''}
-            >
-              Asignación de Correo
-            </button>
           </div>
 
           <div className="form-panel">{renderView()}</div>

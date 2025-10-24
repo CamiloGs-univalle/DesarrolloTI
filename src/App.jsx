@@ -28,7 +28,7 @@ export default function App() {
   // 🔹 Función para detectar si es correo de TI
   const esUsuarioTI = (correo) =>
     correo?.toLowerCase() === "auxiliar.ti@proservis.com.co" ||
-    correo?.toLowerCase() === "soporte.ti@proservis.com.co"; // puedes agregar más
+    correo?.toLowerCase() === "aprendiz.ti1@proservis.com.co"; // puedes agregar más
 
   return (
     <Router>
