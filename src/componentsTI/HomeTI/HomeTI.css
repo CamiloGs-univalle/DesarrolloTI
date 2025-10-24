@@ -1,14 +1,149 @@
+/* ==== CONTENEDOR GENERAL ==== */
+.home-ti-wrapper {
+  background-color: #f9fafb;
+  min-height: 100vh;
+}
+
 .ti-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #fff;
-  padding: 15px 25px;
+  background: #ffffff;
   border-bottom: 1px solid #e0e0e0;
 }
 
-.home-ti-wrapper {
-  background-color: #f9f9f9;
-  min-height: 100vh;
+/* ==== LISTA PENDIENTES ==== */
+.lista-pendiente {
+  width: 33%;
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+  border: 1px solid #e4e4e4;
+  max-height: 80vh;
+  overflow-y: auto;
 }
-    
+
+.titulo-lista {
+  text-align: center;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.item-solicitud {
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #fff;
+}
+
+.item-solicitud:hover {
+  border-color: #16a34a;
+  background-color: #f0fdf4;
+}
+
+.item-solicitud.seleccionada {
+  border-color: #16a34a;
+  background-color: #e6f9ec;
+  box-shadow: 0 0 0 2px #16a34a33;
+}
+
+.item-solicitud .tipo {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #111827;
+}
+
+.item-solicitud .fecha {
+  color: #dc2626;
+  font-size: 0.8rem;
+}
+
+.item-solicitud .nombre {
+  color: #000;
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+
+/* ==== DETALLE DE SOLICITUD ==== */
+.detalle-vacio {
+  width: 66%;
+  background: #fff;
+  border-radius: 1rem;
+  border: 1px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+.detalle-solicitud {
+  width: 66%;
+  background: #fff;
+  border-radius: 1rem;
+  border: 1px solid #e4e4e4;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.titulo-detalle {
+  text-align: center;
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 1.1rem;
+}
+
+.grid-detalle {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.mensaje {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 10px;
+  white-space: pre-line;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #374151;
+}
+
+.botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-editar {
+  background-color: #166534;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-enviar {
+  background-color: #16a34a;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-editar:hover {
+  background-color: #14532d;
+}
+
+.btn-enviar:hover {
+  background-color: #15803d;
+}
