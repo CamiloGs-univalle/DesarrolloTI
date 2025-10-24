@@ -26,29 +26,14 @@ export default function EnviarCorreo() {
   const [user, setUser] = useState(null);
 
   // 📝 Datos del formulario
-// 📝 Datos del formulario
-const [formData, setFormData] = useState({
-  nombre: "",
-  cedula: "",
-  cargo: "",
-  ciudad: "",
-  usuarioReemplazar: "",
-  nota: "Esta es una prueba de envío."
-});
-
-// ✏️ Manejo de cambios en los campos del formulario
-consthandleChange = (e) => {
-  const { name, value } = e.target;
-
-  setFormData((prev) => ({
-    ...prev,
-    [name]:
-      name === "cedula"
-        ? value.replace(/[^0-9]/g, "") // 🔒 Solo números (sin espacios ni letras)
-        : value,
-  }));
-};
-
+  const [formData, setFormData] = useState({
+    nombre: "",
+    cedula: "",
+    cargo: "",
+    ciudad: "",
+    fearioReemplazar: "",
+    nota: "Esta es una prueba de envío."
+  });
 chaIngreso: "",
     usu
   // 👀 Detecta si hay sesión activa al cargar el componente

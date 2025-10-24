@@ -51,7 +51,7 @@ export default function CargoNuevoForm({ formData, onChange }) {
         <h2 className="titulo-seccion">Cargo Nuevo</h2>
 
         <div className="campo">
-          <label htmlFor="cargo">Cargo</label>
+          <label htmlFor="Cargo">Cargo</label>
           <input
             type="text"
             id="cargo"
