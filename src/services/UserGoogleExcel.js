@@ -3,11 +3,11 @@
 // 🔗 URL del Apps Script para USUARIOS
 
 // ✅ URL pública de tu Apps Script desplegado como Web App
-const URL_USUARIOS_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzCSRPqTvZWxbuaq8pRqbGlS-Bz2KMt3ZvkAHlRoS_XS_-KBmXrIvBTxpLnhGr_et0xlA/exec';
+//const URL_USUARIOS_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzCSRPqTvZWxbuaq8pRqbGlS-Bz2KMt3ZvkAHlRoS_XS_-KBmXrIvBTxpLnhGr_et0xlA/exec';
 
 
 //De forma host => 
-//const URL_USUARIOS_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbzCSRPqTvZWxbuaq8pRqbGlS-Bz2KMt3ZvkAHlRoS_XS_-KBmXrIvBTxpLnhGr_et0xlA/exec';
+const URL_USUARIOS_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbwZlJ0VVKJT_b9cQKcZeopAlWf7D-E7l3q4CQy1k-opggNork0d1JPXcITwOQJX0rQ/exec';
 
 /**
  * Envía datos de USUARIOS a Google Sheets usando Apps Script.
@@ -18,20 +18,34 @@ export async function enviarUsuarioAAppsScript(datos) {
   try {
     console.log('📤 Enviando usuario a Google Sheets...', datos);
 
+    // Dentro de enviarUsuarioAAppsScript()
+    const datosNormalizados = {
+      action: datos.action,
+      cedula: datos["CEDULA"] || datos.cedula,
+      nombre: datos["NOMBRE / APELLIDO"] || datos.nombre,
+      correo: datos["CORREO"] || datos.correo,
+      cargo: datos["CARGO"] || datos.cargo,
+      empresa: datos["EMPRESA"] || datos.empresa,
+      ciudad: datos["CIUDAD"] || datos.ciudad,
+      estado: datos["ESTADO"] || "ACTIVO",
+      observacion: datos["OBSERVACION"] || "",
+    };
+
+
     // 1️⃣ VALIDAR DATOS MÍNIMOS REQUERIDOS
-    if (!datos.cedula || !datos.nombre || !datos.correo) {
+    if (!datosNormalizados.cedula || !datosNormalizados.nombre || !datosNormalizados.correo) {
       throw new Error('Datos incompletos. Se requieren: cédula, nombre y correo');
     }
 
     // 2️⃣ PREPARAR DATOS PARA ENVÍO
     const datosCompletos = {
-      ...datos,
+      ...datosNormalizados,
       timestamp: new Date().toISOString(),
       source: 'react-app'
     };
 
     // 3️⃣ REALIZAR PETICIÓN HTTP POST
-    const response = await fetch('/api/proxy', {
+    const response = await fetch(URL_USUARIOS_APPS_SCRIPT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -47,7 +61,7 @@ export async function enviarUsuarioAAppsScript(datos) {
 
     // 5️⃣ OBTENER Y PROCESAR LA RESPUESTA
     const textoRespuesta = await response.text();
-    
+
     try {
       // Intentar parsear como JSON
       const respuestaJson = JSON.parse(textoRespuesta);
@@ -56,8 +70,8 @@ export async function enviarUsuarioAAppsScript(datos) {
     } catch (parseError) {
       // Si no es JSON, devolver como texto
       console.log('✅ Usuario enviado. Respuesta texto:', textoRespuesta);
-      return { 
-        success: true, 
+      return {
+        success: true,
         message: textoRespuesta,
         rawResponse: textoRespuesta
       };
@@ -75,12 +89,12 @@ export async function enviarUsuarioAAppsScript(datos) {
 export async function probarConexionUsuario() {
   try {
     console.log('🔍 Probando conexión con Google Sheets para usuarios...');
-    
+
     const datosPrueba = {
       action: 'test',
       timestamp: new Date().toISOString()
     };
-    
+
     const response = await fetch(URL_USUARIOS_APPS_SCRIPT, {
       method: 'POST',
       headers: {
@@ -88,15 +102,15 @@ export async function probarConexionUsuario() {
       },
       body: JSON.stringify(datosPrueba)
     });
-    
+
     if (!response.ok) {
       throw new Error(`Error de conexión: ${response.status}`);
     }
-    
+
     const resultado = await response.text();
     console.log('✅ Conexión exitosa:', resultado);
     return { success: true, message: 'Conexión verificada' };
-    
+
   } catch (error) {
     console.error('❌ Error probando conexión:', error);
     throw error;

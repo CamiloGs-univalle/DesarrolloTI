@@ -1,0 +1,14 @@
+.ti-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: 15px 25px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.home-ti-wrapper {
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+    
