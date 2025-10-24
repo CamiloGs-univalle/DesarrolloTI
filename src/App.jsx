@@ -5,12 +5,13 @@ import { auth } from "./firebase/authService";
 
 import LoginPage from "./components/Login/LoginPage";
 import Home from "./components/Home/Home";
+import HomeTI from "./componentsTI/HomeTI/HomeTI";
+
 
 export default function App() {
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
 
-  // 🔹 Detecta si hay usuario logueado (o no)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
@@ -20,45 +21,62 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  // 🔄 Mientras carga el estado del usuario
   if (loadingUser) {
     return <div>Cargando usuario...</div>;
   }
 
+  // 🔹 Función para detectar si es correo de TI
+  const esUsuarioTI = (correo) =>
+    correo?.toLowerCase() === "auxiliar.ti@proservis.com.co" ||
+    correo?.toLowerCase() === "soporte.ti@proservis.com.co"; // puedes agregar más
+
   return (
     <Router>
       <Routes>
-        {/* 🔹 Login principal */}
+        {/* LOGIN */}
         <Route
           path="/"
-          element={
-            !user ? (
-              <LoginPage />
-            ) : (
-              // Si ya está logueado, lo manda directo a /home
-              <Navigate to="/home" replace />
-            )
-          }
+          element={!user ? <LoginPage /> : <Navigate to="/home" replace />}
         />
 
-        {/* 🔹 Página principal protegida */}
+        {/* 🔹 RUTA GH (Gestión Humana) */}
         <Route
           path="/home"
           element={
             user ? (
-              <Home user={user} />
+              esUsuarioTI(user.email) ? (
+                // Si es de TI → redirige a Interfaz TI
+                <Navigate to="/ti" replace />
+              ) : (
+                // Si es GH → Home normal
+                <Home user={user} />
+              )
             ) : (
-              // Si no hay usuario, redirige al login
               <Navigate to="/" replace />
             )
           }
         />
 
-        {/* 🔹 Ruta por defecto (si va a algo desconocido) */}
+        {/* 🔹 RUTA TI */}
+        <Route
+          path="/ti"
+          element={
+            user ? (
+              esUsuarioTI(user.email) ? (
+                <HomeTI user={user} />
+              ) : (
+                // Si intenta entrar GH a TI, lo devolvemos
+                <Navigate to="/HomeTI" replace />
+              )
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+
+        {/* DEFAULT */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
 }
-
-   
