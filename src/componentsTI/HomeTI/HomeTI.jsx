@@ -3,6 +3,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/firebase"; 
 import ListaPendiente from "../ListaPendiente/ListaPendiente";
 import DetalleSolicitud from "../ListaPendiente/DetalleSolicitud/DetalleSolicitud";
+import RespuestaSolicitud from "../ListaPendiente/RespuestaSolicitud/RespuestaSolicitud";
 import UserMenu from "../../components/Home/UserMenu";
 import "./HomeTI.css";
 
@@ -10,31 +11,26 @@ export default function HomeTI({ user }) {
   const [solicitudes, setSolicitudes] = useState([]);
   const [seleccionada, setSeleccionada] = useState(null);
 
-  // 🔹 Cargar solicitudes desde Firestore
   useEffect(() => {
     const obtenerSolicitudes = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "peticiones"));
         const data = querySnapshot.docs.map((doc) => {
           const d = doc.data();
-
-          // ✅ Adaptamos los nombres de los campos reales
           return {
             id: doc.id,
-            nombre: d["NOMBRE USUARIO"] || "Sin nombre",
+            nombre: d["usuarioReemplazar"]?.nombre || d["NOMBRE USUARIO"] || "Sin nombre",
             cargo: d["CARGO"] || "",
-            cedula: d["CEDULA USUARIO"] || "",
+            cedula: d["usuarioReemplazar"]?.cedula || d["CEDULA USUARIO"] || "",
             empresa: d["proceso"] || "",
             correo: d?.usuarioReemplazar?.correo || "",
-            ciudad: d?.usuarioReemplazar?.equipo || "",
             tipo: d["tipoSolicitud"]?.toUpperCase() || "SOLICITUD",
             fecha: d["fechaIngreso"] || "",
-            estado: d["estado"] || "",
+            estado: d["estado"] || "PENDIENTE",
             mensaje: d?.mensaje || "",
             solicitante: d["solicitante"] || "",
           };
         });
-
         setSolicitudes(data);
       } catch (error) {
         console.error("Error al obtener solicitudes:", error);
@@ -43,28 +39,33 @@ export default function HomeTI({ user }) {
     obtenerSolicitudes();
   }, []);
 
-  // 🔹 Seleccionar solicitud
-  const handleSeleccion = (solicitud) => setSeleccionada(solicitud);
-
   return (
-    <div className="home-ti-wrapper min-h-screen bg-gray-50 flex flex-col">
-      {/* 🔹 Encabezado */}
-      <header className="ti-header flex justify-between items-center p-4 bg-white shadow-md">
-        <h1 className="text-xl font-semibold text-gray-800">
-          Panel del Área TI
-        </h1>
-        <UserMenu user={user} />
+    <div className="home-ti-wrapper">
+      <header className="ti-header">
+        <h1>Panel del Área TI</h1>
+        <div className="usuario">
+          <UserMenu user={user} />
+        </div>
       </header>
 
-      {/* 🔹 Contenido principal */}
-      <main className="flex-grow flex justify-center items-start p-8">
-        <div className="flex w-full max-w-6xl gap-6">
+      <main className="contenido-principal">
+        <div className="contenedor-principal">
           <ListaPendiente
             solicitudes={solicitudes}
-            onSeleccionar={handleSeleccion}
+            onSeleccionar={setSeleccionada}
             seleccionada={seleccionada}
           />
-          <DetalleSolicitud solicitud={seleccionada} />
+
+          {seleccionada ? (
+            <div className="detalle-y-respuesta">
+              <DetalleSolicitud solicitud={seleccionada} />
+              <RespuestaSolicitud solicitud={seleccionada} />
+            </div>
+          ) : (
+            <div className="detalle-vacio">
+              Selecciona una solicitud para ver su detalle
+            </div>
+          )}
         </div>
       </main>
     </div>

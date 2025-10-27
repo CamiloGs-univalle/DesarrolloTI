@@ -1,45 +1,20 @@
 import React from "react";
+import "./DetalleSolicitud.css";
 
 export default function DetalleSolicitud({ solicitud }) {
-  if (!solicitud)
-    return (
-      <div className="detalle-vacio">
-        Selecciona una solicitud
-      </div>
-    );
+  if (!solicitud) return null;
 
   return (
     <div className="detalle-solicitud">
-      <h2 className="titulo-detalle">
-        USUARIO Y EQUIPO - “{solicitud.nombre}”
-      </h2>
-
+      <h2 className="titulo-detalle">Detalle de la Solicitud</h2>
       <div className="grid-detalle">
-        <div><strong>Correo:</strong> {solicitud.correo}</div>
-        <div><strong>Cargo:</strong> {solicitud.cargo}</div>
-        <div><strong>Cédula:</strong> {solicitud.cedula}</div>
-        <div><strong>Ciudad:</strong> {solicitud.ciudad}</div>
-        <div><strong>Empresa:</strong> {solicitud.empresa}</div>
+        <p><b>Nombre:</b> {solicitud.solicitante}</p>
+        <p><b>Cargo:</b> {solicitud.cargo}</p>
+        <p><b>Cedula:</b> {solicitud.cedula}</p>
+        <p><b>Estado:</b> {solicitud.estado}</p>
       </div>
-
-      <p className="mensaje">
-        {solicitud.mensaje || 
-`Buen día.
-Adjunto credenciales del usuario en mención por favor compartir a quien corresponda.
-
-CORREO: "${solicitud.correo}"
-CONTRASEÑA: "${solicitud.cedula}"
-
-TR3: "${solicitud.correo}"
-CONTRASEÑA: "${solicitud.cedula}"
-
-SORTTIME: "${solicitud.cedula}"
-CONTRASEÑA: "los 4 últimos dígitos de la cédula"`}
-      </p>
-
-      <div className="botones">
-        <button className="btn-editar">EDITAR</button>
-        <button className="btn-enviar">ENVIAR</button>
+      <div className="mensaje">
+        <b>Mensaje:</b> <br /> {solicitud.mensaje || "Sin descripción adicional"}
       </div>
     </div>
   );

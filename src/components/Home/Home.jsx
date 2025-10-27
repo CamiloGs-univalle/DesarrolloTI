@@ -107,10 +107,6 @@ export default function Home({ user }) {
         return <UsuarioEquipo user={user} />;
       case 'inactivacion-usuario':
         return <InactivacionUsuario />;
-      case 'asignacion-equipo':
-        return <div className="form-view">Formulario de Asignación de Equipo</div>;
-      case 'asignacion-correo':
-        return <div className="form-view">Formulario de Asignación de Correo</div>;
       default:
         return <div className="empty-view">Seleccione una opción del menú</div>;
     }

@@ -1,0 +1,64 @@
+.respuesta-solicitud {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.respuesta-solicitud h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #14532d;
+  margin-bottom: 1rem;
+}
+
+.campo-respuesta {
+  width: 100%;
+  min-height: 220px;
+  padding: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  resize: vertical;
+  font-family: "Consolas", monospace;
+  font-size: 0.95rem;
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+.botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn-editar,
+.btn-enviar {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-editar {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.btn-editar:hover {
+  background-color: #e5e7eb;
+}
+
+.btn-enviar {
+  background-color: #16a34a;
+  color: white;
+}
+
+.btn-enviar:hover {
+  background-color: #15803d;
+}
