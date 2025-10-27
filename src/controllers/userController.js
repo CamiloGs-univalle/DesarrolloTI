@@ -15,7 +15,7 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
     const cedulaStr = usuario.cedula?.toString().trim();
     console.log('📌 Verificando usuario con CEDULA:', cedulaStr);
 
-    // 1️⃣ Verificar si el usuario ya existe (usando "CEDULA" en mayúsculas)
+    // 1️⃣ Verificar si el usuario ya existe
     const q = query(collection(db, 'usuarios'), where('CEDULA', '==', cedulaStr));
     const snapshot = await getDocs(q);
 
@@ -25,7 +25,6 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
     if (snapshot.empty) {
       console.log('👤 Usuario NO existe. Creando en Firebase y enviando a Sheets...');
 
-      // 2️⃣ Crear usuario con formato idéntico al de tu hoja
       const usuarioFormato = {
         "CARGO": usuario.cargo?.toUpperCase() || "",
         "CEDULA": cedulaStr,
@@ -41,15 +40,13 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
         "FECHA CREACION": new Date().toISOString(),
       };
 
-      // 🗂️ Guardar el documento en Firestore
-      const nombreID = usuarioFormato["NOMBRE / APELLIDO"];
+      const nombreID = usuarioFormato["NOMBRE / APELLIDO"] || cedulaStr;
       const usuarioRef = doc(db, 'usuarios', nombreID);
       await setDoc(usuarioRef, usuarioFormato);
 
       usuarioId = usuarioRef.id;
       usuarioCreado = true;
 
-      // 📤 Enviar el usuario también a Google Sheets
       await enviarUsuarioAAppsScript({
         action: 'nuevo_usuario',
         ...usuarioFormato
@@ -61,28 +58,47 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
       usuarioId = snapshot.docs[0].id;
     }
 
-    // 🗓️ 3️⃣ Ajustar la fecha a la zona horaria local (UTC-5)
-    const fechaOriginal = new Date(peticion.fechaIngreso || Date.now());
-    const offsetMs = fechaOriginal.getTimezoneOffset() * 60 * 1000; // diferencia en milisegundos
-    const fechaLocal = new Date(fechaOriginal.getTime() - offsetMs); // convierte a hora local
+    /**
+     * 2️⃣ FECHA SIN DESFASE
+     * Si el usuario envía la fecha manualmente, la usamos directamente (dd-mm-aaaa o yyyy-mm-dd).
+     * Si no la envía, usamos la fecha actual.
+     */
+    let fechaFormateada = "";
+    if (peticion.fechaIngreso) {
+      // Si viene tipo "2025-10-24" → la convertimos a "24-10-2025"
+      const partes = peticion.fechaIngreso.split("-");
+      if (partes.length === 3) {
+        if (partes[0].length === 4) {
+          // formato yyyy-mm-dd
+          fechaFormateada = `${partes[2]}-${partes[1]}-${partes[0]}`;
+        } else {
+          // ya viene como dd-mm-aaaa
+          fechaFormateada = peticion.fechaIngreso;
+        }
+      } else {
+        fechaFormateada = peticion.fechaIngreso;
+      }
+    } else {
+      // si no envían fecha, se genera la actual en zona Colombia
+      const ahora = new Date();
+      const dia = String(ahora.getDate()).padStart(2, '0');
+      const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+      const año = ahora.getFullYear();
+      fechaFormateada = `${dia}-${mes}-${año}`;
+    }
 
-    const dia = String(fechaLocal.getDate()).padStart(2, '0');
-    const mes = String(fechaLocal.getMonth() + 1).padStart(2, '0');
-    const año = fechaLocal.getFullYear();
-    const fechaFormateada = `${dia}-${mes}-${año}`;
-
-    // 🔢 4️⃣ Generar contador para las peticiones del mismo día
+    // 🔢 3️⃣ Generar contador por día
     const peticionesRef = collection(db, 'peticiones');
     const queryDia = query(peticionesRef, where('fechaIngreso', '==', fechaFormateada));
     const snapshotPeticiones = await getDocs(queryDia);
 
-    const contador = snapshotPeticiones.size + 1; // siguiente número del día
-    const contadorFormateado = String(contador).padStart(2, '0'); // 🔹 solo 2 dígitos (01, 02, 03)
+    const contador = snapshotPeticiones.size + 1;
+    const contadorFormateado = String(contador).padStart(2, '0');
 
-    // 🆔 ID final con fecha + contador (ejemplo: 23-10-2025-01)
+    // 🆔 ID final con formato dd-mm-aaaa-XX
     const idPeticion = `${fechaFormateada}-${contadorFormateado}`;
 
-    // 5️⃣ Crear la petición con formato uniforme
+    // 4️⃣ Crear la petición
     const nuevaPeticion = {
       ...peticion,
       fechaIngreso: fechaFormateada,
@@ -95,11 +111,11 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
       "TIMESTAMP": Date.now(),
     };
 
-    // 🗂️ Guardar la petición (ID = fecha + contador)
+    // 🗂️ Guardar la petición en Firebase
     const peticionRef = doc(db, 'peticiones', idPeticion);
     await setDoc(peticionRef, nuevaPeticion);
 
-    // 📤 Enviar la petición a Google Sheets
+    // 📤 Enviar a Google Sheets
     await enviarPeticionAAppsScript({
       action: 'nueva_peticion',
       fechaIngreso: fechaFormateada,
@@ -116,7 +132,6 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
 
     console.log('✅ Petición enviada a Google Sheets con ID:', idPeticion);
 
-    // 6️⃣ Retornar resultado
     return {
       success: true,
       message: 'Petición y usuario guardados correctamente en Firestore y Sheets',
