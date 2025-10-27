@@ -16,7 +16,11 @@ export default function UsuarioEquipo() {
   // 1️⃣ ESTADOS DEL COMPONENTE
   const [formType, setFormType] = useState('reemplazo'); // 'reemplazo' o 'cargo'
   const [loading, setLoading] = useState(false);
-  const DESTINATARIOS_CORREO = "aprendiz.ti1@proservis.com.co";
+  const DESTINATARIOS_CORREO = [
+    "aprendiz.ti1@proservis.com.co",
+    "auxiliar.ti@proservis.com.co",
+
+  ];
 
 
   // 2️⃣ ESTADO PARA TODOS LOS DATOS DEL FORMULARIO
@@ -111,7 +115,12 @@ export default function UsuarioEquipo() {
         estado: 'ACTIVO',
         fechaCreacion: new Date().toISOString()
       };
-
+      // 5️⃣.2.1 VALIDAR DATOS OBLIGATORIOS
+      if (!datosUsuario.nombre || !datosUsuario.cedula || !datosUsuario.correo) {
+        alert('❌ Por favor completa cédula, nombre y correo antes de enviar.');
+        setLoading(false);
+        return;
+      }
       // 5️⃣.3 PREPARAR DATOS DE LA PETICIÓN PARA FIREBASE
       const datosPeticion = {
         // 📋 INFORMACIÓN BÁSICA
