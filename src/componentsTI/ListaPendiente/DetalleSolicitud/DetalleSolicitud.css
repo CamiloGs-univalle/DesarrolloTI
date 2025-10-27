@@ -1,0 +1,33 @@
+.detalle-solicitud {
+  width: 66%;
+  background: #fff;
+  border-radius: 1rem;
+  border: 1px solid #e4e4e4;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.titulo-detalle {
+  text-align: center;
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 1.1rem;
+}
+
+.grid-detalle {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.mensaje {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 10px;
+  white-space: pre-line;
+  font-size: 0.85rem;
+  color: #374151;
+}
