@@ -23,20 +23,17 @@ export function buildSolicitudEmailBody(data) {
   const fechaTexto = formatDateToSpanishUpper(data.fechaIngreso);
 
   return (
-`Buen día.
-
+`Cordial saludo, Equipo TI.
 Por favor tu apoyo con la gestión de Permisos, Equipo y Correo para la siguiente persona que ingresa el día ${fechaTexto}, en la ciudad de ${data.ciudad}.
 
 Nombre: ${data.nombre}
-C.C.: ${data.cedula}
+C.C: ${data.cedula}
 Cargo: ${data.cargo}
 Ciudad: ${data.ciudad}
-
+Empresa: ${data.empresa}
 Licencia: Utilizaba ${data.usuarioReemplazar || 'N/A'}
 Permisos: Utilizaba ${data.usuarioReemplazar || 'N/A'}
-Correo: Utilizaba ${data.usuarioReemplazar || 'N/A'}
-
-Comentario: ${data.comentario || 'Sin comentarios'}
+Correo: Utilizaba ${data.correo || 'N/A'}
 
 Muchas gracias, quedamos atentos.`
   );

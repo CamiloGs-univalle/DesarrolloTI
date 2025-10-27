@@ -1,70 +1,83 @@
 import React, { useEffect, useState } from "react";
 import { doc, deleteDoc } from "firebase/firestore";
-import { db } from "../../../firebase/firebase"; // ajusta la ruta según tu estructuraS
+import { db } from "../../../firebase/firebase"; // ajusta la ruta según tu estructura
 import { enviarRespuesta } from "../../../utils/responderEmail";
 
 import "./RespuestaSolicitud.css";
 
 export default function RespuestaSolicitud({ solicitud, onEliminada }) {
-    const [respuesta, setRespuesta] = useState("");
+  const [respuesta, setRespuesta] = useState("");
 
-    useEffect(() => {
-        if (solicitud) {
-            // 🔹 Extraemos los datos de la solicitud
-            const correo =
-                solicitud?.usuarioReemplazar?.correo ||
-                solicitud?.correo ||
-                "CORREO";
-            const cedula =
-                solicitud?.usuarioReemplazar?.cedula ||
-                solicitud?.cedula ||
-                solicitud?.CEDULA_USUARIO ||
-                "CEDULA";
-            const nombre =
-                solicitud?.usuarioReemplazar?.nombre ||
-                solicitud?.nombre ||
-                solicitud?.NOMBRE_USUARIO ||
-                "USUARIO";
+  useEffect(() => {
+    if (solicitud) {
+      const correo =
+        solicitud?.usuarioReemplazar?.correo ||
+        solicitud?.correo ||
+        "CORREO";
+      const cedula =
+        solicitud?.usuarioReemplazar?.cedula ||
+        solicitud?.cedula ||
+        solicitud?.CEDULA_USUARIO ||
+        "CEDULA";
+      const nombre =
+        solicitud?.usuarioReemplazar?.nombre ||
+        solicitud?.nombre ||
+        solicitud?.NOMBRE_USUARIO ||
+        "USUARIO";
 
-            // 🔹 Calculamos los 4 últimos dígitos de la cédula (si es válida)
-            let ultimos4 = "****";
-            if (cedula && cedula.length >= 4) {
-                ultimos4 = cedula.slice(-4);
-            }
+      let ultimos4 = "****";
+      if (cedula && cedula.length >= 4) {
+        ultimos4 = cedula.slice(-4);
+      }
 
-            // 🔹 Texto automático
-            const texto = `Buen día.
+      const texto = `Buen día.
+Adjunto credenciales del usuario en mención. Por favor compartir a quien corresponda.<br><br>
 
-            Adjunto credenciales del usuario en mención por favor compartir a quien corresponda.
+    <p><strong>CORREO:</strong> ${correo}</p>
+    <p><strong>CONTRASEÑA:</strong></p>
 
-            CORREO: "${correo}"
-            CONTRASEÑA:
+    <p><strong>HELPDESK:</strong> ${correo}</p>
+    <p><strong>CONTRASEÑA:</strong> ${cedula}</p>
 
-            HELDESK: "${correo}"
-            CONTRASEÑA: "${cedula}"
+    <p><strong>TR3:</strong> ${correo}</p>
+    <p><strong>CONTRASEÑA:</strong> ${cedula}</p>
 
-            TR3: "${correo}"
-            CONTRASEÑA: "${cedula}"
+    <p><strong>SORTTIME:</strong> ${cedula}</p>
+    <p><strong>CONTRASEÑA:</strong> ${ultimos4}</p>
 
-            SORTTIME: "${cedula}"
-            CONTRASEÑA: "${ultimos4}"`;
+<br>
+Quedo atento a cualquier inquietud.<br>
+Muchas gracias.`;
 
-            setRespuesta(texto);
-        }
-    }, [solicitud]);
+      setRespuesta(texto);
+    }
+  }, [solicitud]);
 
-    // 🧩 función para eliminar el documento en Firestore
-     const handleEnviar = async () => {
+  // 🧩 Enviar correo y eliminar solicitud
+  const handleEnviar = async () => {
     if (!solicitud?.id) {
       alert("⚠️ Falta el ID del documento en Firebase.");
       return;
     }
 
-    const ok = await enviarRespuesta(solicitud, respuesta);
+    try {
+      const ok = await enviarRespuesta(solicitud, respuesta);
 
-    if (ok && onEliminada) {
-      onEliminada(solicitud.id);
-      setRespuesta("");
+      if (ok) {
+        // 🔹 Eliminar la solicitud de Firestore
+        await deleteDoc(doc(db, "solicitudes", solicitud.id));
+        console.log(`✅ Solicitud ${solicitud.id} eliminada correctamente.`);
+
+        if (onEliminada) onEliminada(solicitud.id);
+
+        setRespuesta("");
+        alert("✅ Correo enviado y solicitud eliminada correctamente.");
+      } else {
+        alert("❌ No se pudo enviar el correo. Revisa la consola.");
+      }
+    } catch (error) {
+      console.error("❌ Error al enviar o eliminar:", error);
+      alert("❌ Error al enviar o eliminar la solicitud.");
     }
   };
 

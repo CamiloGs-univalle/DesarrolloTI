@@ -16,7 +16,7 @@ export default function UsuarioEquipo() {
   // 1️⃣ ESTADOS DEL COMPONENTE
   const [formType, setFormType] = useState('reemplazo'); // 'reemplazo' o 'cargo'
   const [loading, setLoading] = useState(false);
-  const DESTINATARIOS_CORREO = "aprendiz.ti1@proservis.com.co";
+  const DESTINATARIOS_CORREO = "aprendiz.ti1@proservis.com .co";
 
 
   // 2️⃣ ESTADO PARA TODOS LOS DATOS DEL FORMULARIO
