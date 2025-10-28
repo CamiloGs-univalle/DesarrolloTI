@@ -19,6 +19,7 @@ import { useUsuarios } from "../../../hooks/useUsuarios";
 import { getLogoEmpresa } from "../../../LogoEmpresa/LogoEmpresa";
 import { enviarSolicitudCorreoinactivacio } from "../../../utils/sendEmailInactivacion"; // ✅ Importa la función corregida
 
+
 export default function FormInactivacion({ onSubmitSuccess }) {
   // ============================================================
   // 🧩 1. Estado global del formulario
@@ -92,7 +93,10 @@ export default function FormInactivacion({ onSubmitSuccess }) {
       };
 
       // 3️⃣ Genera el correo y abre Gmail
-      enviarSolicitudCorreoinactivacio("aprendiz.ti1@proservis.com.co","auxiliar.ti@proservis.com.co", formData);
+      enviarSolicitudCorreoinactivacio(
+  "aprendiz.ti1@proservis.com.co,auxiliar.ti@proservis.com.co",
+  formData
+);
 
       // 4️⃣ Notifica al componente padre (si lo hay)
       if (onSubmitSuccess) onSubmitSuccess(formData);
