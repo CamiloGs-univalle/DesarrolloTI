@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZlJ0VVKJT_b9cQKcZeopAlWf7D-E7l3q4CQy1k-opggNork0d1JPXcITwOQJX0rQ/exec";
+    const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzswblpEw1POB2v2B5yYqRwZfQ4fM-uYPvJ9zw6GzNhSBqH0kxGIH-rNxkA3-HThG68/exec";
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
