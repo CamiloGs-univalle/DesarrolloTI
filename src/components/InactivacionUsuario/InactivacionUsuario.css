@@ -1,15 +1,6 @@
 /* src/components/InactivacionUsuario/InactivacionUsuario.css */
 
-/* Contenedor principal del formulario */
-.form-container {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 1.5rem;
-  background-color: #dcdcdc;
-  border-radius: 10px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  box-sizing: border-box;
-}
+
 
 /* Contenedor horizontal flexible para secciones */
 .secciones {
@@ -28,15 +19,6 @@
   box-sizing: border-box;
 }
 
-/* Título de cada sección */
-.titulo-seccion {
-  font-size: 1rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
 
 /* Grid para agrupar campos en columnas */
 .grupo-campos {
@@ -159,4 +141,19 @@ textarea {
     width: 100%;
     max-width: 300px;
   }
+}
+
+.inactivacion-container {
+  position: relative;
+  max-width: 2000px;
+  margin: 0 auto;
+  padding: 0px;
+  border-radius: 10px;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+.inactivacion-content {
+  position: relative;
+  z-index: 1; /* asegura que el contenido quede encima del fondo animado */
 }

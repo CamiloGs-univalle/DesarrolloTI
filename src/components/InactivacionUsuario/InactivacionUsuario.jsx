@@ -9,6 +9,7 @@ import { useState } from "react";
 import "./InactivacionUsuario.css";
 import FormInactivacion from "./FormInactivacion/FormInactivacion";
 import ModalCorreoInactivacion from "./FormInactivacion/ModalCorreoInactivacion";
+import FondoHomeAnimado from "../FondosAnimados/FondoHomeAnimado";
 
 export default function InactivacionUsuario() {
   const [formData, setFormData] = useState(null);
@@ -21,8 +22,10 @@ export default function InactivacionUsuario() {
   };
 
   return (
-    <div className="inactivacion-usuario-container">
-      {/* Formulario principal */}
+
+    <div className="inactivacion-container">
+
+      <FondoHomeAnimado />
       <FormInactivacion onSubmitSuccess={handleFormSubmit} />
 
       {/* Modal de confirmación */}
@@ -33,5 +36,6 @@ export default function InactivacionUsuario() {
         />
       )}
     </div>
+
   );
 }
