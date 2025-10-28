@@ -1,0 +1,40 @@
+/* 🌿 Fondo animado para formularios o pantallas principales */
+.canvas-fondo-formulario {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Contenedor del formulario (asegura que el contenido esté encima del fondo) */
+.form-container {
+  position: relative;
+  overflow: hidden;
+  background: transparent !important;
+}
+
+/* Contenido visible encima del canvas */
+.formulario {
+  position: relative;
+  z-index: 2;
+}
+
+/* Efecto de aparición sutil */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.formulario {
+  animation: fadeInUp 1.2s ease;
+}

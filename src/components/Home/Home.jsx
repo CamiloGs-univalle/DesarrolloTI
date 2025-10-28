@@ -3,6 +3,7 @@ import './Home.css';
 import UsuarioEquipo from '../UsuarioEquipo/UsuarioEquipo';
 import { auth, signInWithGoogle } from '../../firebase/authService';
 import InactivacionUsuario from '../InactivacionUsuario/InactivacionUsuario';
+import FondoHomeAnimado from '../FondosAnimados/FondoHomeAnimado';
 
 // Logger configurado para desarrollo
 const logger = {
@@ -114,7 +115,9 @@ export default function Home({ user }) {
 
   return (
     <div className="home-wrapper">
+
       <header className="app-header">
+        
         <h1 className="header-title">Solicitud al Área TI</h1>
         <div className="header-left">
           {user && (
@@ -193,6 +196,7 @@ export default function Home({ user }) {
           </div>
 
           <div className="form-panel">{renderView()}</div>
+      
         </div>
       </div>
     </div>
