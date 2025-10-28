@@ -5,6 +5,9 @@ import { db } from "../firebase/firebase";
 const URL_APPS_SCRIPT =
   "http://localhost:8020/proxy/macros/s/AKfycbzzbp9QRUdVwJb-QLI69M4l0cCPExJUYneq7b90mgwzJ1oCQWCDgnyHHQJZ1Exr0UmD/exec";
 
+const URL_USUARIOS_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwZlJ0VVKJT_b9cQKcZeopAlWf7D-E7l3q4CQy1k-opggNork0d1JPXcITwOQJX0rQ/exec';
+
+
 export async function enviarRespuesta(solicitud, textoRespuesta) {
   try {
     // 🧠 Detectar correctamente el nombre del usuario
