@@ -5,7 +5,9 @@
  */
 
 // USA ESTA URL (la que copiaste)
-const URL_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbwZlJ0VVKJT_b9cQKcZeopAlWf7D-E7l3q4CQy1k-opggNork0d1JPXcITwOQJX0rQ/exec';
+//const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwZlJ0VVKJT_b9cQKcZeopAlWf7D-E7l3q4CQy1k-opggNork0d1JPXcITwOQJX0rQ/exec';
+
+const URL_APPS_SCRIPT = '/api/proxy';
 
 export class GoogleSheetsService {
   

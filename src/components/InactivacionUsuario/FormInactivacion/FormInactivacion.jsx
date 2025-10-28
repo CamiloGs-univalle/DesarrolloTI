@@ -18,6 +18,7 @@ import { Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { useUsuarios } from "../../../hooks/useUsuarios";
 import { getLogoEmpresa } from "../../../LogoEmpresa/LogoEmpresa";
 import { enviarSolicitudCorreoinactivacio } from "../../../utils/sendEmailInactivacion"; // ✅ Importa la función corregida
+import FondoHomeAnimado from "../../FondosAnimados/FondoHomeAnimado.jsx";
 
 
 export default function FormInactivacion({ onSubmitSuccess }) {
@@ -122,8 +123,11 @@ export default function FormInactivacion({ onSubmitSuccess }) {
   // ============================================================
   return (
     <div className="form-container">
+      
       <form onSubmit={handleSubmit}>
+
         <div className="secciones">
+          
           {/* ===================================================== */}
           {/* 🟦 SECCIÓN IZQUIERDA - Datos del usuario */}
           {/* ===================================================== */}

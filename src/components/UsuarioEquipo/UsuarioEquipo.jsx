@@ -6,6 +6,7 @@ import UsuarioReemplazoForm from './Remplazo/UsuarioReemplazoForm';
 import CargoNuevoForm from './Nuevo_Cargo/CargoNuevoForm';
 import { guardarPeticionConUsuarioSiNoExiste } from '../../controllers/userController.js';
 import { enviarSolicitudCorreo } from '../../utils/sendEmail.js';
+import FondoHomeAnimado from '../FondosAnimados/FondoHomeAnimado.jsx';
 
 
 /**
@@ -218,6 +219,7 @@ export default function UsuarioEquipo() {
   // 8️⃣ RENDERIZADO DEL COMPONENTE
   return (
     <div className="form-container">
+      <FondoHomeAnimado />
       <form className="formulario" onSubmit={handleSubmit}>
 
         {/* 🎯 SELECTOR DE TIPO DE FORMULARIO */}
@@ -279,6 +281,7 @@ export default function UsuarioEquipo() {
             {loading ? '⏳ Enviando...' : '📤 Enviar Petición'}
           </button>
         </div>
+
 
         {/* ℹ️ INFORMACIÓN DE ESTADO */}
         {loading && (

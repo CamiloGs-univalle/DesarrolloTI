@@ -3,11 +3,10 @@
 // 🔗 URL del Apps Script para USUARIOS
 
 // ✅ URL pública de tu Apps Script desplegado como Web App
-//const URL_USUARIOS_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzCSRPqTvZWxbuaq8pRqbGlS-Bz2KMt3ZvkAHlRoS_XS_-KBmXrIvBTxpLnhGr_et0xlA/exec';
-
+const URL_USUARIOS_APPS_SCRIPT = '/api/proxy';
 
 //De forma host => 
-const URL_USUARIOS_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbwZlJ0VVKJT_b9cQKcZeopAlWf7D-E7l3q4CQy1k-opggNork0d1JPXcITwOQJX0rQ/exec';
+//const URL_USUARIOS_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbwZlJ0VVKJT_b9cQKcZeopAlWf7D-E7l3q4CQy1k-opggNork0d1JPXcITwOQJX0rQ/exec';
 
 /**
  * Envía datos de USUARIOS a Google Sheets usando Apps Script.

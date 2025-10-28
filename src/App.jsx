@@ -6,6 +6,7 @@ import { auth } from "./firebase/authService";
 import LoginPage from "./components/Login/LoginPage";
 import Home from "./components/Home/Home";
 import HomeTI from "./componentsTI/HomeTI/HomeTI";
+import PruebaGoogle from "./components/PruebaGoogle";
 
 
 export default function App() {
@@ -73,6 +74,8 @@ export default function App() {
             )
           }
         />
+        {/* DEFAULT */}
+        <Route path="/prueba" element={<PruebaGoogle/>} />
 
         {/* DEFAULT */}
         <Route path="*" element={<Navigate to="/" replace />} />

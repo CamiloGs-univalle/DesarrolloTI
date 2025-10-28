@@ -1,8 +1,8 @@
   .form-container {
-    max-width: 900px;
+    max-width: 2000px;
     margin: 0 auto;
     padding: 30px;
-    background-color: #dcdcdc;
+    background-color: #ff0000;
     border-radius: 10px;
     font-family: Arial, sans-serif;
   }
@@ -24,7 +24,7 @@
 
   /* Título */
   .titulo-seccion {
-    font-size: 16px;
+    font-size: 30px;
     font-weight: bold;
     margin-bottom: 15px;
     display: flex;
@@ -197,3 +197,4 @@
     color: white;
     border-color: #136f00;
   }
+  
