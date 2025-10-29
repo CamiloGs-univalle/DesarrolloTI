@@ -2,32 +2,31 @@
 // 📄 Componente: FormInactivacion.jsx
 // ----------------------------------------------------------------------------
 // ✅ Permite seleccionar un usuario existente y generar una solicitud
-//    de inactivación, guardándola en Firebase y Google Sheets, y
-//    abriendo un correo preformateado en Gmail.
+//    de inactivación, guardándola en Firebase y luego eliminándola.
+//    También abre el correo preformateado para el área de TI.
 // ----------------------------------------------------------------------------
 // 🔧 Dependencias:
 // - Material UI → Autocomplete, TextField, CircularProgress
-// - Hook personalizado useUsuarios → carga lista de usuarios desde Sheets
-// - Función getLogoEmpresa → muestra el logo de la empresa según correo/nombre
-// - enviarInactivacionCorreo → abre Gmail con los datos del usuario
-// - guardarPeticionConUsuarioSiNoExiste → guarda en Firebase + Sheets
+// - Hook useUsuarios → carga lista de usuarios desde Sheets
+// - getLogoEmpresa → obtiene el logo de la empresa
+// - enviarSolicitudCorreoinactivacio → abre Gmail con los datos del usuario
+// - guardarPeticionConUsuarioSiNoExiste → guarda la solicitud en Firebase
+// - deleteDoc, doc → eliminan la solicitud de Firebase
 // ============================================================================
 
 import { useState } from "react";
 import { Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { useUsuarios } from "../../../hooks/useUsuarios";
 import { getLogoEmpresa } from "../../../LogoEmpresa/LogoEmpresa";
-import { enviarSolicitudCorreoinactivacio } from "../../../utils/sendEmailInactivacion"; // ✅ Importa la función corregida
-import FondoHomeAnimado from "../../FondosAnimados/FondoHomeAnimado.jsx";
+import { enviarSolicitudCorreoinactivacio } from "../../../utils/sendEmailInactivacion";
+import { guardarPeticionConUsuarioSiNoExiste } from "../../../controllers/userController";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "../../../firebase/firebase"; // ✅ Asegúrate de tener tu config correcta
 
 
 export default function FormInactivacion({ onSubmitSuccess }) {
-  // ============================================================
-  // 🧩 1. Estado global del formulario
-  // ------------------------------------------------------------
-  // formData contiene todos los datos del usuario y del retiro.
-  // ============================================================
   const { usuarios, loading } = useUsuarios();
+
   const [formData, setFormData] = useState({
     nombre: "",
     cedula: "",
@@ -40,9 +39,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
   });
 
   // ============================================================
-  // ✏️ 2. Maneja los cambios manuales en los campos del formulario
-  // ------------------------------------------------------------
-  // Se actualiza el campo correspondiente en formData.
+  // ✏️ Manejo de cambios manuales
   // ============================================================
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,9 +47,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
   };
 
   // ============================================================
-  // 🔍 3. Rellena datos al seleccionar un usuario del Autocomplete
-  // ------------------------------------------------------------
-  // Carga automáticamente nombre, cédula, correo, etc.
+  // 🔍 Selección automática de usuario
   // ============================================================
   const handleUsuarioSeleccionado = (usuario) => {
     if (!usuario) return;
@@ -69,73 +64,102 @@ export default function FormInactivacion({ onSubmitSuccess }) {
   };
 
   // ============================================================
-  // 📤 4. Envía el formulario
-  // ------------------------------------------------------------
-  // 1️⃣ Valida los datos requeridos
-  // 2️⃣ Guarda la solicitud en Firebase + Sheets
-  // 3️⃣ Abre Gmail con la información del correo lista
+  // 📤 Envío del formulario (guardar → correo → eliminar)
   // ============================================================
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 🔸 Validación mínima antes de continuar
     if (!formData.nombre || !formData.fechaRetiro) {
       alert("Por favor completa el nombre y la fecha de retiro antes de enviar.");
       return;
     }
 
     try {
-      // 1️⃣ Crea los datos de la petición
-      const datosPeticion = {
-        tipo: "Inactivación",
-        estado: "Pendiente",
-        fechaRetiro: formData.fechaRetiro,
-        comentario: formData.comentario || "",
+      // 1️⃣ Datos del usuario
+      const usuarioData = {
+        nombre: formData.nombre,
+        cedula: formData.cedula,
+        correo: formData.correo,
+        cargo: formData.cargo,
+        empresa: formData.empresa,
+        ciudad: formData.ciudad,
+        proceso: "GESTION HUMANA",
       };
 
-      // 3️⃣ Genera el correo y abre Gmail
-      enviarSolicitudCorreoinactivacio(
-  "aprendiz.ti1@proservis.com.co,auxiliar.ti@proservis.com.co",
-  formData
-);
+      // 2️⃣ Datos de la petición
+      const peticionData = {
+        tipoSolicitud: "INACTIVACION",
+        fechaIngreso: formData.fechaRetiro,
+        comentario: formData.comentario,
+        solicitante: formData.nombre,
+        estado: "PENDIENTE",
+        sistemas: { solvix: false, tr3: false, sap: false, sortime: false },
+        usuarioReemplazar: {
+          nombre: formData.nombre,
+          correo: formData.correo,
+          celular: "",
+          equipo: formData.cargo,
+        },
+      };
 
-      // 4️⃣ Notifica al componente padre (si lo hay)
+      console.log("📦 Enviando datos a Firebase (INACTIVACION)...", {
+        usuarioData,
+        peticionData,
+      });
+
+      // 3️⃣ Guardar en Firebase
+      const resultado = await guardarPeticionConUsuarioSiNoExiste(
+        usuarioData,
+        peticionData
+      );
+
+      if (resultado.success && resultado.id) {
+        console.log("🟢 Solicitud guardada con ID:", resultado.id);
+      } else {
+        console.warn("⚠️ No se devolvió ID desde Firebase.");
+      }
+
+      // 4️⃣ Enviar el correo
+      enviarSolicitudCorreoinactivacio(
+        "aprendiz.ti1@proservis.com.co,auxiliar.ti@proservis.com.co",
+        formData
+      );
+
+      // 5️⃣ Eliminar la solicitud guardada en Firebase (después de procesarla)
+      if (resultado.success && resultado.id) {
+        await deleteDoc(doc(db, "peticiones", resultado.id));
+        console.log("🗑️ Solicitud eliminada de Firebase correctamente.");
+      }
+
+      // 6️⃣ Notificar éxito
+      alert("✅ Solicitud de inactivación enviada y eliminada correctamente.");
       if (onSubmitSuccess) onSubmitSuccess(formData);
 
+
     } catch (error) {
-      console.error("❌ Error en el proceso de inactivación:", error);
-      alert("Ocurrió un error al guardar o generar el correo.");
+      console.error("❌ Error en la solicitud de inactivación:", error);
+      alert("Ocurrió un error al procesar la solicitud en Firebase.");
     }
   };
 
   // ============================================================
-  // 🏢 5. Obtiene el logo de la empresa según correo o nombre
+  // 🏢 Logo de la empresa
   // ============================================================
   const logoEmpresa =
     getLogoEmpresa(formData.empresa) || getLogoEmpresa(formData.correo);
 
   // ============================================================
-  // 🧱 6. Renderizado visual del formulario
-  // ------------------------------------------------------------
-  // El formulario está dividido en dos secciones:
-  // - Izquierda: usuario, cédula, cargo y logo
-  // - Derecha: datos adicionales, fecha y comentario
+  // 🧱 Renderizado del formulario
   // ============================================================
   return (
     <div className="form-container">
-      
       <form onSubmit={handleSubmit}>
-
         <div className="secciones">
-          
-          {/* ===================================================== */}
-          {/* 🟦 SECCIÓN IZQUIERDA - Datos del usuario */}
-          {/* ===================================================== */}
+          {/* 🟦 SECCIÓN IZQUIERDA */}
           <div className="seccion">
             <div className="titulo-seccion"><span>Usuario</span></div>
 
             <div className="grupo-campos">
-              {/* 🔸 Campo de búsqueda de usuario */}
               <label>Buscar usuario</label>
               <div className="campo_autocomplete">
                 {loading ? (
@@ -146,37 +170,22 @@ export default function FormInactivacion({ onSubmitSuccess }) {
                     getOptionLabel={(option) => option["NOMBRE / APELLIDO"] || ""}
                     onChange={(e, val) => handleUsuarioSeleccionado(val)}
                     renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        placeholder="Escribe el nombre del usuario"
-                        fullWidth
-                      />
+                      <TextField {...params} placeholder="Escribe el nombre del usuario" fullWidth />
                     )}
                   />
                 )}
               </div>
 
-              {/* 🔸 Cédula */}
               <div className="campo">
                 <label>Cédula</label>
-                <input
-                  name="cedula"
-                  value={formData.cedula}
-                  onChange={handleChange}
-                />
+                <input name="cedula" value={formData.cedula} onChange={handleChange} />
               </div>
 
-              {/* 🔸 Cargo */}
               <div className="campo">
                 <label>Cargo</label>
-                <input
-                  name="cargo"
-                  value={formData.cargo}
-                  onChange={handleChange}
-                />
+                <input name="cargo" value={formData.cargo} onChange={handleChange} />
               </div>
 
-              {/* 🔸 Logo de empresa */}
               {logoEmpresa && (
                 <div className="campo logo-empresa">
                   <img src={logoEmpresa} alt="logo empresa" width="180" />
@@ -185,55 +194,31 @@ export default function FormInactivacion({ onSubmitSuccess }) {
             </div>
           </div>
 
-          {/* ===================================================== */}
-          {/* 🟩 SECCIÓN DERECHA - Datos adicionales */}
-          {/* ===================================================== */}
+          {/* 🟩 SECCIÓN DERECHA */}
           <div className="seccion">
             <div className="titulo-seccion"><span>Datos Usuario</span></div>
+
             <div className="grupo-campos">
-              {/* 🔸 Ciudad */}
               <div className="campo">
                 <label>Ciudad</label>
-                <input
-                  name="ciudad"
-                  value={formData.ciudad}
-                  onChange={handleChange}
-                />
+                <input name="ciudad" value={formData.ciudad} onChange={handleChange} />
               </div>
 
-              {/* 🔸 Correo */}
               <div className="campo">
                 <label>Correo</label>
-                <input
-                  type="email"
-                  name="correo"
-                  value={formData.correo}
-                  onChange={handleChange}
-                />
+                <input type="email" name="correo" value={formData.correo} onChange={handleChange} />
               </div>
 
-              {/* 🔸 Empresa */}
               <div className="campo">
                 <label>Empresa</label>
-                <input
-                  name="empresa"
-                  value={formData.empresa}
-                  onChange={handleChange}
-                />
+                <input name="empresa" value={formData.empresa} onChange={handleChange} />
               </div>
 
-              {/* 🔸 Fecha de retiro */}
               <div className="campo">
                 <label>Fecha Retiro</label>
-                <input
-                  type="date"
-                  name="fechaRetiro"
-                  value={formData.fechaRetiro}
-                  onChange={handleChange}
-                />
+                <input type="date" name="fechaRetiro" value={formData.fechaRetiro} onChange={handleChange} />
               </div>
 
-              {/* 🔸 Comentario adicional */}
               <div className="campo campo-full">
                 <label>Comentario</label>
                 <textarea
@@ -248,9 +233,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
           </div>
         </div>
 
-        {/* ===================================================== */}
-        {/* 🟨 BOTÓN FINAL DE ENVÍO */}
-        {/* ===================================================== */}
+        {/* BOTÓN DE ENVÍO */}
         <div className="submit-container">
           <button type="submit" className="enviar-btn">
             Enviar solicitud

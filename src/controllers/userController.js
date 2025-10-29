@@ -1,19 +1,19 @@
-// controllers/guardarPeticionConUsuarioSiNoExiste.js
-import { doc, setDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { doc, setDoc, collection, getDocs, query, where, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
-
-// 🔁 Funciones para enviar datos a Google Sheets
 import { enviarUsuarioAAppsScript } from '../services/UserGoogleExcel';
 import { enviarPeticionAAppsScript } from '../services/PeticionGoogleExcel';
 
 /**
- * Guarda una petición en Firestore y la envía a Google Sheets.
- * Si el usuario no existe, lo crea con formato EXACTO al de la hoja.
+ * Guarda una petición en Firestore y, según el tipo, la envía a Google Sheets.
+ * Si el usuario no existe, lo crea y lo envía también a Sheets.
+ * 
+ * ⚙️ Lógica adicional:
+ * - Las peticiones de tipo "INACTIVACION" y "USUARIO Y EQUIPO" se eliminan de Firebase tras ser enviadas.
  */
 export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
   try {
     const cedulaStr = usuario.cedula?.toString().trim();
-    console.log('📌 Verificando usuario con CEDULA:', cedulaStr);
+    console.log('📌 Verificando usuario con CÉDULA:', cedulaStr);
 
     // 1️⃣ Verificar si el usuario ya existe
     const q = query(collection(db, 'usuarios'), where('CEDULA', '==', cedulaStr));
@@ -47,6 +47,7 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
       usuarioId = usuarioRef.id;
       usuarioCreado = true;
 
+      // Enviar usuario nuevo a Google Sheets
       await enviarUsuarioAAppsScript({
         action: 'nuevo_usuario',
         ...usuarioFormato
@@ -54,32 +55,20 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
 
       console.log('✅ Usuario creado y enviado a Google Sheets:', nombreID);
     } else {
-      console.log('✅ Usuario YA existe en Firebase');
       usuarioId = snapshot.docs[0].id;
+      console.log('✅ Usuario YA existe en Firebase');
     }
 
-    /**
-     * 2️⃣ FECHA SIN DESFASE
-     * Si el usuario envía la fecha manualmente, la usamos directamente (dd-mm-aaaa o yyyy-mm-dd).
-     * Si no la envía, usamos la fecha actual.
-     */
+    // 2️⃣ Normalizar fecha (dd-mm-yyyy)
     let fechaFormateada = "";
     if (peticion.fechaIngreso) {
-      // Si viene tipo "2025-10-24" → la convertimos a "24-10-2025"
       const partes = peticion.fechaIngreso.split("-");
       if (partes.length === 3) {
-        if (partes[0].length === 4) {
-          // formato yyyy-mm-dd
-          fechaFormateada = `${partes[2]}-${partes[1]}-${partes[0]}`;
-        } else {
-          // ya viene como dd-mm-aaaa
-          fechaFormateada = peticion.fechaIngreso;
-        }
-      } else {
-        fechaFormateada = peticion.fechaIngreso;
-      }
+        fechaFormateada = (partes[0].length === 4)
+          ? `${partes[2]}-${partes[1]}-${partes[0]}`
+          : peticion.fechaIngreso;
+      } else fechaFormateada = peticion.fechaIngreso;
     } else {
-      // si no envían fecha, se genera la actual en zona Colombia
       const ahora = new Date();
       const dia = String(ahora.getDate()).padStart(2, '0');
       const mes = String(ahora.getMonth() + 1).padStart(2, '0');
@@ -87,18 +76,16 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
       fechaFormateada = `${dia}-${mes}-${año}`;
     }
 
-    // 🔢 3️⃣ Generar contador por día
+    // 3️⃣ Generar contador diario
     const peticionesRef = collection(db, 'peticiones');
     const queryDia = query(peticionesRef, where('fechaIngreso', '==', fechaFormateada));
     const snapshotPeticiones = await getDocs(queryDia);
+    const contadorFormateado = String(snapshotPeticiones.size + 1).padStart(2, '0');
 
-    const contador = snapshotPeticiones.size + 1;
-    const contadorFormateado = String(contador).padStart(2, '0');
-
-    // 🆔 ID final con formato dd-mm-aaaa-XX
+    // 🆔 ID final (ej: 29-10-2025-03)
     const idPeticion = `${fechaFormateada}-${contadorFormateado}`;
 
-    // 4️⃣ Crear la petición
+    // 4️⃣ Estructura final de la petición
     const nuevaPeticion = {
       ...peticion,
       fechaIngreso: fechaFormateada,
@@ -109,32 +96,67 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
       "FECHA": new Date().toISOString(),
       "CONTADOR": contadorFormateado,
       "TIMESTAMP": Date.now(),
+      "estado": "PENDIENTE"
     };
 
-    // 🗂️ Guardar la petición en Firebase
+    // 🗂️ 5️⃣ Guardar en Firebase
     const peticionRef = doc(db, 'peticiones', idPeticion);
     await setDoc(peticionRef, nuevaPeticion);
+    console.log(`✅ Petición guardada temporalmente en Firebase con ID: ${idPeticion}`);
 
-    // 📤 Enviar a Google Sheets
-    await enviarPeticionAAppsScript({
-      action: 'nueva_peticion',
-      fechaIngreso: fechaFormateada,
-      cedula: usuario.cedula,
-      nombre: usuario.nombre,
-      correo: usuario.correo,
-      cargo: usuario.cargo,
-      empresa: usuario.empresa,
-      ciudad: usuario.ciudad,
-      observacion: peticion.observacion || "",
-      id: idPeticion,
-      tipo: 'USUARIO Y EQUIPO',
-    });
+    // 🧩 6️⃣ Detectar el tipo de solicitud
+    const tipo = peticion.tipoSolicitud?.toUpperCase() || "";
 
-    console.log('✅ Petición enviada a Google Sheets con ID:', idPeticion);
+    // 🚫 Si es "INACTIVACION" o "USUARIO Y EQUIPO"
+    if (tipo === "INACTIVACION" || tipo === "USUARIO Y EQUIPO") {
+      console.log(`⚠️ Petición de tipo "${tipo}" detectada.`);
+
+      // ✅ Enviar primero a Sheets
+      await enviarPeticionAAppsScript({
+        action: 'nueva_peticion',
+        fechaIngreso: fechaFormateada,
+        cedula: usuario.cedula,
+        nombre: usuario.nombre,
+        correo: usuario.correo,
+        cargo: usuario.cargo,
+        empresa: usuario.empresa,
+        ciudad: usuario.ciudad,
+        observacion: peticion.observacion || "",
+        id: idPeticion,
+        tipo: tipo
+      });
+
+      console.log(`📤 Petición ${tipo} enviada correctamente a Google Sheets.`);
+
+      // 🧹 Eliminar de Firebase después de enviarla
+      try {
+        await deleteDoc(doc(db, "peticiones", idPeticion));
+        console.log(`🗑️ Petición "${idPeticion}" eliminada correctamente de Firebase.`);
+      } catch (error) {
+        console.error("❌ Error al eliminar la petición de Firebase:", error);
+      }
+    } else {
+      // 🟢 7️⃣ Otros tipos (solo enviar a Sheets)
+      await enviarPeticionAAppsScript({
+        action: 'nueva_peticion',
+        fechaIngreso: fechaFormateada,
+        cedula: usuario.cedula,
+        nombre: usuario.nombre,
+        correo: usuario.correo,
+        cargo: usuario.cargo,
+        empresa: usuario.empresa,
+        ciudad: usuario.ciudad,
+        observacion: peticion.observacion || "",
+        id: idPeticion,
+        tipo: tipo || "OTRO"
+      });
+
+      console.log('✅ Petición enviada a Google Sheets con ID:', idPeticion);
+    }
 
     return {
       success: true,
-      message: 'Petición y usuario guardados correctamente en Firestore y Sheets',
+      message: 'Petición guardada y procesada correctamente',
       usuarioId,
       peticionId: idPeticion,
       usuarioCreado
