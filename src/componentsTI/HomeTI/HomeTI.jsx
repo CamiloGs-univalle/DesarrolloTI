@@ -11,6 +11,12 @@ export default function HomeTI({ user }) {
   const [solicitudes, setSolicitudes] = useState([]);
   const [seleccionada, setSeleccionada] = useState(null);
 
+  // 🔹 Función para eliminar la solicitud de la lista cuando RespuestaSolicitud la elimina de Firebase
+  const handleEliminada = (id) => {
+    setSolicitudes(prev => prev.filter(s => s.id !== id));
+    setSeleccionada(null);
+  };
+
   useEffect(() => {
     const obtenerSolicitudes = async () => {
       try {
@@ -59,7 +65,10 @@ export default function HomeTI({ user }) {
           {seleccionada ? (
             <div className="detalle-y-respuesta">
               <DetalleSolicitud solicitud={seleccionada} />
-              <RespuestaSolicitud solicitud={seleccionada} />
+              <RespuestaSolicitud
+                solicitud={seleccionada}
+                onEliminada={handleEliminada} // <-- aquí pasamos la función
+              />
             </div>
           ) : (
             <div className="detalle-vacio">

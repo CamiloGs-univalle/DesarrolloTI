@@ -125,11 +125,16 @@ export default function FormInactivacion({ onSubmitSuccess }) {
         formData
       );
 
+      // ✅ No es necesario borrar manualmente: ya se elimina en guardarPeticionConUsuarioSiNoExiste()
+      alert("✅ Solicitud de inactivación enviada y eliminada correctamente.");
+
+
       // 5️⃣ Eliminar la solicitud guardada en Firebase (después de procesarla)
-      if (resultado.success && resultado.id) {
-        await deleteDoc(doc(db, "peticiones", resultado.id));
-        console.log("🗑️ Solicitud eliminada de Firebase correctamente.");
+      if (resultado.success && resultado.peticionId) {
+        await deleteDoc(doc(db, "peticiones", resultado.peticionId));
+        console.log(`🗑️ Solicitud "${resultado.peticionId}" eliminada de Firebase correctamente.`);
       }
+
 
       // 6️⃣ Notificar éxito
       alert("✅ Solicitud de inactivación enviada y eliminada correctamente.");
