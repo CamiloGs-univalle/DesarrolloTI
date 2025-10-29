@@ -1,23 +1,10 @@
 {
-  "//": [
-    "📦 CONFIGURACIÓN UNIVERSAL DE DESPLIEGUE Y HOSTEO",
-    "-------------------------------------------------",
-    "Este archivo permite ejecutar el mismo proyecto:",
-    "✅ En desarrollo local (host con npm run dev)",
-    "✅ En producción (Vercel con funciones serverless)",
-    "",
-    "👉 No necesitas cambiar URLs entre entornos.",
-    "👉 Los endpoints /api/* funcionan igual localmente y en Vercel."
-  ],
-
   "version": 2,
-
   "functions": {
     "api/**/*.js": {
       "runtime": "nodejs20.x"
     }
   },
-
   "builds": [
     {
       "src": "api/**/*.js",
@@ -28,7 +15,6 @@
       "use": "@vercel/static-build"
     }
   ],
-
   "routes": [
     {
       "src": "/api/(.*)",
