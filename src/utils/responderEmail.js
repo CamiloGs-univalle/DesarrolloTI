@@ -2,10 +2,9 @@
 import { collection, updateDoc, doc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
-//const URL_APPS_SCRIPT =
-  "http://localhost:8020/proxy/macros/s/AKfycbzzbp9QRUdVwJb-QLI69M4l0cCPExJUYneq7b90mgwzJ1oCQWCDgnyHHQJZ1Exr0UmD/exec";
+//const URL_APPS_SCRIPT ="http://localhost:8020/proxy/macros/s/AKfycbzzbp9QRUdVwJb-QLI69M4l0cCPExJUYneq7b90mgwzJ1oCQWCDgnyHHQJZ1Exr0UmD/exec";
 
-const URL_APPS_SCRIPT = '/api/proxy';
+const URL_APPS_SCRIPT = '/api/proxyEmail';
 
 export async function enviarRespuesta(solicitud, textoRespuesta) {
   try {
