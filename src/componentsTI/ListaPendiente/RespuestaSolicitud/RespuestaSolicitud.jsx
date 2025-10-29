@@ -1,59 +1,52 @@
 import React, { useEffect, useState } from "react";
 import { doc, deleteDoc } from "firebase/firestore";
-import { db } from "../../../firebase/firebase"; // ajusta la ruta según tu estructura
+import { db } from "../../../firebase/firebase";
 import { enviarRespuesta } from "../../../utils/responderEmail";
-
 import "./RespuestaSolicitud.css";
 
 export default function RespuestaSolicitud({ solicitud, onEliminada }) {
   const [respuesta, setRespuesta] = useState("");
 
   useEffect(() => {
-    if (solicitud) {
-      const correo =
-        solicitud?.usuarioReemplazar?.correo ||
-        solicitud?.correo ||
-        "CORREO";
-      const cedula =
-        solicitud?.usuarioReemplazar?.cedula ||
-        solicitud?.cedula ||
-        solicitud?.CEDULA_USUARIO ||
-        "CEDULA";
-      const nombre =
-        solicitud?.usuarioReemplazar?.nombre ||
-        solicitud?.nombre ||
-        solicitud?.NOMBRE_USUARIO ||
-        "USUARIO";
+    if (!solicitud) return;
 
-      let ultimos4 = "****";
-      if (cedula && cedula.length >= 4) {
-        ultimos4 = cedula.slice(-4);
-      }
+    const correo =
+      solicitud?.usuarioReemplazar?.correo ||
+      solicitud?.correo ||
+      "CORREO";
+    const cedula =
+      solicitud?.usuarioReemplazar?.cedula ||
+      solicitud?.cedula ||
+      solicitud?.CEDULA_USUARIO ||
+      "CEDULA";
 
-      const texto = `Buen día.
+    let ultimos4 = "****";
+    if (cedula && cedula.length >= 4) {
+      ultimos4 = cedula.slice(-4);
+    }
+
+    const texto = `Buen día.
 Adjunto credenciales del usuario en mención. Por favor compartir a quien corresponda.<br><br>
 
-    <p><strong>CORREO:</strong> ${correo}</p>
-    <p><strong>CONTRASEÑA:</strong></p>
+<p><strong>CORREO:</strong> ${correo}</p>
+<p><strong>CONTRASEÑA:</strong></p>
 
-    <p><strong>HELPDESK:</strong> ${correo}</p>
-    <p><strong>CONTRASEÑA:</strong> ${cedula}</p>
+<p><strong>HELPDESK:</strong> ${correo}</p>
+<p><strong>CONTRASEÑA:</strong> ${cedula}</p>
 
-    <p><strong>TR3:</strong> ${correo}</p>
-    <p><strong>CONTRASEÑA:</strong> ${cedula}</p>
+<p><strong>TR3:</strong> ${correo}</p>
+<p><strong>CONTRASEÑA:</strong> ${cedula}</p>
 
-    <p><strong>SORTTIME:</strong> ${cedula}</p>
-    <p><strong>CONTRASEÑA:</strong> ${ultimos4}</p>
+<p><strong>SORTTIME:</strong> ${cedula}</p>
+<p><strong>CONTRASEÑA:</strong> ${ultimos4}</p>
 
 <br>
 Quedo atento a cualquier inquietud.<br>
 Muchas gracias.`;
 
-      setRespuesta(texto);
-    }
+    setRespuesta(texto);
   }, [solicitud]);
 
-  // 🧩 Enviar correo y eliminar solicitud
   const handleEnviar = async () => {
     if (!solicitud?.id) {
       alert("⚠️ Falta el ID del documento en Firebase.");
@@ -64,10 +57,10 @@ Muchas gracias.`;
       const ok = await enviarRespuesta(solicitud, respuesta);
 
       if (ok) {
-        // 🔹 Eliminar la solicitud de Firestore
+        // 🔹 Elimina de Firebase
         await deleteDoc(doc(db, "solicitudes", solicitud.id));
-        console.log(`✅ Solicitud ${solicitud.id} eliminada correctamente.`);
 
+        // 🔹 Actualiza la lista en el componente padre
         if (onEliminada) onEliminada(solicitud.id);
 
         setRespuesta("");
@@ -92,7 +85,7 @@ Muchas gracias.`;
 
       <div className="botones">
         <button className="btn-enviar" onClick={handleEnviar}>
-          Enviar
+          Enviar y Eliminar
         </button>
       </div>
     </div>
