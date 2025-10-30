@@ -8,7 +8,7 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
   try {
     const cedulaStr = usuario.cedula?.toString().trim();
 
-    // 1) verificar usuario...
+    // 1️⃣ Buscar usuario existente por cédula
     const q = query(collection(db, 'usuarios'), where('CEDULA', '==', cedulaStr));
     const snapshot = await getDocs(q);
 
@@ -16,7 +16,7 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
     let usuarioCreado = false;
 
     if (snapshot.empty) {
-      // crear usuario (igual que antes)
+      // Crear usuario si no existe
       const usuarioFormato = {
         "CARGO": usuario.cargo?.toUpperCase() || "",
         "CEDULA": cedulaStr,
@@ -46,7 +46,7 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
       usuarioId = snapshot.docs[0].id;
     }
 
-    // 2) fechaFormateada
+    // 2️⃣ Formatear fecha de ingreso
     let fechaFormateada = "";
     if (peticion.fechaIngreso) {
       const partes = peticion.fechaIngreso.split("-");
@@ -63,16 +63,14 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
       fechaFormateada = `${dia}-${mes}-${año}`;
     }
 
-    // 3) contador diario
+    // 3️⃣ Contador diario
     const peticionesRef = collection(db, 'peticiones');
     const queryDia = query(peticionesRef, where('fechaIngreso', '==', fechaFormateada));
     const snapshotPeticiones = await getDocs(queryDia);
     const contadorFormateado = String(snapshotPeticiones.size + 1).padStart(2, '0');
-
-    // id final
     const idPeticion = `${fechaFormateada}-${contadorFormateado}`;
 
-    // estructura final
+    // 4️⃣ Crear estructura final de la petición
     const nuevaPeticion = {
       ...peticion,
       fechaIngreso: fechaFormateada,
@@ -86,15 +84,12 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
       "estado": "PENDIENTE"
     };
 
-    // guardar en Firebase con idPeticion
     const peticionRef = doc(db, 'peticiones', idPeticion);
     await setDoc(peticionRef, nuevaPeticion);
     console.log(`✅ Petición guardada en Firebase con ID: ${idPeticion}`);
 
-    // detectar tipo y enviar a Sheets (ahora enviamos 'id' tambien)
+    // 5️⃣ Enviar la petición a Google Sheets
     const tipo = peticion.tipoSolicitud?.toUpperCase() || "";
-
-    // preparar payload para Apps Script con ID consistente
     const payload = {
       action: 'nueva_peticion',
       id: idPeticion,
@@ -112,8 +107,24 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
     await enviarPeticionAAppsScript(payload);
     console.log(`📤 Petición enviada a Google Sheets con ID: ${idPeticion}`);
 
-    // Si tipo INACTIVACION o USUARIO Y EQUIPO -> eliminar de Firebase después de enviarla (si así lo deseas)
-    if (tipo === "INACTIVACION" || tipo === "USUARIO Y EQUIPO") {
+    // 6️⃣ Si es una inactivación → eliminar usuario de "usuarios"
+    if (tipo === "INACTIVACION") {
+      try {
+        const usuarioEliminarQuery = query(collection(db, 'usuarios'), where('CEDULA', '==', cedulaStr));
+        const usuarioSnapshot = await getDocs(usuarioEliminarQuery);
+
+        if (!usuarioSnapshot.empty) {
+          const usuarioDoc = usuarioSnapshot.docs[0];
+          await deleteDoc(doc(db, 'usuarios', usuarioDoc.id));
+          console.log(`🗑️ Usuario ${usuarioDoc.id} eliminado permanentemente de "usuarios".`);
+        } else {
+          console.warn(`⚠️ No se encontró el usuario con cédula ${cedulaStr} para eliminar.`);
+        }
+      } catch (error) {
+        console.error("❌ Error eliminando usuario de Firestore:", error);
+      }
+
+      // Eliminar la petición después de procesarla (opcional)
       try {
         await deleteDoc(doc(db, "peticiones", idPeticion));
         console.log(`🗑️ Petición "${idPeticion}" eliminada correctamente de Firebase.`);
