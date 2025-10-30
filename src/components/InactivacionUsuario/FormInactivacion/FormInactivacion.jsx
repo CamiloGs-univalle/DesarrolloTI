@@ -2,8 +2,8 @@
 // 📄 Componente: FormInactivacion.jsx
 // ----------------------------------------------------------------------------
 // ✅ Permite seleccionar un usuario existente y generar una solicitud
-//    de inactivación, guardándola en Firebase y luego eliminándola.
-//    También abre el correo preformateado para el área de TI.
+//    de inactivación, guardándola en Firebase para que el área de TI
+//    la procese posteriormente.
 // ----------------------------------------------------------------------------
 // 🔧 Dependencias:
 // - Material UI → Autocomplete, TextField, CircularProgress
@@ -11,7 +11,6 @@
 // - getLogoEmpresa → obtiene el logo de la empresa
 // - enviarSolicitudCorreoinactivacio → abre Gmail con los datos del usuario
 // - guardarPeticionConUsuarioSiNoExiste → guarda la solicitud en Firebase
-// - deleteDoc, doc → eliminan la solicitud de Firebase
 // ============================================================================
 
 import { useState } from "react";
@@ -20,8 +19,6 @@ import { useUsuarios } from "../../../hooks/useUsuarios";
 import { getLogoEmpresa } from "../../../LogoEmpresa/LogoEmpresa";
 import { enviarSolicitudCorreoinactivacio } from "../../../utils/sendEmailInactivacion";
 import { guardarPeticionConUsuarioSiNoExiste } from "../../../controllers/userController";
-
-
 
 export default function FormInactivacion({ onSubmitSuccess }) {
   const { usuarios, loading } = useUsuarios();
@@ -36,6 +33,8 @@ export default function FormInactivacion({ onSubmitSuccess }) {
     fechaRetiro: "",
     comentario: "",
   });
+
+  const [enviando, setEnviando] = useState(false);
 
   // ============================================================
   // ✏️ Manejo de cambios manuales
@@ -63,7 +62,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
   };
 
   // ============================================================
-  // 📤 Envío del formulario (guardar → correo → eliminar)
+  // 📤 Envío del formulario (guardar → correo)
   // ============================================================
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,6 +71,8 @@ export default function FormInactivacion({ onSubmitSuccess }) {
       alert("Por favor completa el nombre y la fecha de retiro antes de enviar.");
       return;
     }
+
+    setEnviando(true);
 
     try {
       // 1️⃣ Datos del usuario
@@ -92,12 +93,18 @@ export default function FormInactivacion({ onSubmitSuccess }) {
         comentario: formData.comentario,
         solicitante: formData.nombre,
         estado: "PENDIENTE",
-        sistemas: { solvix: false, tr3: false, sap: false, sortime: false },
+        sistemas: { 
+          solvix: false, 
+          tr3: false, 
+          sap: false, 
+          sortime: false 
+        },
         usuarioReemplazar: {
           nombre: formData.nombre,
           correo: formData.correo,
           celular: "",
           equipo: formData.cargo,
+          cedula: formData.cedula // ✅ Agregar cédula aquí para referencia
         },
       };
 
@@ -106,36 +113,50 @@ export default function FormInactivacion({ onSubmitSuccess }) {
         peticionData,
       });
 
-      // 3️⃣ Guardar en Firebase
+      // 3️⃣ Guardar en Firebase (NO se elimina automáticamente)
       const resultado = await guardarPeticionConUsuarioSiNoExiste(
         usuarioData,
         peticionData
       );
 
-      if (resultado.success && resultado.id) {
-        console.log("🟢 Solicitud guardada con ID:", resultado.id);
+      if (resultado.success) {
+        console.log("✅ Solicitud de inactivación guardada correctamente:", resultado);
+        
+        // 4️⃣ Enviar el correo de notificación
+        enviarSolicitudCorreoinactivacio(
+          "aprendiz.ti1@proservis.com.co,auxiliar.ti@proservis.com.co",
+          formData
+        );
+
+        // 5️⃣ Limpiar formulario
+        setFormData({
+          nombre: "",
+          cedula: "",
+          ciudad: "",
+          correo: "",
+          cargo: "",
+          empresa: "",
+          fechaRetiro: "",
+          comentario: "",
+        });
+
+        // 6️⃣ Notificar éxito
+        alert("✅ Solicitud de inactivación enviada correctamente. El área de TI la procesará próximamente.");
+
+        // 7️⃣ Notificar al componente padre si es necesario
+        if (onSubmitSuccess) {
+          onSubmitSuccess(resultado);
+        }
+
       } else {
-        console.warn("⚠️ No se devolvió ID desde Firebase.");
+        throw new Error(resultado.message || "Error al guardar la solicitud");
       }
-
-      // 4️⃣ Enviar el correo
-      enviarSolicitudCorreoinactivacio(
-        "aprendiz.ti1@proservis.com.co,auxiliar.ti@proservis.com.co",
-        formData
-      );
-
-      // ✅ No es necesario borrar manualmente: ya se elimina en guardarPeticionConUsuarioSiNoExiste()
-      alert("✅ Solicitud de inactivación enviada y eliminada correctamente.");
-
-
-      // 6️⃣ Notificar éxito
-      alert("✅ Solicitud de inactivación enviada y eliminada correctamente.");
-      if (onSubmitSuccess) onSubmitSuccess(formData);
-
 
     } catch (error) {
       console.error("❌ Error en la solicitud de inactivación:", error);
-      alert("Ocurrió un error al procesar la solicitud en Firebase.");
+      alert(`Error al procesar la solicitud: ${error.message}`);
+    } finally {
+      setEnviando(false);
     }
   };
 
@@ -167,7 +188,11 @@ export default function FormInactivacion({ onSubmitSuccess }) {
                     getOptionLabel={(option) => option["NOMBRE / APELLIDO"] || ""}
                     onChange={(e, val) => handleUsuarioSeleccionado(val)}
                     renderInput={(params) => (
-                      <TextField {...params} placeholder="Escribe el nombre del usuario" fullWidth />
+                      <TextField 
+                        {...params} 
+                        placeholder="Escribe el nombre del usuario" 
+                        fullWidth 
+                      />
                     )}
                   />
                 )}
@@ -175,12 +200,22 @@ export default function FormInactivacion({ onSubmitSuccess }) {
 
               <div className="campo">
                 <label>Cédula</label>
-                <input name="cedula" value={formData.cedula} onChange={handleChange} />
+                <input 
+                  name="cedula" 
+                  value={formData.cedula} 
+                  onChange={handleChange} 
+                  readOnly 
+                />
               </div>
 
               <div className="campo">
                 <label>Cargo</label>
-                <input name="cargo" value={formData.cargo} onChange={handleChange} />
+                <input 
+                  name="cargo" 
+                  value={formData.cargo} 
+                  onChange={handleChange} 
+                  readOnly 
+                />
               </div>
 
               {logoEmpresa && (
@@ -198,22 +233,44 @@ export default function FormInactivacion({ onSubmitSuccess }) {
             <div className="grupo-campos">
               <div className="campo">
                 <label>Ciudad</label>
-                <input name="ciudad" value={formData.ciudad} onChange={handleChange} />
+                <input 
+                  name="ciudad" 
+                  value={formData.ciudad} 
+                  onChange={handleChange} 
+                  readOnly 
+                />
               </div>
 
               <div className="campo">
                 <label>Correo</label>
-                <input type="email" name="correo" value={formData.correo} onChange={handleChange} />
+                <input 
+                  type="email" 
+                  name="correo" 
+                  value={formData.correo} 
+                  onChange={handleChange} 
+                  readOnly 
+                />
               </div>
 
               <div className="campo">
                 <label>Empresa</label>
-                <input name="empresa" value={formData.empresa} onChange={handleChange} />
+                <input 
+                  name="empresa" 
+                  value={formData.empresa} 
+                  onChange={handleChange} 
+                  readOnly 
+                />
               </div>
 
               <div className="campo">
-                <label>Fecha Retiro</label>
-                <input type="date" name="fechaRetiro" value={formData.fechaRetiro} onChange={handleChange} />
+                <label>Fecha Retiro *</label>
+                <input 
+                  type="date" 
+                  name="fechaRetiro" 
+                  value={formData.fechaRetiro} 
+                  onChange={handleChange} 
+                  required 
+                />
               </div>
 
               <div className="campo campo-full">
@@ -232,8 +289,12 @@ export default function FormInactivacion({ onSubmitSuccess }) {
 
         {/* BOTÓN DE ENVÍO */}
         <div className="submit-container">
-          <button type="submit" className="enviar-btn">
-            Enviar solicitud
+          <button 
+            type="submit" 
+            className="enviar-btn"
+            disabled={enviando}
+          >
+            {enviando ? "Enviando..." : "Enviar solicitud"}
           </button>
         </div>
       </form>
