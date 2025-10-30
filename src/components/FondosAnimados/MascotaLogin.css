@@ -12,26 +12,11 @@
   box-shadow: 0 0 12px rgba(0, 255, 100, 0.25),
               inset 0 0 12px rgba(0, 255, 100, 0.1);
   backdrop-filter: blur(6px);
-  transition: transform 0.2s ease-in-out, box-shadow 0.3s ease;
   cursor: pointer;
   z-index: 15;
   animation: glowPulse 4s ease-in-out infinite;
 }
 
-@keyframes glowPulse {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(0, 255, 100, 0.25),
-                inset 0 0 8px rgba(0, 255, 100, 0.1);
-  }
-  50% {
-    box-shadow: 0 0 16px rgba(0, 255, 120, 0.4),
-                inset 0 0 14px rgba(0, 255, 100, 0.2);
-  }
-}
-
-.mascota-login:hover {
-  transform: scale(1.05);
-}
 
 /* 👀 Ojo */
 .ojo {
