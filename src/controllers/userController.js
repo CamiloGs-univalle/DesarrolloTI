@@ -1,22 +1,45 @@
-// guardarPeticionConUsuarioSiNoExiste.js
-import { doc, setDoc, collection, getDocs, query, where, deleteDoc } from 'firebase/firestore';
+// ============================================================================
+// 📄 Archivo: guardarPeticionConUsuarioSiNoExiste.js
+// ----------------------------------------------------------------------------
+// ✅ Su función es:
+//   1️⃣ Verificar si un usuario existe (por cédula) y crearlo si no.
+//   2️⃣ Guardar la solicitud (petición) en Firebase.
+//   3️⃣ Enviar los datos al Apps Script de Google Sheets.
+//   4️⃣ 🚫 No eliminar nada todavía — la eliminación se hará cuando TI lo apruebe.
+// ----------------------------------------------------------------------------
+// 🔧 Dependencias:
+// - Firestore (importa doc, setDoc, getDocs, query, where, collection)
+// - Módulos locales de Firebase y Apps Script
+// ============================================================================
+
+import { doc, setDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { enviarUsuarioAAppsScript } from '../services/UserGoogleExcel';
 import { enviarPeticionAAppsScript } from '../services/PeticionGoogleExcel';
 
+// ============================================================================
+// 🧩 Función principal: guardarPeticionConUsuarioSiNoExiste
+// ============================================================================
 export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
   try {
+    // ------------------------------------------------------------
+    // 🪪 1️⃣ Normalizar la cédula del usuario (si viene numérica)
+    // ------------------------------------------------------------
     const cedulaStr = usuario.cedula?.toString().trim();
 
-    // 1️⃣ Buscar usuario existente por cédula
+    // ------------------------------------------------------------
+    // 🔍 2️⃣ Buscar si el usuario ya existe en la colección "usuarios"
+    // ------------------------------------------------------------
     const q = query(collection(db, 'usuarios'), where('CEDULA', '==', cedulaStr));
     const snapshot = await getDocs(q);
 
     let usuarioId;
     let usuarioCreado = false;
 
+    // ------------------------------------------------------------
+    // 🧱 3️⃣ Si no existe, crearlo en Firebase y enviar a Google Sheets
+    // ------------------------------------------------------------
     if (snapshot.empty) {
-      // Crear usuario si no existe
       const usuarioFormato = {
         "CARGO": usuario.cargo?.toUpperCase() || "",
         "CEDULA": cedulaStr,
@@ -38,15 +61,19 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
       usuarioId = usuarioRef.id;
       usuarioCreado = true;
 
+      // 📤 Enviar el nuevo usuario al Apps Script de Google Sheets
       await enviarUsuarioAAppsScript({
         action: 'nuevo_usuario',
         ...usuarioFormato
       });
     } else {
+      // ✅ Si ya existe, guardar su ID para vincularlo con la solicitud
       usuarioId = snapshot.docs[0].id;
     }
 
-    // 2️⃣ Formatear fecha de ingreso
+    // ------------------------------------------------------------
+    // 🗓️ 4️⃣ Formatear la fecha de ingreso (día-mes-año)
+    // ------------------------------------------------------------
     let fechaFormateada = "";
     if (peticion.fechaIngreso) {
       const partes = peticion.fechaIngreso.split("-");
@@ -56,6 +83,7 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
           : peticion.fechaIngreso;
       } else fechaFormateada = peticion.fechaIngreso;
     } else {
+      // Si no se envía fecha, usar la actual
       const ahora = new Date();
       const dia = String(ahora.getDate()).padStart(2, '0');
       const mes = String(ahora.getMonth() + 1).padStart(2, '0');
@@ -63,14 +91,18 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
       fechaFormateada = `${dia}-${mes}-${año}`;
     }
 
-    // 3️⃣ Contador diario
+    // ------------------------------------------------------------
+    // 🔢 5️⃣ Crear un contador diario para el ID de la solicitud
+    // ------------------------------------------------------------
     const peticionesRef = collection(db, 'peticiones');
     const queryDia = query(peticionesRef, where('fechaIngreso', '==', fechaFormateada));
     const snapshotPeticiones = await getDocs(queryDia);
     const contadorFormateado = String(snapshotPeticiones.size + 1).padStart(2, '0');
     const idPeticion = `${fechaFormateada}-${contadorFormateado}`;
 
-    // 4️⃣ Crear estructura final de la petición
+    // ------------------------------------------------------------
+    // 🧾 6️⃣ Estructura final de la petición
+    // ------------------------------------------------------------
     const nuevaPeticion = {
       ...peticion,
       fechaIngreso: fechaFormateada,
@@ -81,14 +113,19 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
       "FECHA": new Date().toISOString(),
       "CONTADOR": contadorFormateado,
       "TIMESTAMP": Date.now(),
-      "estado": "PENDIENTE"
+      "estado": "PENDIENTE" // 🔸 Siempre inicia como pendiente
     };
 
+    // ------------------------------------------------------------
+    // 💾 7️⃣ Guardar la solicitud en la colección "peticiones"
+    // ------------------------------------------------------------
     const peticionRef = doc(db, 'peticiones', idPeticion);
     await setDoc(peticionRef, nuevaPeticion);
     console.log(`✅ Petición guardada en Firebase con ID: ${idPeticion}`);
 
-    // 5️⃣ Enviar la petición a Google Sheets
+    // ------------------------------------------------------------
+    // 📤 8️⃣ Enviar la solicitud al Apps Script (Google Sheets)
+    // ------------------------------------------------------------
     const tipo = peticion.tipoSolicitud?.toUpperCase() || "";
     const payload = {
       action: 'nueva_peticion',
@@ -107,41 +144,30 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
     await enviarPeticionAAppsScript(payload);
     console.log(`📤 Petición enviada a Google Sheets con ID: ${idPeticion}`);
 
-    // 6️⃣ Si es una inactivación → eliminar usuario de "usuarios"
+    // ------------------------------------------------------------
+    // 🚫 9️⃣ No eliminar nada aquí
+    // ------------------------------------------------------------
+    // Antes, este bloque borraba usuarios y peticiones.
+    // Ahora solo registramos el evento para mantener la trazabilidad.
     if (tipo === "INACTIVACION") {
-      try {
-        const usuarioEliminarQuery = query(collection(db, 'usuarios'), where('CEDULA', '==', cedulaStr));
-        const usuarioSnapshot = await getDocs(usuarioEliminarQuery);
-
-        if (!usuarioSnapshot.empty) {
-          const usuarioDoc = usuarioSnapshot.docs[0];
-          await deleteDoc(doc(db, 'usuarios', usuarioDoc.id));
-          console.log(`🗑️ Usuario ${usuarioDoc.id} eliminado permanentemente de "usuarios".`);
-        } else {
-          console.warn(`⚠️ No se encontró el usuario con cédula ${cedulaStr} para eliminar.`);
-        }
-      } catch (error) {
-        console.error("❌ Error eliminando usuario de Firestore:", error);
-      }
-
-      // Eliminar la petición después de procesarla (opcional)
-      try {
-        await deleteDoc(doc(db, "peticiones", idPeticion));
-        console.log(`🗑️ Petición "${idPeticion}" eliminada correctamente de Firebase.`);
-      } catch (error) {
-        console.error("❌ Error al eliminar la petición de Firebase:", error);
-      }
+      console.log("📩 Solicitud de INACTIVACION registrada. No se eliminará aún.");
     }
 
+    // ------------------------------------------------------------
+    // 🎯 🔟 Devolver resultado exitoso
+    // ------------------------------------------------------------
     return {
       success: true,
-      message: 'Petición guardada y procesada correctamente',
+      message: '✅ Petición guardada correctamente (sin eliminación)',
       usuarioId,
       peticionId: idPeticion,
       usuarioCreado
     };
 
   } catch (error) {
+    // ------------------------------------------------------------
+    // ❌ Manejo global de errores
+    // ------------------------------------------------------------
     console.error('❌ Error guardando petición o usuario:', error);
     throw new Error(`Error al guardar la petición: ${error.message}`);
   }
