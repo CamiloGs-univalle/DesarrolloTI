@@ -10,10 +10,11 @@ import { useNavigate } from "react-router-dom";
 // componente del botón de Google (ya implementado abajo)
 import LoginButton from "./LoginButton";
 // fondo animado con formas
-import FondoLogin from "../FondosAnimados/fondologin";
+
 // estilos de la página
 import "./Login.css";
 import MascotaLogin from "../FondosAnimados/MascotaLogin";
+import Login_Fondo from "../FondosAnimados/Login_Fondo";
 
 
 
@@ -38,7 +39,7 @@ export default function LoginPage() {
     // contenedor general (envuelve fondo & contenido)
     <div className="login-wrapper">
       {/* componente que dibuja el fondo animado (círculos, líneas, degradado) */}
-      <FondoLogin />
+      <Login_Fondo />
 
       {/* contenedor principal con el panel izquierdo (welcome) y derecho (login) */}
       <div className="login-container">

@@ -5,9 +5,9 @@
 // Colores Proservis: verde y amarillo
 // ======================================================
 
-import "./FondoLogin.css";
+import "./Login_Fondo.css";
 
-export default function FondoLogin() {
+export default function Login_Fondo() {
   return (
     <div className="fondo-login" aria-hidden="true">
       {/* Patrón de fondo con puntos en forma de onda */}
