@@ -1,10 +1,10 @@
 // ======================================================
 // FondoLogin.jsx
+// src/components/FondosAnimados/fondologin.jsx
 // Fondo animado con ondas irregulares y orgánicas
 // Colores Proservis: verde y amarillo
 // ======================================================
 
-import React from "react";
 import "./FondoLogin.css";
 
 export default function FondoLogin() {
