@@ -1,21 +1,14 @@
+// guardarPeticionConUsuarioSiNoExiste.js
 import { doc, setDoc, collection, getDocs, query, where, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { enviarUsuarioAAppsScript } from '../services/UserGoogleExcel';
 import { enviarPeticionAAppsScript } from '../services/PeticionGoogleExcel';
 
-/**
- * Guarda una petición en Firestore y, según el tipo, la envía a Google Sheets.
- * Si el usuario no existe, lo crea y lo envía también a Sheets.
- * 
- * ⚙️ Lógica adicional:
- * - Las peticiones de tipo "INACTIVACION" y "USUARIO Y EQUIPO" se eliminan de Firebase tras ser enviadas.
- */
 export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
   try {
     const cedulaStr = usuario.cedula?.toString().trim();
-    console.log('📌 Verificando usuario con CÉDULA:', cedulaStr);
 
-    // 1️⃣ Verificar si el usuario ya existe
+    // 1) verificar usuario...
     const q = query(collection(db, 'usuarios'), where('CEDULA', '==', cedulaStr));
     const snapshot = await getDocs(q);
 
@@ -23,8 +16,7 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
     let usuarioCreado = false;
 
     if (snapshot.empty) {
-      console.log('👤 Usuario NO existe. Creando en Firebase y enviando a Sheets...');
-
+      // crear usuario (igual que antes)
       const usuarioFormato = {
         "CARGO": usuario.cargo?.toUpperCase() || "",
         "CEDULA": cedulaStr,
@@ -43,23 +35,18 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
       const nombreID = usuarioFormato["NOMBRE / APELLIDO"] || cedulaStr;
       const usuarioRef = doc(db, 'usuarios', nombreID);
       await setDoc(usuarioRef, usuarioFormato);
-
       usuarioId = usuarioRef.id;
       usuarioCreado = true;
 
-      // Enviar usuario nuevo a Google Sheets
       await enviarUsuarioAAppsScript({
         action: 'nuevo_usuario',
         ...usuarioFormato
       });
-
-      console.log('✅ Usuario creado y enviado a Google Sheets:', nombreID);
     } else {
       usuarioId = snapshot.docs[0].id;
-      console.log('✅ Usuario YA existe en Firebase');
     }
 
-    // 2️⃣ Normalizar fecha (dd-mm-yyyy)
+    // 2) fechaFormateada
     let fechaFormateada = "";
     if (peticion.fechaIngreso) {
       const partes = peticion.fechaIngreso.split("-");
@@ -76,16 +63,16 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
       fechaFormateada = `${dia}-${mes}-${año}`;
     }
 
-    // 3️⃣ Generar contador diario
+    // 3) contador diario
     const peticionesRef = collection(db, 'peticiones');
     const queryDia = query(peticionesRef, where('fechaIngreso', '==', fechaFormateada));
     const snapshotPeticiones = await getDocs(queryDia);
     const contadorFormateado = String(snapshotPeticiones.size + 1).padStart(2, '0');
 
-    // 🆔 ID final (ej: 29-10-2025-03)
+    // id final
     const idPeticion = `${fechaFormateada}-${contadorFormateado}`;
 
-    // 4️⃣ Estructura final de la petición
+    // estructura final
     const nuevaPeticion = {
       ...peticion,
       fechaIngreso: fechaFormateada,
@@ -99,59 +86,40 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
       "estado": "PENDIENTE"
     };
 
-    // 🗂️ 5️⃣ Guardar en Firebase
+    // guardar en Firebase con idPeticion
     const peticionRef = doc(db, 'peticiones', idPeticion);
     await setDoc(peticionRef, nuevaPeticion);
-    console.log(`✅ Petición guardada temporalmente en Firebase con ID: ${idPeticion}`);
+    console.log(`✅ Petición guardada en Firebase con ID: ${idPeticion}`);
 
-    // 🧩 6️⃣ Detectar el tipo de solicitud
+    // detectar tipo y enviar a Sheets (ahora enviamos 'id' tambien)
     const tipo = peticion.tipoSolicitud?.toUpperCase() || "";
 
-    // 🚫 Si es "INACTIVACION" o "USUARIO Y EQUIPO"
+    // preparar payload para Apps Script con ID consistente
+    const payload = {
+      action: 'nueva_peticion',
+      id: idPeticion,
+      fechaIngreso: fechaFormateada,
+      cedula: usuario.cedula,
+      nombre: usuario.nombre,
+      correo: usuario.correo,
+      cargo: usuario.cargo,
+      empresa: usuario.empresa,
+      ciudad: usuario.ciudad,
+      observacion: peticion.observacion || "",
+      tipo
+    };
+
+    await enviarPeticionAAppsScript(payload);
+    console.log(`📤 Petición enviada a Google Sheets con ID: ${idPeticion}`);
+
+    // Si tipo INACTIVACION o USUARIO Y EQUIPO -> eliminar de Firebase después de enviarla (si así lo deseas)
     if (tipo === "INACTIVACION" || tipo === "USUARIO Y EQUIPO") {
-      console.log(`⚠️ Petición de tipo "${tipo}" detectada.`);
-
-      // ✅ Enviar primero a Sheets
-      await enviarPeticionAAppsScript({
-        action: 'nueva_peticion',
-        fechaIngreso: fechaFormateada,
-        cedula: usuario.cedula,
-        nombre: usuario.nombre,
-        correo: usuario.correo,
-        cargo: usuario.cargo,
-        empresa: usuario.empresa,
-        ciudad: usuario.ciudad,
-        observacion: peticion.observacion || "",
-        id: idPeticion,
-        tipo: tipo
-      });
-
-      console.log(`📤 Petición ${tipo} enviada correctamente a Google Sheets.`);
-
-      // 🧹 Eliminar de Firebase después de enviarla
       try {
         await deleteDoc(doc(db, "peticiones", idPeticion));
         console.log(`🗑️ Petición "${idPeticion}" eliminada correctamente de Firebase.`);
       } catch (error) {
         console.error("❌ Error al eliminar la petición de Firebase:", error);
       }
-    } else {
-      // 🟢 7️⃣ Otros tipos (solo enviar a Sheets)
-      await enviarPeticionAAppsScript({
-        action: 'nueva_peticion',
-        fechaIngreso: fechaFormateada,
-        cedula: usuario.cedula,
-        nombre: usuario.nombre,
-        correo: usuario.correo,
-        cargo: usuario.cargo,
-        empresa: usuario.empresa,
-        ciudad: usuario.ciudad,
-        observacion: peticion.observacion || "",
-        id: idPeticion,
-        tipo: tipo || "OTRO"
-      });
-
-      console.log('✅ Petición enviada a Google Sheets con ID:', idPeticion);
     }
 
     return {
