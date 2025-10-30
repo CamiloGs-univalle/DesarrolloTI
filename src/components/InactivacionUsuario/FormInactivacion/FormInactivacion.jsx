@@ -20,8 +20,7 @@ import { useUsuarios } from "../../../hooks/useUsuarios";
 import { getLogoEmpresa } from "../../../LogoEmpresa/LogoEmpresa";
 import { enviarSolicitudCorreoinactivacio } from "../../../utils/sendEmailInactivacion";
 import { guardarPeticionConUsuarioSiNoExiste } from "../../../controllers/userController";
-import { deleteDoc, doc } from "firebase/firestore";
-import { db } from "../../../firebase/firebase"; // ✅ Asegúrate de tener tu config correcta
+
 
 
 export default function FormInactivacion({ onSubmitSuccess }) {
@@ -127,13 +126,6 @@ export default function FormInactivacion({ onSubmitSuccess }) {
 
       // ✅ No es necesario borrar manualmente: ya se elimina en guardarPeticionConUsuarioSiNoExiste()
       alert("✅ Solicitud de inactivación enviada y eliminada correctamente.");
-
-
-      // 5️⃣ Eliminar la solicitud guardada en Firebase (después de procesarla)
-      if (resultado.success && resultado.peticionId) {
-        await deleteDoc(doc(db, "peticiones", resultado.peticionId));
-        console.log(`🗑️ Solicitud "${resultado.peticionId}" eliminada de Firebase correctamente.`);
-      }
 
 
       // 6️⃣ Notificar éxito
