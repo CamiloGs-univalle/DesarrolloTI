@@ -10,11 +10,11 @@ import { useNavigate } from "react-router-dom";
 // componente del botón de Google (ya implementado abajo)
 import LoginButton from "./LoginButton";
 // fondo animado con formas
-
+import FondoLogin from "../FondosAnimados/fondologin";
 // estilos de la página
 import "./Login.css";
 import MascotaLogin from "../FondosAnimados/MascotaLogin";
-import FondoLogin from "../FondosAnimados/fondologin";
+
 
 
 // exportamos el componente principal
