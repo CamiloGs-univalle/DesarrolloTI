@@ -68,23 +68,6 @@ export default function UsuarioReemplazoForm({ formData, onChange, onUsuarioSele
         </div>
 
         <div className="campo">
-          <div className="checkboxes">
-            {["sortime", "tr3", "sap", "solvix"].map((sistema) => (
-              <div className="checkbox-group" key={sistema}>
-                <input
-                  type="checkbox"
-                  id={sistema}
-                  name={sistema}
-                  checked={formData[sistema]}
-                  onChange={onChange}
-                />
-                <label htmlFor={sistema}>{sistema.toUpperCase()}</label>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="campo">
           <label htmlFor="correo">Correo</label>
           <input
             type="email"

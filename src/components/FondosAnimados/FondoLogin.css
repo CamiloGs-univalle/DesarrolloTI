@@ -1,0 +1,315 @@
+/* ======================================================
+   FondoLogin.css
+   Fondo animado con ondas elegantes en movimiento perpetuo
+   Colores Proservis: verde y amarillo
+   ====================================================== */
+
+.fondo-login {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  /* Gradiente base oscuro para contraste */
+  background: linear-gradient(135deg, #001a0d 0%, #28692e 30%, #003319 70%, #001a0d 100%);
+}
+
+/* Contenedor principal de las ondas */
+.waves-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0.8;
+  filter: blur(0.5px);
+}
+
+/* Estilos base para todas las ondas */
+.wave {
+  position: absolute;
+  border-radius: 45% 55% 42% 58% / 55% 45% 55% 45%;
+  background: linear-gradient(45deg, rgba(2, 122, 68, 0.15), rgba(241, 196, 15, 0.1));
+  animation: waveMove 20s infinite linear;
+  mix-blend-mode: screen;
+}
+
+/* Onda 1 - Grande y lenta */
+.wave-1 {
+  width: 1200px;
+  height: 1200px;
+  top: -400px;
+  left: -200px;
+  background: linear-gradient(45deg, rgba(2, 122, 68, 0.25), rgba(0, 77, 38, 0.15));
+  animation: waveMove 25s infinite linear;
+  opacity: 0.6;
+}
+
+/* Onda 2 - Mediana con movimiento contrario */
+.wave-2 {
+  width: 900px;
+  height: 900px;
+  top: 50%;
+  right: -300px;
+  background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(2, 122, 68, 0.1));
+  animation: waveMove 18s infinite linear reverse;
+  opacity: 0.5;
+}
+
+/* Onda 3 - Pequeña y rápida */
+.wave-3 {
+  width: 700px;
+  height: 700px;
+  bottom: -200px;
+  left: 50%;
+  background: linear-gradient(225deg, rgba(2, 122, 68, 0.3), rgba(241, 196, 15, 0.15));
+  animation: waveMove 15s infinite linear;
+  opacity: 0.4;
+}
+
+/* Onda 4 - Diagonal */
+.wave-4 {
+  width: 800px;
+  height: 800px;
+  top: 30%;
+  left: -100px;
+  background: linear-gradient(90deg, rgba(241, 196, 15, 0.18), rgba(2, 122, 68, 0.12));
+  animation: waveMove 22s infinite linear;
+  opacity: 0.45;
+}
+
+/* Animación principal de las ondas */
+@keyframes waveMove {
+  0% {
+    transform: rotate(0deg) translate(0, 0) scale(1);
+    border-radius: 45% 55% 42% 58% / 55% 45% 55% 45%;
+  }
+  25% {
+    transform: rotate(90deg) translate(20px, 15px) scale(1.05);
+    border-radius: 55% 45% 58% 42% / 45% 55% 45% 55%;
+  }
+  50% {
+    transform: rotate(180deg) translate(0, 10px) scale(1.1);
+    border-radius: 42% 58% 45% 55% / 58% 42% 58% 42%;
+  }
+  75% {
+    transform: rotate(270deg) translate(-15px, 5px) scale(1.05);
+    border-radius: 58% 42% 55% 45% / 42% 58% 42% 58%;
+  }
+  100% {
+    transform: rotate(360deg) translate(0, 0) scale(1);
+    border-radius: 45% 55% 42% 58% / 55% 45% 55% 45%;
+  }
+}
+
+/* Partículas brillantes flotantes */
+.particle {
+  position: absolute;
+  background: rgba(241, 196, 15, 0.3);
+  border-radius: 50%;
+  animation: float 15s infinite ease-in-out;
+  filter: blur(1px);
+}
+
+.particle:nth-child(1) {
+  width: 8px;
+  height: 8px;
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+  background: rgba(241, 196, 15, 0.4);
+}
+
+.particle:nth-child(2) {
+  width: 6px;
+  height: 6px;
+  top: 70%;
+  left: 80%;
+  animation-delay: -2s;
+  background: rgba(2, 122, 68, 0.5);
+}
+
+.particle:nth-child(3) {
+  width: 10px;
+  height: 10px;
+  top: 40%;
+  left: 20%;
+  animation-delay: -4s;
+  background: rgba(241, 196, 15, 0.3);
+}
+
+.particle:nth-child(4) {
+  width: 5px;
+  height: 5px;
+  top: 60%;
+  left: 60%;
+  animation-delay: -6s;
+  background: rgba(2, 122, 68, 0.4);
+}
+
+.particle:nth-child(5) {
+  width: 7px;
+  height: 7px;
+  top: 30%;
+  left: 85%;
+  animation-delay: -8s;
+  background: rgba(241, 196, 15, 0.35);
+}
+
+.particle:nth-child(6) {
+  width: 4px;
+  height: 4px;
+  top: 80%;
+  left: 40%;
+  animation-delay: -10s;
+  background: rgba(2, 122, 68, 0.45);
+}
+
+/* Animación de partículas flotantes */
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translate(20px, -30px) scale(1.1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-15px, -15px) scale(0.9);
+    opacity: 0.7;
+  }
+  75% {
+    transform: translate(-25px, 20px) scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+/* Líneas de conexión dinámicas */
+.connection-line {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, rgba(241, 196, 15, 0.1), transparent);
+  height: 1px;
+  animation: lineFlow 8s infinite linear;
+  opacity: 0.3;
+}
+
+.connection-line:nth-child(1) {
+  top: 25%;
+  left: 0;
+  width: 40%;
+  animation-delay: 0s;
+}
+
+.connection-line:nth-child(2) {
+  top: 60%;
+  right: 0;
+  width: 35%;
+  animation-delay: -2s;
+  background: linear-gradient(270deg, transparent, rgba(2, 122, 68, 0.1), transparent);
+}
+
+.connection-line:nth-child(3) {
+  top: 75%;
+  left: 10%;
+  width: 50%;
+  animation-delay: -4s;
+}
+
+.connection-line:nth-child(4) {
+  top: 40%;
+  right: 10%;
+  width: 45%;
+  animation-delay: -6s;
+  background: linear-gradient(270deg, transparent, rgba(241, 196, 15, 0.08), transparent);
+}
+
+@keyframes lineFlow {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Efectos de brillo y resplandor */
+.glow-effect {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  mix-blend-mode: screen;
+  animation: glowPulse 10s infinite ease-in-out;
+}
+
+.glow-1 {
+  width: 300px;
+  height: 300px;
+  top: -50px;
+  left: -50px;
+  background: radial-gradient(circle, rgba(2, 122, 68, 0.4), transparent 70%);
+  animation-delay: 0s;
+}
+
+.glow-2 {
+  width: 400px;
+  height: 400px;
+  bottom: -100px;
+  right: -100px;
+  background: radial-gradient(circle, rgba(241, 196, 15, 0.3), transparent 70%);
+  animation-delay: -3s;
+}
+
+.glow-3 {
+  width: 250px;
+  height: 250px;
+  top: 50%;
+  left: 70%;
+  background: radial-gradient(circle, rgba(2, 122, 68, 0.35), transparent 70%);
+  animation-delay: -6s;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+/* Capa de overlay para suavizar y dar profundidad */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at 20% 20%, rgba(0, 77, 38, 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(241, 196, 15, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 40% 60%, rgba(2, 122, 68, 0.25) 0%, transparent 50%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* Patrón sutil de líneas de fondo */
+.grid-pattern {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(241, 196, 15, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(2, 122, 68, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0.4;
+  pointer-events: none;
+}

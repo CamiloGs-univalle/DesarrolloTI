@@ -1,83 +1,279 @@
-.login-page {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(to bottom right, #004d26, #027a44);
-  font-family: Arial, sans-serif;
+/* ======================================================
+   Login.css
+   Estilos del layout: welcome izquierda + sign-in derecha
+   Incluye glassmorphism para el panel derecho, tipografías y responsive
+   ====================================================== */
+
+/* ============== Variables de color (fáciles de ajustar) ============== */
+:root{
+  --verde-oscuro: #004d26;   /* color corporativo oscuro */
+  --verde-medio: #027a44;    /* color corporativo medio */
+  --amarillo: #f1c40f;       /* acento amarillo */
+  --card-bg: rgba(255,255,255,0.08); /* para contenedor principal */
+  --glass-bg: rgba(255,255,255,0.06); /* fondo glass panel */
+  --glass-border: rgba(255,255,255,0.12);
+  --texto-oscuro: #1f1f1f;
 }
 
-.login-card {
-  background-color: white;
-  border-radius: 16px;
-  padding: 40px 30px;
-  max-width: 400px;
-  width: 100%;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  text-align: center;
-  animation: slide-up 0.5s ease;
-}
-
-@keyframes slide-up {
-  from { transform: translateY(30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.login-header .logo {
-  width: 140px;
-  margin-bottom: 20px;
-}
-
-.login-header h1 {
-  color: #004d26;
-  margin-bottom: 8px;
-}
-
-.login-header p {
-  color: #555;
-  margin-bottom: 20px;
-}
-
-.google-btn {
+/* contenedor global que centra vertical/horizontalmente */
+.login-wrapper {
+  min-height: 97vh;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  background-color: #4285F4;
+  font-family: "Poppins", "Segoe UI", Roboto, Arial, sans-serif;
+  overflow: hidden;
+  background: #0b0b0b; /* fallback oscuro mientras carga el fondo */
+}
+
+/* contenedor principal con borde redondeado y sombra como la imagen */
+.login-container {
+  width: 1100px;               /* ancho total de la maqueta */
+  height: 550px;               /* altura tipo banner */
+  display: flex;               /* 2 columnas: left / right */
+  border-radius: 20px;
+  box-shadow: 0 30px 60px rgba(2, 12, 30, 0.6); /* sombra exterior */
+  position: relative;
+  z-index: 5; /* importante para que esté sobre el fondo animado */
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+/* ---------------- LEFT - WELCOME ---------------- */
+.welcome-section{
+  flex: 1.2; /* más ancho que la parte derecha */
+  padding: 80px 70px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
   color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 16px;
+  position: relative;
+}
+
+/* contenido dentro del lado izquierdo */
+.welcome-content{
+  max-width: 520px;
+  position: relative;
+  z-index: 2; /* sobre las formas del fondo */
+}
+
+/* título grande, tipo "Welcome!" */
+.welcome-title{
+  font-size: 64px;
+  line-height: 1;
+  margin: 0 0 18px 0;
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: white;
+  text-shadow: 0 6px 24px rgba(2, 2, 2, 0.45);
+}
+
+/* barra corta subrayada (como en la imagen) */
+.welcome-underline{
+  width: 36px;
+  height: 4px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 2px;
+  margin-bottom: 20px;
+}
+
+/* párrafo descriptivo */
+.welcome-text{
   font-size: 16px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 40px;
+  font-weight: 300;
+  opacity: 0.95;
+}
+
+/* botón naranja/amarillo del lado izquierdo */
+.learn-more-btn{
+  background: linear-gradient(90deg, var(--amarillo), #f39c12);
+  color: var(--verde-oscuro);
+  padding: 12px 28px;
+  border-radius: 22px;
+  border: none;
   cursor: pointer;
-  transition: background 0.3s;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(241,196,15,0.15);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.learn-more-btn:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(241,196,15,0.22);
 }
 
-.google-btn:hover {
-  background-color: #357ae8;
+/* ---------------- RIGHT - LOGIN ---------------- */
+.login-section{
+  flex: 0.9; /* un poco más estrecho que el left */
+  padding: 28px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: transparent; /* el efecto glass está en .login-card */
 }
 
-.google-btn:disabled {
-  background-color: #a3c0f9;
+/* logo superior (simula el logo de la esquina superior derecha) */
+.top-logo{
+  display:flex;
+  justify-content:flex-end;
+}
+.logo-box{
+  width:56px;
+  height:56px;
+  border-radius:8px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.06);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  box-shadow: 0 8px 20px rgba(2,12,30,0.3);
+}
+.logo-left, .logo-right{
+  width:10px;
+  height:22px;
+  background: white;
+  opacity: 0.95;
+  border-radius:2px;
+}
+.logo-right{
+  transform: translateX(6px);
+  opacity: 0.75;
+}
+
+/* tarjeta glass (panel translúcido) centrada verticalmente */
+.login-card{
+  width: 380px;
+  margin: 0 auto;
+  padding: 36px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  box-shadow: 0 10px 40px rgba(2,12,30,0.45);
+  text-align: center;
+  position: relative;
+  z-index: 6;
+}
+
+/* título dentro del card */
+.card-title{
+  margin:0;
+  font-size: 42px;
+  color: white;
+  font-weight:700;
+  letter-spacing: -0.5px;
+  text-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+
+/* subtítulo bajo el título */
+.card-subtitle{
+  margin:8px 0 22px 0;
+  color: rgba(255,255,255,0.85);
+  font-weight:300;
+  font-size:20px;
+}
+
+/* botón de Google (dentro del card) */
+.google-btn{
+  display:flex;
+  font-size: 18px;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:12px 18px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+  color:white;
+  background: linear-gradient(90deg,#4285f4,#3367d6);
+  width:100%;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.google-btn:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(51,103,214,0.18);
+}
+.google-btn:disabled{
+  opacity:0.7;
   cursor: not-allowed;
+  transform:none;
+  box-shadow:none;
 }
 
-.error {
-  margin-top: 16px;
-  color: red;
-  font-size: 14px;
+/* mensajes de error */
+.error{
+  margin-top:16px;
+  color: #ffcccc;
+  background: rgba(255, 0, 0, 0.06);
+  padding:10px;
+  border-radius:8px;
+  border: 1px solid rgba(255,0,0,0.06);
 }
 
-.login-footer {
-  margin-top: 24px;
-  font-size: 12px;
-  color: #666;
+/* pequeños puntos de redes sociales decorativos */
+.socials{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  margin-top:18px;
+}
+.social-dot{
+  width:12px;
+  height:12px;
+  background: rgba(255,255,255,0.12);
+  border-radius:50%;
+  display:inline-block;
 }
 
-.login-footer .marca {
-  font-weight: bold;
+/* footer inferior con marca */
+.bottom-footer{
+  text-align:center;
+  font-weight:600;
+  color: rgba(255,255,255,0.9);
+  margin-top:8px;
+}
+.marca{
+  color: white;
+}
+.amarillo{
+  color: var(--amarillo);
 }
 
-.login-footer .amarillo {
-  color: #f1c40f;
+/* ================= RESPONSIVE ================ */
+@media (max-width: 980px) {
+  .login-container { width: 92%; height: auto; flex-direction: column; }
+  .welcome-section{ padding: 40px 28px; text-align:center; align-items:center; justify-content:center; }
+  .welcome-title{ font-size: 44px; }
+  .login-section{ padding: 28px; width:100%; }
+  .login-card{ width: 90%; }
+}
+
+/* 🖼️ Contenedor del logo */
+.logo-container {
+  margin: 25px 0 10px 0;
+  display: flex;
+  justify-content: flex-start; /* o center si prefieres centrarlo */
+  align-items: center;
+}
+
+/* 🌟 Imagen del logo */
+.logo-proservis {
+  width: 340px; /* puedes ajustar según el tamaño del logo */
+  height: auto;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0.9;
+}
+
+/* 🎬 Animación suave al pasar el mouse */
+.logo-proservis:hover {
+  transform: scale(1.05);
+  opacity: 1;
 }
