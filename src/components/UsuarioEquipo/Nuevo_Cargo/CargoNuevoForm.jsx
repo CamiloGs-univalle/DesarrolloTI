@@ -1,68 +1,165 @@
 import { useState } from "react";
-import './CargoNuevoForm.css';
-import { guardarPeticionConUsuarioSiNoExiste } from '../../../controllers/userController.js';
+import "./CargoNuevoForm.css";
+import { guardarPeticionConUsuarioSiNoExiste } from "../../../controllers/userController.js";
 
-export default function CargoNuevoForm({ formData, onChange }) {
-  const [estadoEnvio] = useState("idle");
+export default function CargoNuevoForm({ formData, onChange, formType = "Cargo Nuevo" }) {
+  const [estadoEnvio, setEstadoEnvio] = useState("idle");
+  const [loading, setLoading] = useState(false);
   const esCorporativo = formData.correoCorporativo;
 
-  // components/UsuarioEquipo.jsx (parte relevante)
 
-  // En la función handleSubmit, asegúrate de incluir el cargo:
+  // --- LISTA DE CARGOS PARA AUTOCOMPLETAR ---
+  const cargos = [
+    "GERENTE",
+    "SUPERVISOR",
+    "DIRECTOR COMERCIAL",
+    "DIRECTOR DE OPERACIONES",
+    "COORDINADOR DE OPERACIONES",
+    "LIDER COMERCIAL TALENTO HUMANO",
+    "CONSULTOR DE SELECCION",
+    "COORDINADOR DE OPERACION LOGISTICA",
+    "SENA",
+    "ANALISTA TI",
+    "AUXILIAR TI",
+    "LIDER DESARROLLO",
+    "BACKUP",
+    "DIRECTORA CONTABLE",
+    "CONTADOR JUNIOR",
+    "CONTADOR JUNIOR DE IMPUESTOS",
+    "ANALISTA CONTABLE",
+    "CONTROLLER FINANCIERO",
+    "ANALISTA CONTABLE PT",
+    "AUXILIAR DE ATRACCION DE TALENTO HUMANO",
+    "PSICOLOGO DE ATRACCION Y TALENTO HUMANO",
+    "ORIENTADOR DE CONTRATACION",
+    "EMBAJADOR DE MARCA",
+    "AUXILIAR ADMINISTRATIVO",
+    "AUXILIAR DE CONTRATACION",
+    "LIDER DE SELECCION",
+    "DIRECTOR DE RECLUTAMIENTO-SELECCION Y CONTRATACION",
+    "GESTOR DE SERVICIO DE TALENTO HUMANO",
+    "CONSULTOR DE GESTION DE TALENTO HUMANO",
+    "AUXILIAR DE RECEPCION",
+    "ANALISTA DE EXPERIENCIA",
+    "ANALISTA DE COMUNICACIONES",
+    "DIRECTORA DE INNOVACION EXPERIENCIA",
+    "AUXILIAR DE PAGOS",
+    "DIRECTOR DE TESORERIA",
+    "AUXILIAR DE TESORERIA",
+    "AUXILIAR DE TESORERIA 2",
+    "ANALISTA DE COMPRAS",
+    "AUXILIAR DE FACTURACION",
+    "EJECUTIVO DE SERVICIO",
+    "EJECUTIVO DE TALENTO HUMANO",
+    "GESTOR DE SERVICIO",
+    "EJECUTIVO TH PEREIRA",
+    "EJECUTIVO TH PASTO",
+    "EJECUTIVO PROMOAMBIENTAL",
+    "GESTOR PROMOAMBIENTAL",
+    "GESTOR BANCOW",
+    "GESTOR CARTAGENA",
+    "EJECUTIVO BUGA",
+    "EJECUTIVO IBAGUE",
+    "EJECUTIVO BUCARAMANGA",
+    "EJECUTIVO GIRARDOT",
+    "AUXILIAR DE INCAPACIDADES",
+    "AUXILIAR DE SEGURIDAD SOCIAL",
+    "ANALISTA DE SEGURIDAD SOCIAL",
+    "AUXILIAR DE NOMINA",
+    "ANALISTA DE NOMINA",
+    "ESPECIALISTA DE NOMINA Y SEGURIDAD SOCIAL",
+    "DIRECTOR DE NOMINA Y SEGURIDAD SOCIAL",
+    "DIRECTOR DE SEGURIDAD Y SALUD EN EL TRABAJO",
+    "FISIOTERAPEUTA",
+    "EJECUTIVO INTEGRAL",
+    "ANALISTA DE PREVENCION",
+    "GESTOR DE SEGURIDAD",
+    "ASESOR EN PREVENCION",
+    "ANALISTA EN MEDICINA LABORAL",
+    "ANALISTA SEGURIDAD Y SALUD EN EL TRABAJO",
+    "LIDER COMERCIAL SST",
+    "DIRECTOR JURIDICO",
+    "ANALISTA JURIDICO",
+    "AUXILIAR DE GESTION HUMANA",
+    "AUXILIAR GH 2",
+    "DIRECTOR DE GESTION HUMANA",
+    "AUDITORÍA Y CALIDAD",
+    "ANALISTA DE CALIDAD",
+    "LIDER OPERATIVO",
+    "PRESIDENTE",
+  ];
+
+  // --- MANEJO DE ENVÍO ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setEstadoEnvio("enviando");
 
     try {
-      // PREPARAR DATOS DEL USUARIO CON CARGO
       const datosUsuario = {
         nombre: formData.nombre.trim(),
         cedula: formData.cedula.trim(),
         correo: formData.correo.trim(),
-        cargo: formData.cargo.trim(), // ✅ CARGO INCLUIDO
+        cargo: formData.cargo.trim(),
         empresa: formData.empresa.trim(),
         ciudad: formData.ciudad.trim(),
-        fechaIngreso: formData.fechaIngreso
+        fechaIngreso: formData.fechaIngreso,
       };
 
-      // PREPARAR DATOS DE LA PETICIÓN CON CARGO
       const datosPeticion = {
         solicitante: formData.nombre.trim(),
         tipoSolicitud: formType,
-        cargo: formData.cargo.trim(), // ✅ CARGO INCLUIDO EN PETICIÓN TAMBIÉN
-        // ... resto de datos
+        cargo: formData.cargo.trim(),
+        empresa: formData.empresa.trim(),
+        ciudad: formData.ciudad.trim(),
+        comentario: formData.comentario || "",
+        correoCorporativo: formData.correoCorporativo,
+        nuevoCorreo: formData.nuevoCorreo,
       };
 
-      // EJECUTAR LA FUNCIÓN PRINCIPAL
       const resultado = await guardarPeticionConUsuarioSiNoExiste(datosUsuario, datosPeticion);
+      console.log("✅ Proceso completado. Cargo guardado:", resultado.cargo);
 
-      console.log('✅ Proceso completado. Cargo guardado:', resultado.cargo);
-
+      setEstadoEnvio("enviado");
     } catch (error) {
-      console.error('❌ Error:', error);
+      console.error("❌ Error:", error);
+      setEstadoEnvio("error");
     } finally {
       setLoading(false);
     }
   };
+
+  // --- FILTRO DE AUTOCOMPLETADO ---
+  const sugerenciasCargo = cargos.filter((c) =>
+    c.toLowerCase().includes((formData.cargo || "").toLowerCase())
+  );
 
   return (
     <div className="seccion seccion-dinamica">
       <div className="form-cargo">
         <h2 className="titulo-seccion">Cargo Nuevo</h2>
 
+        {/* CARGO con autocompletado */}
         <div className="campo">
-          <label htmlFor="Cargo">Cargo</label>
+          <label htmlFor="cargo">Cargo</label>
           <input
             type="text"
             id="cargo"
             name="cargo"
             value={formData.cargo}
             onChange={onChange}
+            list="sugerenciasCargo"
             required
-            placeholder="Se autocompleta con el cargo del usuario seleccionado"
+            placeholder="Escribe o selecciona un cargo"
           />
+          <datalist id="sugerenciasCargo">
+            {sugerenciasCargo.map((cargo, index) => (
+              <option key={index} value={cargo} />
+            ))}
+          </datalist>
         </div>
 
+        {/* EQUIPO */}
         <div className="campo-checkboxes">
           <span>EQUIPO</span>
           <label>
@@ -85,9 +182,10 @@ export default function CargoNuevoForm({ formData, onChange }) {
           </label>
         </div>
 
+        {/* CORREO CORPORATIVO */}
         <div className="campo">
           <label>
-            <p>{esCorporativo ? "Correo Corporativo." : "Correo Gratuito."}</p>
+            <p>{esCorporativo ? "Correo Corporativo" : "Correo Gratuito"}</p>
           </label>
           <label className="switch">
             <input
@@ -105,6 +203,7 @@ export default function CargoNuevoForm({ formData, onChange }) {
           </p>
         </div>
 
+        {/* NUEVO CORREO */}
         <div className="campo">
           <label htmlFor="nuevoCorreo">Correo a crear</label>
           <input
@@ -114,10 +213,11 @@ export default function CargoNuevoForm({ formData, onChange }) {
             value={formData.nuevoCorreo}
             onChange={onChange}
             required
-            placeholder="Se autocompleta con el correo del usuario seleccionado"
+            placeholder="Ej: usuario@empresa.com"
           />
         </div>
 
+        {/* COMENTARIO */}
         <div className="campo">
           <label htmlFor="comentario">Comentario</label>
           <textarea
@@ -129,19 +229,18 @@ export default function CargoNuevoForm({ formData, onChange }) {
           ></textarea>
         </div>
 
+        {/* BOTÓN DE ENVÍO */}
         <div className="campo">
           <button
             type="button"
             className="boton-enviar"
             onClick={handleSubmit}
+            disabled={loading}
           >
-            Enviar Solicitud
+            {loading ? "Enviando..." : "Enviar Solicitud"}
           </button>
         </div>
 
-        {estadoEnvio === "enviando" && (
-          <p className="mensaje-enviando">⏳ Enviando solicitud...</p>
-        )}
         {estadoEnvio === "enviado" && (
           <p className="mensaje-enviado">✅ Solicitud enviada.</p>
         )}
