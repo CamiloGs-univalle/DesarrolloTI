@@ -1,15 +1,8 @@
-// src/components/ListaPendiente/RespuestaSolicitud/RespuestaSolicitud.jsx
 import React, { useEffect, useState } from "react";
 import { doc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../../firebase/firebase";
 import { enviarRespuesta } from "../../../utils/responderEmail";
 import "./RespuestaSolicitud.css";
-
-/*
-  RespuestaSolicitud
-  - recibe 'solicitud' (objeto seleccionado).
-  - onEliminada: callback para notificar al padre que elimine de la UI.
-*/
 
 export default function RespuestaSolicitud({ solicitud, onEliminada }) {
   const [respuesta, setRespuesta] = useState("");
@@ -17,26 +10,21 @@ export default function RespuestaSolicitud({ solicitud, onEliminada }) {
   useEffect(() => {
     if (!solicitud) return;
 
-    // 1) Extraer correo y cédula con tolerancia a distintos nombres de campos
     const correo =
       solicitud?.usuarioReemplazar?.correo ||
       solicitud?.correo ||
-      solicitud?.CORREO ||
       "CORREO";
     const cedula =
       solicitud?.usuarioReemplazar?.cedula ||
       solicitud?.cedula ||
       solicitud?.CEDULA_USUARIO ||
-      solicitud?.CEDULA ||
       "CEDULA";
 
-    // 2) Obtener últimos 4 digitos de la cédula
     let ultimos4 = "****";
-    if (cedula && String(cedula).length >= 4) {
-      ultimos4 = String(cedula).slice(-4);
+    if (cedula && cedula.length >= 4) {
+      ultimos4 = cedula.slice(-4);
     }
 
-    // 3) Preparar texto por defecto
     const texto = `Buen día.
 Adjunto credenciales del usuario en mención. Por favor compartir a quien corresponda.<br><br>
 
@@ -49,7 +37,7 @@ Adjunto credenciales del usuario en mención. Por favor compartir a quien corres
 <p><strong>TR3:</strong> ${correo}</p>
 <p><strong>CONTRASEÑA:</strong> ${cedula}</p>
 
-<p><strong>SORTTIME:</strong> ${correo}</p>
+<p><strong>SORTTIME:</strong> ${cedula}</p>
 <p><strong>CONTRASEÑA:</strong> ${ultimos4}</p>
 
 <br>
@@ -59,96 +47,106 @@ Muchas gracias.`;
     setRespuesta(texto);
   }, [solicitud]);
 
-  // ----------------------
-  // FUNCION PRINCIPAL
-  // ----------------------
   const handleEnviar = async () => {
-    // Validación: si no hay solicitud -> salir
-    if (!solicitud) {
-      alert("⚠️ No hay solicitud seleccionada.");
+    if (!solicitud?.id) {
+      alert("⚠️ Falta el ID del documento en Firebase.");
       return;
     }
 
     try {
-      // 1) Intentar enviar la respuesta por correo (tu función existente)
       const ok = await enviarRespuesta(solicitud, respuesta);
 
-      if (!ok) {
-        alert("❌ No se pudo enviar el correo. Revisa la consola.");
-        return;
-      }
+      if (ok) {
+        // 🔹 1️⃣ ELIMINAR DEFINITIVAMENTE la solicitud de "peticiones"
+        await deleteDoc(doc(db, "peticiones", solicitud.id));
+        console.log(`✅ Petición ${solicitud.id} eliminada definitivamente de 'peticiones'`);
 
-      // 2) BORRADO de la petición en Firestore
-      //    - si tenemos solicitud.id -> borrado directo por id
-      //    - además intentamos borrar por fecha (fechaIngreso / fecha / FECHA) para
-      //      cubrir casos en los que el documento fue creado con id distinto.
-      const fechaBuscada = solicitud.fechaIngreso || solicitud.fecha || solicitud.FECHA || solicitud.fechaSolicitud;
+        // 🔹 2️⃣ DETECTAR SI ES INACTIVACIÓN Y ELIMINAR USUARIO
+        const tipoSolicitud = solicitud.tipo?.toLowerCase() || 
+                             solicitud.tipoSolicitud?.toLowerCase() || 
+                             "";
+        
+        console.log("🔍 Tipo de solicitud detectado:", tipoSolicitud);
+        
+        if (tipoSolicitud.includes("inactivacion")) {
+          console.log("🗑️ Procesando eliminación de usuario por INACTIVACIÓN");
+          
+          // Obtener el NOMBRE COMPLETO del usuario (que es el ID en "usuarios")
+          const nombreCompletoUsuario = solicitud?.usuarioReemplazar?.nombre || 
+                                      solicitud?.nombre || 
+                                      solicitud?.["NOMBRE USUARIO"] ||
+                                      solicitud?.solicitante ||
+                                      solicitud?.["NOMBRE / APELLIDO"];
 
-      // 2.a) Si existe id, borramos ese doc concreto
-      if (solicitud.id) {
-        try {
-          await deleteDoc(doc(db, "peticiones", solicitud.id)); // borrado directo por id
-          console.log(`✅ Petición eliminada por id: ${solicitud.id}`);
-        } catch (error) {
-          console.warn("⚠️ No se pudo eliminar por id:", error);
-        }
-      }
+          console.log("🔍 Buscando usuario para eliminar por nombre:", nombreCompletoUsuario);
 
-      // 2.b) Borrado por fecha: de busca y elimina todos los documentos con fechaIngreso==fechaBuscada
-      if (fechaBuscada) {
-        try {
-          const q = query(collection(db, "peticiones"), where("fechaIngreso", "==", fechaBuscada));
-          const snapshot = await getDocs(q);
+          if (nombreCompletoUsuario) {
+            // 🔍 INTENTAR ELIMINAR DIRECTAMENTE POR ID (nombre completo)
+            try {
+              await deleteDoc(doc(db, "usuarios", nombreCompletoUsuario.toUpperCase()));
+              console.log(`✅ Usuario eliminado directamente por ID: ${nombreCompletoUsuario}`);
+            } catch (error) {
+              console.log(`⚠️ No se pudo eliminar por ID directo, buscando por consulta...`);
+              
+              // 🔍 SI FALLA, BUSCAR POR CÉDULA COMO FALLBACK
+              const cedulaUsuario = solicitud?.usuarioReemplazar?.cedula || 
+                                  solicitud?.cedula || 
+                                  solicitud?.CEDULA_USUARIO;
 
-          // Si no hay resultados con campo fechaIngreso, intentamos campo 'fecha' o 'FECHA'
-          if (snapshot.empty) {
-            // segunda chance: buscar por campo 'fecha' o 'FECHA'
-            const q2 = query(collection(db, "peticiones"), where("fecha", "==", fechaBuscada));
-            const snapshot2 = await getDocs(q2);
-            for (const docu of snapshot2.docs) {
-              await deleteDoc(doc(db, "peticiones", docu.id));
-              console.log(`✅ Eliminado por campo 'fecha': ${docu.id}`);
+              if (cedulaUsuario) {
+                const qCedula = query(
+                  collection(db, "usuarios"), 
+                  where("CEDULA", "==", cedulaUsuario)
+                );
+                const snapshotCedula = await getDocs(qCedula);
+                
+                if (!snapshotCedula.empty) {
+                  for (const docUsuario of snapshotCedula.docs) {
+                    await deleteDoc(doc(db, "usuarios", docUsuario.id));
+                    console.log(`✅ Usuario eliminado por cédula: ${cedulaUsuario} (ID: ${docUsuario.id})`);
+                  }
+                } else {
+                  console.log("⚠️ No se encontró usuario con cédula:", cedulaUsuario);
+                  
+                  // 🔍 ÚLTIMO INTENTO: BUSCAR POR NOMBRE SIMILAR
+                  const qNombre = query(
+                    collection(db, "usuarios"), 
+                    where("NOMBRE / APELLIDO", "==", nombreCompletoUsuario.toUpperCase())
+                  );
+                  const snapshotNombre = await getDocs(qNombre);
+                  
+                  if (!snapshotNombre.empty) {
+                    for (const docUsuario of snapshotNombre.docs) {
+                      await deleteDoc(doc(db, "usuarios", docUsuario.id));
+                      console.log(`✅ Usuario eliminado por nombre: ${nombreCompletoUsuario} (ID: ${docUsuario.id})`);
+                    }
+                  } else {
+                    console.log("❌ No se encontró usuario con nombre:", nombreCompletoUsuario);
+                  }
+                }
+              } else {
+                console.log("❌ No hay cédula para búsqueda alternativa");
+              }
             }
           } else {
-            for (const docu of snapshot.docs) {
-              await deleteDoc(doc(db, "peticiones", docu.id));
-              console.log(`✅ Eliminado por campo 'fechaIngreso': ${docu.id}`);
-            }
+            console.log("❌ No se pudo obtener el nombre completo del usuario para eliminar");
           }
-        } catch (error) {
-          console.error("❌ Error borrando por fecha:", error);
+        } else {
+          console.log("ℹ️ No es inactivación, solo se elimina la petición");
         }
-      }
 
-      // 3) Si es INACTIVACION -> eliminar usuario de 'usuarios' (como ya tenías)
-      const tipo = (solicitud.tipo || solicitud.tipoSolicitud || "").toString().toLowerCase();
-      if (tipo === "inactivacion" || tipo === "inactivación") {
-        const cedula = solicitud?.usuarioReemplazar?.cedula || solicitud?.cedula || solicitud?.CEDULA_USUARIO || solicitud?.CEDULA;
-        if (cedula) {
-          try {
-            const q = query(collection(db, "usuarios"), where("cedula", "==", cedula));
-            const querySnapshot = await getDocs(q);
-            for (const docu of querySnapshot.docs) {
-              await deleteDoc(doc(db, "usuarios", docu.id));
-              console.log(`✅ Usuario con cédula ${cedula} eliminado de 'usuarios'`);
-            }
-          } catch (error) {
-            console.error("❌ Error eliminando usuario tras inactivacion:", error);
-          }
-        }
-      }
+        // 🔹 3️⃣ Notificar al componente padre para actualizar la UI
+        if (onEliminada) onEliminada(solicitud.id);
 
-      // 4) Avisar al componente padre para actualizar la UI
-      if (onEliminada) {
-        // Pasamos la fecha para que el padre pueda filtrar por fecha o id
-        onEliminada(solicitud.id || { fecha: fechaBuscada });
+        // 🔹 4️⃣ Limpiar el estado local
+        setRespuesta("");
+        alert("✅ Correo enviado, solicitud eliminada y usuario inactivado correctamente.");
+      } else {
+        alert("❌ No se pudo enviar el correo. Revisa la consola.");
       }
-
-      setRespuesta("");
-      alert("✅ Correo enviado y solicitud eliminada correctamente.");
     } catch (error) {
       console.error("❌ Error al enviar o eliminar:", error);
-      alert("❌ Error al enviar o eliminar la solicitud. Revisa la consola.");
+      alert("❌ Error al enviar o eliminar la solicitud.");
     }
   };
 
@@ -159,7 +157,6 @@ Muchas gracias.`;
         value={respuesta}
         onChange={(e) => setRespuesta(e.target.value)}
         className="campo-respuesta"
-        rows={10}
       ></textarea>
 
       <div className="botones">
