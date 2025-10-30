@@ -15,6 +15,7 @@ import FondoLogin from "../FondosAnimados/fondologin";
 import "./Login.css";
 import MascotaLogin from "../FondosAnimados/MascotaLogin";
 
+
 // exportamos el componente principal
 export default function LoginPage() {
   // estado para mensajes de error (vacío por defecto)
