@@ -30,7 +30,7 @@
 /* contenedor principal con borde redondeado y sombra como la imagen */
 .login-container {
   width: 1100px;               /* ancho total de la maqueta */
-  height: 550px;               /* altura tipo banner */
+  height: 600px;               /* altura tipo banner */
   display: flex;               /* 2 columnas: left / right */
   border-radius: 20px;
   box-shadow: 0 30px 60px rgba(2, 12, 30, 0.6); /* sombra exterior */
