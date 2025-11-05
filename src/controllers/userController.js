@@ -142,7 +142,7 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
     };
 
     await enviarPeticionAAppsScript(payload);
-    console.log(`📤 Petición enviada a Google Sheets con ID: ${idPeticion}`);
+    //console.log(`📤 Petición enviada a Google Sheets con ID: ${idPeticion}`);
 
     // ------------------------------------------------------------
     // 🚫 9️⃣ No eliminar nada aquí
@@ -150,19 +150,12 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
     // Antes, este bloque borraba usuarios y peticiones.
     // Ahora solo registramos el evento para mantener la trazabilidad.
     if (tipo === "INACTIVACION") {
-      console.log("📩 Solicitud de INACTIVACION registrada. No se eliminará aún.");
+      //console.log("📩 Solicitud de INACTIVACION registrada. No se eliminará aún.");
     }
 
     // ------------------------------------------------------------
     // 🎯 🔟 Devolver resultado exitoso
     // ------------------------------------------------------------
-    return {
-      success: true,
-      message: '✅ Petición guardada correctamente (sin eliminación)',
-      usuarioId,
-      peticionId: idPeticion,
-      usuarioCreado
-    };
 
   } catch (error) {
     // ------------------------------------------------------------
