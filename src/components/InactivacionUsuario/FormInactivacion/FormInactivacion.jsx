@@ -1,16 +1,5 @@
 // ============================================================================
-// 📄 Componente: FormInactivacion.jsx
-// ----------------------------------------------------------------------------
-// ✅ Permite seleccionar un usuario existente y generar una solicitud
-//    de inactivación, guardándola en Firebase para que el área de TI
-//    la procese posteriormente.
-// ----------------------------------------------------------------------------
-// 🔧 Dependencias:
-// - Material UI → Autocomplete, TextField, CircularProgress
-// - Hook useUsuarios → carga lista de usuarios desde Sheets
-// - getLogoEmpresa → obtiene el logo de la empresa
-// - enviarSolicitudCorreoinactivacio → abre Gmail con los datos del usuario
-// - guardarPeticionConUsuarioSiNoExiste → guarda la solicitud en Firebase
+// 📄 Componente: FormInactivacion.jsx - VERSIÓN CORREGIDA
 // ============================================================================
 
 import { useState } from "react";
@@ -19,6 +8,7 @@ import { useUsuarios } from "../../../hooks/useUsuarios";
 import { getLogoEmpresa } from "../../../../public/LogoEmpresa/LogoEmpresa";
 import { enviarSolicitudCorreoinactivacio } from "../../../utils/sendEmailInactivacion";
 import { guardarPeticionConUsuarioSiNoExiste } from "../../../controllers/userController";
+import { inactivarUsuarioEnSheets } from "../../../services/UserGoogleExcel";
 
 export default function FormInactivacion({ onSubmitSuccess }) {
   const { usuarios, loading } = useUsuarios();
@@ -62,20 +52,30 @@ export default function FormInactivacion({ onSubmitSuccess }) {
   };
 
   // ============================================================
-  // 📤 Envío del formulario (guardar → correo)
+  // 📤 Envío del formulario (inactivar → guardar → correo)
   // ============================================================
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // ✅ Validaciones
     if (!formData.nombre || !formData.fechaRetiro) {
       alert("Por favor completa el nombre y la fecha de retiro antes de enviar.");
+      return;
+    }
+
+    if (!formData.cedula) {
+      alert("No se puede inactivar un usuario sin cédula.");
       return;
     }
 
     setEnviando(true);
 
     try {
-      // 1️⃣ Datos del usuario
+      // 1️⃣ INACTIVAR USUARIO EN GOOGLE SHEETS
+      console.log("🔄 Inactivando usuario en Google Sheets...", formData.cedula);
+      await inactivarUsuarioEnSheets(formData.cedula);
+      
+      // 2️⃣ Datos del usuario para Firebase
       const usuarioData = {
         nombre: formData.nombre,
         cedula: formData.cedula,
@@ -84,9 +84,10 @@ export default function FormInactivacion({ onSubmitSuccess }) {
         empresa: formData.empresa,
         ciudad: formData.ciudad,
         proceso: "GESTION HUMANA",
+        estado: "INACTIVO"
       };
 
-      // 2️⃣ Datos de la petición
+      // 3️⃣ Datos de la petición
       const peticionData = {
         tipoSolicitud: "INACTIVACION",
         fechaIngreso: formData.fechaRetiro,
@@ -104,31 +105,28 @@ export default function FormInactivacion({ onSubmitSuccess }) {
           correo: formData.correo,
           celular: "",
           equipo: formData.cargo,
-          cedula: formData.cedula // ✅ Agregar cédula aquí para referencia
+          cedula: formData.cedula
         },
       };
 
-      console.log("📦 Enviando datos a Firebase (INACTIVACION)...", {
-        usuarioData,
-        peticionData,
-      });
+      console.log("📦 Enviando datos a Firebase...");
 
-      // 3️⃣ Guardar en Firebase (NO se elimina automáticamente)
-      const resultado = await guardarPeticionConUsuarioSiNoExiste(
+      // 4️⃣ Guardar en Firebase
+      const resultadoFirebase = await guardarPeticionConUsuarioSiNoExiste(
         usuarioData,
         peticionData
       );
 
-      if (resultado.success) {
-        console.log("✅ Solicitud de inactivación guardada correctamente:", resultado);
+      if (resultadoFirebase.success) {
+        console.log("✅ Solicitud de inactivación guardada correctamente");
         
-        // 4️⃣ Enviar el correo de notificación
+        // 5️⃣ Enviar el correo de notificación
         enviarSolicitudCorreoinactivacio(
           "aprendiz.ti1@proservis.com.co,auxiliar.ti@proservis.com.co",
           formData
         );
 
-        // 5️⃣ Limpiar formulario
+        // 6️⃣ Limpiar formulario
         setFormData({
           nombre: "",
           cedula: "",
@@ -140,16 +138,16 @@ export default function FormInactivacion({ onSubmitSuccess }) {
           comentario: "",
         });
 
-        // 6️⃣ Notificar éxito
-        alert("✅ Solicitud de inactivación enviada correctamente. El área de TI la procesará próximamente.");
+        // 7️⃣ Notificar éxito
+        alert("✅ Usuario inactivado correctamente. Solicitud enviada al área de TI.");
 
-        // 7️⃣ Notificar al componente padre si es necesario
+        // 8️⃣ Notificar al componente padre
         if (onSubmitSuccess) {
-          onSubmitSuccess(resultado);
+          onSubmitSuccess(resultadoFirebase);
         }
 
       } else {
-        throw new Error(resultado.message || "Error al guardar la solicitud");
+        throw new Error(resultadoFirebase.message || "Error al guardar en Firebase");
       }
 
     } catch (error) {
@@ -163,8 +161,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
   // ============================================================
   // 🏢 Logo de la empresa
   // ============================================================
-  const logoEmpresa =
-    getLogoEmpresa(formData.empresa) || getLogoEmpresa(formData.correo);
+  const logoEmpresa = getLogoEmpresa(formData.empresa) || getLogoEmpresa(formData.correo);
 
   // ============================================================
   // 🧱 Renderizado del formulario
@@ -294,7 +291,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
             className="enviar-btn"
             disabled={enviando}
           >
-            {enviando ? "Enviando..." : "Enviar solicitud"}
+            {enviando ? "Inactivando usuario..." : "Inactivar usuario"}
           </button>
         </div>
       </form>

@@ -3,10 +3,11 @@
 // 🔗 URL del Apps Script para USUARIOS
 
 // ✅ URL pública de tu Apps Script desplegado como Web App
-const URL_USUARIOS_APPS_SCRIPT = '/api/proxy';
+//const URL_USUARIOS_APPS_SCRIPT = '/api/proxy';
+// src/services/UserGoogleExcel.js
 
-//De forma host => 
-//const URL_USUARIOS_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbwZlJ0VVKJT_b9cQKcZeopAlWf7D-E7l3q4CQy1k-opggNork0d1JPXcITwOQJX0rQ/exec';
+// 🔗 URL del Apps Script para USUARIOS
+const URL_USUARIOS_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbzswblpEw1POB2v2B5yYqRwZfQ4fM-uYPvJ9zw6GzNhSBqH0kxGIH-rNxkA3-HThG68/exec';
 
 /**
  * Envía datos de USUARIOS a Google Sheets usando Apps Script.
@@ -15,30 +16,30 @@ const URL_USUARIOS_APPS_SCRIPT = '/api/proxy';
  */
 export async function enviarUsuarioAAppsScript(datos) {
   try {
-    //console.log('📤 Enviando usuario a Google Sheets...', datos);
+    console.log('📤 Enviando datos a Google Sheets...', datos);
 
-    // Dentro de enviarUsuarioAAppsScript()
-    const datosNormalizados = {
-      action: datos.action,
-      cedula: datos["CEDULA"] || datos.cedula,
-      nombre: datos["NOMBRE / APELLIDO"] || datos.nombre,
-      correo: datos["CORREO"] || datos.correo,
-      cargo: datos["CARGO"] || datos.cargo,
-      empresa: datos["EMPRESA"] || datos.empresa,
-      ciudad: datos["CIUDAD"] || datos.ciudad,
-      estado: datos["ESTADO"] || "ACTIVO",
-      observacion: datos["OBSERVACION"] || "",
-    };
+    // ✅ VALIDACIÓN INTELIGENTE: Diferentes validaciones según la acción
+    if (!datos.action) {
+      throw new Error('Se requiere el campo "action" en los datos');
+    }
 
-
-    // 1️⃣ VALIDAR DATOS MÍNIMOS REQUERIDOS
-    if (!datosNormalizados.cedula || !datosNormalizados.nombre || !datosNormalizados.correo) {
-      throw new Error('Datos incompletos. Se requieren: cédula, nombre y correo');
+    // 🟢 Para NUEVO_USUARIO: validar todos los campos
+    if (datos.action === 'nuevo_usuario') {
+      if (!datos.cedula || !datos.nombre || !datos.correo) {
+        throw new Error('Datos incompletos. Se requieren: cédula, nombre y correo');
+      }
+    }
+    
+    // 🟡 Para INACTIVAR_USUARIO: solo validar cédula
+    if (datos.action === 'inactivar_usuario') {
+      if (!datos.cedula) {
+        throw new Error('Se requiere la cédula para inactivar usuario');
+      }
     }
 
     // 2️⃣ PREPARAR DATOS PARA ENVÍO
     const datosCompletos = {
-      ...datosNormalizados,
+      ...datos,
       timestamp: new Date().toISOString(),
       source: 'react-app'
     };
@@ -64,11 +65,11 @@ export async function enviarUsuarioAAppsScript(datos) {
     try {
       // Intentar parsear como JSON
       const respuestaJson = JSON.parse(textoRespuesta);
-      //console.log('✅ Usuario enviado exitosamente:', respuestaJson);
+      console.log('✅ Datos enviados exitosamente:', respuestaJson);
       return respuestaJson;
     } catch (parseError) {
       // Si no es JSON, devolver como texto
-      //console.log('✅ Usuario enviado. Respuesta texto:', textoRespuesta);
+      console.log('✅ Datos enviados. Respuesta texto:', textoRespuesta);
       return {
         success: true,
         message: textoRespuesta,
@@ -77,8 +78,36 @@ export async function enviarUsuarioAAppsScript(datos) {
     }
 
   } catch (error) {
-    //console.error('❌ Error al enviar usuario a Google Sheets:', error.message);
-    throw new Error(`Error al enviar usuario: ${error.message}`);
+    console.error('❌ Error al enviar datos a Google Sheets:', error.message);
+    throw new Error(`Error al enviar datos: ${error.message}`);
+  }
+}
+
+/**
+ * FUNCIÓN ESPECIALIZADA: Inactivar usuario en Google Sheets
+ * @param {string} cedula - Cédula del usuario a inactivar
+ * @returns {Promise<Object>} - Respuesta del servidor
+ */
+export async function inactivarUsuarioEnSheets(cedula) {
+  try {
+    console.log('🔄 Inactivando usuario en Google Sheets...', cedula);
+    
+    const datosInactivacion = {
+      action: 'inactivar_usuario',
+      cedula: cedula
+    };
+
+    const resultado = await enviarUsuarioAAppsScript(datosInactivacion);
+    
+    if (resultado.success) {
+      console.log("✅ Usuario inactivado en Google Sheets:", resultado);
+      return resultado;
+    } else {
+      throw new Error(resultado.message || "Error al inactivar en Sheets");
+    }
+  } catch (error) {
+    console.error("❌ Error al inactivar usuario en Sheets:", error);
+    throw error;
   }
 }
 
@@ -87,7 +116,7 @@ export async function enviarUsuarioAAppsScript(datos) {
  */
 export async function probarConexionUsuario() {
   try {
-    //console.log('🔍 Probando conexión con Google Sheets para usuarios...');
+    console.log('🔍 Probando conexión con Google Sheets para usuarios...');
 
     const datosPrueba = {
       action: 'test',
@@ -107,11 +136,11 @@ export async function probarConexionUsuario() {
     }
 
     const resultado = await response.text();
-    //console.log('✅ Conexión exitosa:', resultado);
+    console.log('✅ Conexión exitosa:', resultado);
     return { success: true, message: 'Conexión verificada' };
 
   } catch (error) {
-    //console.error('❌ Error probando conexión:', error);
+    console.error('❌ Error probando conexión:', error);
     throw error;
   }
 }
