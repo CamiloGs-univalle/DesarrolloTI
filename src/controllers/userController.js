@@ -156,9 +156,7 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
     // ------------------------------------------------------------
     // 🎯 🔟 Devolver resultado exitoso
     // ------------------------------------------------------------
-    return {
-      success: true
-    };
+    return;
 
   } catch (error) {
     // ------------------------------------------------------------
