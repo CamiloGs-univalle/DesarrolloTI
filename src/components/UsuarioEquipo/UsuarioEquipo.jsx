@@ -75,7 +75,7 @@ export default function UsuarioEquipo() {
       equipo: usuario.CARGO || '',
       proceso: usuario.PROCESO || ''
     }));
-    console.log('✅ Usuario autocompletado:', usuario);
+    //console.log('✅ Usuario autocompletado:', usuario);
   };
 
   // 4️⃣ MANEJADOR DE CAMBIOS PARA TODOS LOS INPUTS
@@ -85,7 +85,7 @@ export default function UsuarioEquipo() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
-    console.log(`📝 Campo actualizado: ${name} =`, type === 'checkbox' ? checked : value);
+    //console.log(`📝 Campo actualizado: ${name} =`, type === 'checkbox' ? checked : value);
   };
 
   // 5️⃣ MANEJADOR DE ENVÍO DEL FORMULARIO
@@ -94,7 +94,7 @@ export default function UsuarioEquipo() {
     setLoading(true);
 
     try {
-      console.log('🚀 Iniciando envío de formulario...');
+      //console.log('🚀 Iniciando envío de formulario...');
 
       // 5️⃣.1 VALIDAR DATOS MÍNIMOS
       if (!formData.cedula.trim()) {
@@ -164,13 +164,13 @@ export default function UsuarioEquipo() {
         estado: 'PENDIENTE'
       };
 
-      console.log('📦 Datos preparados - Usuario:', datosUsuario);
-      console.log('📦 Datos preparados - Petición:', datosPeticion);
+      //console.log('📦 Datos preparados - Usuario:', datosUsuario);
+      //console.log('📦 Datos preparados - Petición:', datosPeticion);
 
       // 5️⃣.4 EJECUTAR LA FUNCIÓN PRINCIPAL DE GUARDADO
       const resultado = await guardarPeticionConUsuarioSiNoExiste(datosUsuario, datosPeticion);
 
-      console.log('✅ Proceso completado:', resultado);
+      //console.log('✅ Proceso completado:', resultado);
 
       // 📨 Enviar correo automático
       enviarSolicitudCorreo(DESTINATARIOS_CORREO, {

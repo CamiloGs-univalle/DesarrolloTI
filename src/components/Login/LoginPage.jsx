@@ -29,7 +29,7 @@ export default function LoginPage() {
   // función que se llamará cuando el login sea exitoso
   const handleLoginSuccess = (user) => {
     // mostramos en consola el nombre (útil para debugging)
-    console.log("✅ Usuario logueado:", user?.displayName || user?.email || user);
+    //console.log("✅ Usuario logueado:", user?.displayName || user?.email || user);
     // redirigimos a la ruta /home (ajusta si tu ruta es otra)
     navigate("/home");
   };

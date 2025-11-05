@@ -9,8 +9,8 @@ import { db } from "../../firebase/firebase";
 
 // Logger configurado para desarrollo 
 const logger = {
-  log: (...args) => console.log('%c[LOG]', 'color: #2196F3; font-weight: bold', ...args),
-  error: (...args) => console.error('%c[ERROR]', 'color: #F44336; font-weight: bold', ...args)
+  //log: (...args) => console.log('%c[LOG]', 'color: #2196F3; font-weight: bold', ...args),
+  //error: (...args) => console.error('%c[ERROR]', 'color: #F44336; font-weight: bold', ...args)
 };
 
 export default function Home({ user }) {
@@ -25,10 +25,10 @@ export default function Home({ user }) {
 
   // Efecto para manejar cambios en el usuario
   useEffect(() => {
-    logger.log('🔄 Efecto de usuario activado', { user });
+    //logger.log('🔄 Efecto de usuario activado', { user });
 
     if (!user) {
-      logger.log('🔴 No hay usuario autenticado');
+      //logger.log('🔴 No hay usuario autenticado');
       setAvatarUrl('');
       return;
     }
@@ -36,7 +36,7 @@ export default function Home({ user }) {
     // Establecer nombre solicitante
     if (user.displayName) {
       setNombreSolicitante(user.displayName);
-      logger.log(`✏️ Nombre solicitante: ${user.displayName}`);
+      //logger.log(`✏️ Nombre solicitante: ${user.displayName}`);
     }
 
     // Manejar avatar del usuario
@@ -47,23 +47,23 @@ export default function Home({ user }) {
   const handleUserAvatar = (user) => {
     try {
       if (user?.photoURL?.trim()) {
-        logger.log(`🖼️ Intentando cargar avatar: ${user.photoURL}`);
+        //logger.log(`🖼️ Intentando cargar avatar: ${user.photoURL}`);
         verifyImage(user.photoURL).then(isValid => {
           if (isValid) {
             setAvatarUrl(user.photoURL);
             setAvatarLoadError(false);
-            logger.log('✅ Avatar cargado correctamente');
+            //logger.log('✅ Avatar cargado correctamente');
           } else {
             generateFallbackAvatar(user);
-            logger.error('❌ La URL del avatar no es accesible');
+            //logger.error('❌ La URL del avatar no es accesible');
           }
         });
       } else {
         generateFallbackAvatar(user);
-        logger.log('🔄 Generando avatar con iniciales');
+        //logger.log('🔄 Generando avatar con iniciales');
       }
     } catch (error) {
-      logger.error('Error al manejar avatar', error);
+      //logger.error('Error al manejar avatar', error);
       generateFallbackAvatar(user);
     }
   };
@@ -99,7 +99,7 @@ export default function Home({ user }) {
 
   // Manejo de errores de imagen
   const handleImageError = (e) => {
-    logger.error('Error al cargar avatar', e.target.src);
+    //logger.error('Error al cargar avatar', e.target.src);
     generateFallbackAvatar(user);
   };
 
