@@ -16,7 +16,7 @@ export class GoogleSheetsService {
    */
   static async enviarUsuario(datosUsuario) {
     try {
-      console.log('📤 Enviando usuario a Google Sheets...', datosUsuario);
+      //console.log('📤 Enviando usuario a Google Sheets...', datosUsuario);
       
       // Validar datos mínimos requeridos
       if (!datosUsuario.cedula || !datosUsuario.nombre || !datosUsuario.correo) {
@@ -30,8 +30,8 @@ export class GoogleSheetsService {
         ...datosUsuario
       };
       
-      console.log('📦 Datos a enviar:', datosParaEnviar);
-      console.log('🔗 URL destino:', URL_APPS_SCRIPT);
+      //console.log('📦 Datos a enviar:', datosParaEnviar);
+      //console.log('🔗 URL destino:', URL_APPS_SCRIPT);
       
       // Realizar la petición POST con timeout
       const controller = new AbortController();
@@ -48,7 +48,7 @@ export class GoogleSheetsService {
       
       clearTimeout(timeoutId);
       
-      console.log('📨 Respuesta HTTP recibida:', response.status, response.statusText);
+      //console.log('📨 Respuesta HTTP recibida:', response.status, response.statusText);
       
       // Verificar si la respuesta es OK
       if (!response.ok) {
@@ -58,12 +58,12 @@ export class GoogleSheetsService {
       // Parsear la respuesta JSON
       const respuesta = await response.json();
       
-      console.log('✅ Respuesta de Google Sheets:', respuesta);
+      //console.log('✅ Respuesta de Google Sheets:', respuesta);
       
       return respuesta;
       
     } catch (error) {
-      console.error('❌ Error enviando usuario:', error);
+      //console.error('❌ Error enviando usuario:', error);
       
       // Mensajes de error más específicos
       if (error.name === 'AbortError') {
@@ -83,8 +83,8 @@ export class GoogleSheetsService {
    */
   static async probarConexion() {
     try {
-      console.log('🔍 Probando conexión con Apps Script...');
-      console.log('🔗 URL:', URL_APPS_SCRIPT);
+      //console.log('🔍 Probando conexión con Apps Script...');
+      //console.log('🔗 URL:', URL_APPS_SCRIPT);
       
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -104,11 +104,11 @@ export class GoogleSheetsService {
       }
       
       const data = await response.json();
-      console.log('✅ Conexión exitosa:', data);
+      //console.log('✅ Conexión exitosa:', data);
       return data;
       
     } catch (error) {
-      console.error('❌ Error probando conexión:', error);
+      //console.error('❌ Error probando conexión:', error);
       
       if (error.name === 'AbortError') {
         throw new Error('Timeout: No se pudo conectar en 10 segundos. Verifica el proxy.');

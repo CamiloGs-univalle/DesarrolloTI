@@ -34,7 +34,7 @@ export async function enviarRespuesta(solicitud, textoRespuesta) {
         "auxiliar.ti@proservis.com.co", // fallback
     };
 
-    console.log("📨 Enviando respuesta:", data);
+    //console.log("📨 Enviando respuesta:", data);
 
     // 🚀 Enviar al Apps Script
     const response = await fetch(URL_APPS_SCRIPT, {
@@ -46,7 +46,7 @@ export async function enviarRespuesta(solicitud, textoRespuesta) {
     });
 
     const result = await response.json();
-    console.log("🔁 Respuesta del servidor:", result);
+    //console.log("🔁 Respuesta del servidor:", result);
 
     if (!result.ok) throw new Error(result.msg || "Error desconocido al enviar correo");
 
@@ -54,7 +54,7 @@ export async function enviarRespuesta(solicitud, textoRespuesta) {
     if (solicitud.id) {
       const solicitudRef = doc(collection(db, "solicitudes"), solicitud.id);
       await deleteDoc(solicitudRef);
-      console.log(`🗑️ Solicitud ${solicitud.id} eliminada correctamente`);
+      //console.log(`🗑️ Solicitud ${solicitud.id} eliminada correctamente`);
     }
 
     return { ok: true, msg: "Correo enviado y solicitud eliminada correctamente" };

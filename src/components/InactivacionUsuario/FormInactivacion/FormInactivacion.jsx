@@ -16,7 +16,7 @@
 import { useState } from "react";
 import { Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { useUsuarios } from "../../../hooks/useUsuarios";
-import { getLogoEmpresa } from "../../../LogoEmpresa/LogoEmpresa";
+import { getLogoEmpresa } from "../../../../public/LogoEmpresa/LogoEmpresa";
 import { enviarSolicitudCorreoinactivacio } from "../../../utils/sendEmailInactivacion";
 import { guardarPeticionConUsuarioSiNoExiste } from "../../../controllers/userController";
 
