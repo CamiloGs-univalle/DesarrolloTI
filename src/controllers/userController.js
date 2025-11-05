@@ -156,6 +156,12 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
     // ------------------------------------------------------------
     // 🎯 🔟 Devolver resultado exitoso
     // ------------------------------------------------------------
+    return {
+      success: true,
+      mensaje: 'Petición y usuario procesados correctamente',
+      usuarioCreado,
+      idPeticion
+    };
 
   } catch (error) {
     // ------------------------------------------------------------
