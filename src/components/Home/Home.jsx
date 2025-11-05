@@ -8,10 +8,10 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 
 // Logger configurado para desarrollo 
-const logger = {
+//const logger = {
   //log: (...args) => console.log('%c[LOG]', 'color: #2196F3; font-weight: bold', ...args),
   //error: (...args) => console.error('%c[ERROR]', 'color: #F44336; font-weight: bold', ...args)
-};
+//};
 
 export default function Home({ user }) {
   // Estados
