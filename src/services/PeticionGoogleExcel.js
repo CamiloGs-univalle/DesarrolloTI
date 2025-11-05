@@ -28,7 +28,7 @@ export async function enviarPeticionAAppsScript(datos) {
       timestamp: datos.timestamp || Date.now()
     };
 
-    console.log('📤 Enviando petición a Google Sheets...', peticionNormalizada);
+    //console.log('📤 Enviando petición a Google Sheets...', peticionNormalizada);
 
     const response = await fetch(URL_PETICIONES_APPS_SCRIPT, {
       method: 'POST',
@@ -47,10 +47,10 @@ export async function enviarPeticionAAppsScript(datos) {
 
     try {
       const respuestaJson = JSON.parse(textoRespuesta);
-      console.log(`✅ Petición enviada exitosamente:`, respuestaJson);
+      //console.log(`✅ Petición enviada exitosamente:`, respuestaJson);
       return respuestaJson;
     } catch {
-      console.log(`✅ Petición enviada. Respuesta texto:`, textoRespuesta);
+      //console.log(`✅ Petición enviada. Respuesta texto:`, textoRespuesta);
       return { success: true, message: textoRespuesta };
     }
   } catch (error) {

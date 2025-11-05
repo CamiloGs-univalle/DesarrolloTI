@@ -15,7 +15,7 @@ const URL_USUARIOS_APPS_SCRIPT = '/api/proxy';
  */
 export async function enviarUsuarioAAppsScript(datos) {
   try {
-    console.log('📤 Enviando usuario a Google Sheets...', datos);
+    //console.log('📤 Enviando usuario a Google Sheets...', datos);
 
     // Dentro de enviarUsuarioAAppsScript()
     const datosNormalizados = {
@@ -64,11 +64,11 @@ export async function enviarUsuarioAAppsScript(datos) {
     try {
       // Intentar parsear como JSON
       const respuestaJson = JSON.parse(textoRespuesta);
-      console.log('✅ Usuario enviado exitosamente:', respuestaJson);
+      //console.log('✅ Usuario enviado exitosamente:', respuestaJson);
       return respuestaJson;
     } catch (parseError) {
       // Si no es JSON, devolver como texto
-      console.log('✅ Usuario enviado. Respuesta texto:', textoRespuesta);
+      //console.log('✅ Usuario enviado. Respuesta texto:', textoRespuesta);
       return {
         success: true,
         message: textoRespuesta,
@@ -77,7 +77,7 @@ export async function enviarUsuarioAAppsScript(datos) {
     }
 
   } catch (error) {
-    console.error('❌ Error al enviar usuario a Google Sheets:', error.message);
+    //console.error('❌ Error al enviar usuario a Google Sheets:', error.message);
     throw new Error(`Error al enviar usuario: ${error.message}`);
   }
 }
@@ -87,7 +87,7 @@ export async function enviarUsuarioAAppsScript(datos) {
  */
 export async function probarConexionUsuario() {
   try {
-    console.log('🔍 Probando conexión con Google Sheets para usuarios...');
+    //console.log('🔍 Probando conexión con Google Sheets para usuarios...');
 
     const datosPrueba = {
       action: 'test',
@@ -107,11 +107,11 @@ export async function probarConexionUsuario() {
     }
 
     const resultado = await response.text();
-    console.log('✅ Conexión exitosa:', resultado);
+    //console.log('✅ Conexión exitosa:', resultado);
     return { success: true, message: 'Conexión verificada' };
 
   } catch (error) {
-    console.error('❌ Error probando conexión:', error);
+    //console.error('❌ Error probando conexión:', error);
     throw error;
   }
 }
