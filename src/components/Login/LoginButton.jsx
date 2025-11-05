@@ -29,7 +29,7 @@ export default function LoginButton({ setError, onLoginSuccess }) {
       onLoginSuccess(user);
     } catch (err) {
       // si hay error, mostramos mensaje amigable
-      console.error("Error en login Google:", err);
+      //console.error("Error en login Google:", err);
       setError("Error al iniciar sesión. Intenta nuevamente.");
     } finally {
       // siempre desactivamos loading

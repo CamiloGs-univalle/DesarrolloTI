@@ -157,30 +157,7 @@ export default function CargoNuevoForm({ formData, onChange, formType = "Cargo N
               <option key={index} value={cargo} />
             ))}
           </datalist>
-        </div>
-
-        {/* EQUIPO */}
-        <div className="campo-checkboxes">
-          <span>EQUIPO</span>
-          <label>
-            <input
-              type="checkbox"
-              name="alquilar"
-              checked={formData.alquilar}
-              onChange={onChange}
-            />
-            Alquilar
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              name="asignar"
-              checked={formData.asignar}
-              onChange={onChange}
-            />
-            Asignar
-          </label>
-        </div>
+        </div>  
 
         {/* CORREO CORPORATIVO */}
         <div className="campo">
