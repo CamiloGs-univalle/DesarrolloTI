@@ -3,9 +3,11 @@ import './Home.css';
 import UsuarioEquipo from '../UsuarioEquipo/UsuarioEquipo';
 import { auth, signInWithGoogle } from '../../firebase/authService';
 import InactivacionUsuario from '../InactivacionUsuario/InactivacionUsuario';
-import FondoHomeAnimado from '../FondosAnimados/FondoHomeAnimado';
+// arriba junto a otros imports
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "../../firebase/firebase";
 
-// Logger configurado para desarrollo
+// Logger configurado para desarrollo 
 const logger = {
   log: (...args) => console.log('%c[LOG]', 'color: #2196F3; font-weight: bold', ...args),
   error: (...args) => console.error('%c[ERROR]', 'color: #F44336; font-weight: bold', ...args)
@@ -115,9 +117,7 @@ export default function Home({ user }) {
 
   return (
     <div className="home-wrapper">
-
       <header className="app-header">
-        
         <h1 className="header-title">Solicitud al Área TI</h1>
         <div className="header-left">
           {user && (
@@ -168,7 +168,7 @@ export default function Home({ user }) {
             >
               Usuario y Equipo
               <img
-                src="/public/logo/icono_usuario.png"
+                src="/logo/icono_usuario.png"
                 alt="Icono Usuario"
                 style={{ width: '25px', height: '25px', marginRight: '8px', verticalAlign: 'middle' }}
               />
@@ -196,7 +196,6 @@ export default function Home({ user }) {
           </div>
 
           <div className="form-panel">{renderView()}</div>
-      
         </div>
       </div>
     </div>
