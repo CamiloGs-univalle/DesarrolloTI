@@ -1,6 +1,6 @@
 // src/utils/responderEmail.js
 import { collection, updateDoc, doc, deleteDoc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { db } from "../../models/firebase/firebase";
 
 //const URL_APPS_SCRIPT ="http://localhost:8020/proxy/macros/s/AKfycbzzbp9QRUdVwJb-QLI69M4l0cCPExJUYneq7b90mgwzJ1oCQWCDgnyHHQJZ1Exr0UmD/exec";
 
