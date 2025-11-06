@@ -63,7 +63,10 @@ export default function UsuarioReemplazoForm({ formData, onChange, onUsuarioSele
             id="cargo"
             name="cargo"
             value={formData.cargo}
-            onChange={onChange}
+            onChange={(e) => {
+              e.target.value = e.target.value.toUpperCase();
+              onChange(e);
+            }}
           />
         </div>
 

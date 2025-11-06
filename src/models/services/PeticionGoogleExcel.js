@@ -57,7 +57,7 @@ export async function enviarPeticionAAppsScript(datos) {
       return { success: true, message: textoRespuesta };
     }
   } catch (error) {
-    console.error(`❌ Error al enviar petición a Google Sheets:`, error.message);
+    //console.error(`❌ Error al enviar petición a Google Sheets:`, error.message);
     throw new Error(`Error al enviar petición: ${error.message}`);
   }
 }

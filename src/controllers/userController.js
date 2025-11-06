@@ -121,7 +121,7 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
     // ------------------------------------------------------------
     const peticionRef = doc(db, 'peticiones', idPeticion);
     await setDoc(peticionRef, nuevaPeticion);
-    console.log(`✅ Petición guardada en Firebase con ID: ${idPeticion}`);
+    //console.log(`✅ Petición guardada en Firebase con ID: ${idPeticion}`);
 
     // ------------------------------------------------------------
     // 📤 8️⃣ Enviar la solicitud al Apps Script (Google Sheets)
