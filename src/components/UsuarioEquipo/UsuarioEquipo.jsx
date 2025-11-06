@@ -5,7 +5,7 @@ import UsuarioNuevoForm from './nuevo_usuario/UsuarioNuevoForm.jsx';
 import UsuarioReemplazoForm from './Remplazo/UsuarioReemplazoForm';
 import CargoNuevoForm from './Nuevo_Cargo/CargoNuevoForm';
 import { guardarPeticionConUsuarioSiNoExiste } from '../../controllers/userController.js';
-import { enviarSolicitudCorreo } from '../../utils/sendEmail.js';
+import { enviarSolicitudCorreo } from '../../models/utils/sendEmail.js';
 import FondoHomeAnimado from '../FondosAnimados/FondoHomeAnimado.jsx';
 
 

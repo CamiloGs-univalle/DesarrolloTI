@@ -1,5 +1,5 @@
 // pages/api/procesar-peticion.js
-import { PeticionController } from '../../src/controllers/peticionController';
+import { PeticionController } from '../../controllers/peticionController';
 
 export default async function handler(req, res) {
   // Solo permitir POST

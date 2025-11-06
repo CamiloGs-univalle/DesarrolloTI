@@ -1,3 +1,4 @@
+// src/components/PruebaGoogle.jsx
 import React, { useEffect, useRef } from "react";
 import "./PruebaGoogle.css";
 

@@ -13,9 +13,9 @@
 // ============================================================================
 
 import { doc, setDoc, collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../firebase/firebase';
-import { enviarUsuarioAAppsScript } from '../services/UserGoogleExcel';
-import { enviarPeticionAAppsScript } from '../services/PeticionGoogleExcel';
+import { db } from '../models/firebase/firebase';
+import { enviarUsuarioAAppsScript } from '../models/services/UserGoogleExcel';
+import { enviarPeticionAAppsScript } from '../models/services/PeticionGoogleExcel';
 
 // ============================================================================
 // 🧩 Función principal: guardarPeticionConUsuarioSiNoExiste
@@ -167,7 +167,7 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
     // ------------------------------------------------------------
     // ❌ Manejo global de errores
     // ------------------------------------------------------------
-    console.error('❌ Error guardando petición o usuario:', error);
+    //console.error('❌ Error guardando petición o usuario:', error);
     throw new Error(`Error al guardar la petición: ${error.message}`);
   }
 }

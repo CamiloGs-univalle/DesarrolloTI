@@ -1,7 +1,7 @@
 // src/pages/HomeTI/HomeTI.jsx
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebase/firebase"; 
+import { db } from "../../models/firebase/firebase"; 
 import ListaPendiente from "../ListaPendiente/ListaPendiente";
 import DetalleSolicitud from "../ListaPendiente/DetalleSolicitud/DetalleSolicitud";
 import RespuestaSolicitud from "../ListaPendiente/RespuestaSolicitud/RespuestaSolicitud";

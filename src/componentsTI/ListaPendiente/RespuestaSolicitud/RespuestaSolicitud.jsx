@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { doc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../../../firebase/firebase";
-import { enviarRespuesta } from "../../../utils/responderEmail";
+import { db } from "../../../models/firebase/firebase";
+import { enviarRespuesta } from "../../../models/utils/responderEmail";
 import "./RespuestaSolicitud.css";
 
 export default function RespuestaSolicitud({ solicitud, onEliminada }) {

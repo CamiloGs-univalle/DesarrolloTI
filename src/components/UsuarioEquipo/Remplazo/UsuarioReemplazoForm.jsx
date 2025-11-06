@@ -1,5 +1,5 @@
 import { Autocomplete, TextField, CircularProgress } from "@mui/material";
-import { useUsuarios } from "../../../hooks/useUsuarios";
+import { useUsuarios } from "../../../models/hooks/useUsuarios";
 import React from "react";
 
 export default function UsuarioReemplazoForm({ formData, onChange, onUsuarioSeleccionado }) {

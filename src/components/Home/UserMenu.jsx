@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { auth, signInWithGoogle } from "../../firebase/authService";
+import { auth, signInWithGoogle } from "../../models/firebase/authService";
 import { useNavigate } from "react-router-dom";
 import "./UserMenu.css";
 
@@ -49,7 +49,7 @@ export default function UserMenu({ user, nombreSolicitante }) {
       await auth.signOut();
       navigate("/login"); // Redirecciona al login
     } catch (error) {
-      console.error("Error al cerrar sesión:", error);
+      //console.error("Error al cerrar sesión:", error);
     }
   };
 

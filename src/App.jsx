@@ -1,12 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase/authService";
-
-import LoginPage from "./components/Login/LoginPage";
+import { auth } from "./models/firebase/authService";
 import Home from "./components/Home/Home";
 import HomeTI from "./componentsTI/HomeTI/HomeTI";
-import PruebaGoogle from "./components/PruebaGoogle";
+import LoginPage from "./components/Login/LoginPage";
+//import PruebaGoogle from "./src/components/PruebaGoogle.jsx";
 
 
 export default function App() {
@@ -74,8 +73,9 @@ export default function App() {
             )
           }
         />
-        {/* DEFAULT */}
+        {/* DEFAULT 
         <Route path="/prueba" element={<PruebaGoogle/>} />
+        */}
 
         {/* DEFAULT */}
         <Route path="*" element={<Navigate to="/" replace />} />
