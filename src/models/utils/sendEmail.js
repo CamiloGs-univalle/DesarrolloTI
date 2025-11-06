@@ -34,7 +34,7 @@ Ciudad: ${data.ciudad}
 Empresa: ${data.empresa}
 Licencia: Utilizaba ${data.usuarioReemplazar || 'N/A'}
 Permisos: Utilizaba ${data.usuarioReemplazar || 'N/A'}
-Correo: Utilizaba ${data.correo || 'N/A'}
+Correo: Utilizaba ${data.correo || datos.nuevoCorreo || 'N/A'}
 
 Muchas gracias, quedamos atentos.`
   );
