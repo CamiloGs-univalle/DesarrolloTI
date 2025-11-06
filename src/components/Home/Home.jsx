@@ -9,8 +9,8 @@ import { db } from "../../models/firebase/firebase";
 
 // Logger configurado para desarrollo 
 //const logger = {
-  //log: (...args) => console.log('%c[LOG]', 'color: #2196F3; font-weight: bold', ...args),
-  //error: (...args) => console.error('%c[ERROR]', 'color: #F44336; font-weight: bold', ...args)
+//log: (...args) => console.log('%c[LOG]', 'color: #2196F3; font-weight: bold', ...args),
+//error: (...args) => console.error('%c[ERROR]', 'color: #F44336; font-weight: bold', ...args)
 //};
 
 export default function Home({ user }) {
@@ -138,16 +138,25 @@ export default function Home({ user }) {
           menuOpen && (
             <div className="dropdown-menu" ref={menuRef}>
               <div className="dropdown-user-info">
-                <strong>{user.displayName || 'Usuario'}</strong>
-                <p>{user.email || 'No tiene email'}</p>
+                <strong>{user.displayName || "Usuario"}</strong>
+                <p>{user.email || "No tiene email"}</p>
               </div>
-              <button onClick={signInWithGoogle}>Cambiar de cuenta</button>
-              <button onClick={() => auth.signOut()}>Cerrar sesión</button>
+
+              <hr />
+
+              <button onClick={signInWithGoogle}>
+                <i className="fa-solid fa-right-left"></i> Cambiar de cuenta
+              </button>
+
+              <button onClick={() => auth.signOut()}>
+                <i className="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+              </button>
             </div>
           )
         ) : (
           <div className="user-loading">Autenticando...</div>
         )}
+
       </header>
 
 

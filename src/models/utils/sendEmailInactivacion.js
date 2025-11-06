@@ -40,12 +40,12 @@ Agradezco tu atención a esta solicitud.
 
 Por favor, te solicito proceder con la inactivación de los usuarios correspondientes al personal que se encuentra laborando hasta el día ${fechaRetiro}.
 
-Nombre: ${data.nombre || ""}
-Cédula: ${data.cedula || ""}
-Cargo: ${data.cargo || ""}
-Ciudad: ${data.ciudad || ""}
-Empresa: ${data.empresa || ""}
-Fecha de retiro: ${fechaRetiro || ""}
+  Nombre: ${data.nombre || ""}
+  Cédula: ${data.cedula || ""}
+  Cargo: ${data.cargo || ""}
+  Ciudad: ${data.ciudad || ""}
+  Empresa: ${data.empresa || ""}
+  Fecha de retiro: ${fechaRetiro || ""}
 
 Muchas gracias, quedamos atentos.`
   );
