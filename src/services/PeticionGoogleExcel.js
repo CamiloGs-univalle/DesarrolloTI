@@ -1,7 +1,7 @@
 // src/services/PeticionGoogleExcel.js
-//const URL_PETICIONES_APPS_SCRIPT = '/api/proxy';
+const URL_PETICIONES_APPS_SCRIPT = '/api/proxy';
 //De forma host => 
-const URL_PETICIONES_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbwZlJ0VVKJT_b9cQKcZeopAlWf7D-E7l3q4CQy1k-opggNork0d1JPXcITwOQJX0rQ/exec';
+//const URL_PETICIONES_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbwZlJ0VVKJT_b9cQKcZeopAlWf7D-E7l3q4CQy1k-opggNork0d1JPXcITwOQJX0rQ/exec';
 
 
 /**
