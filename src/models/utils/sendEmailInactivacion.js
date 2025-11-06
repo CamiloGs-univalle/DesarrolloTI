@@ -1,7 +1,7 @@
 // src/utils/sendInactivacionEmail.js
 
 // 🔹 Importamos la autenticación desde Firebase (para obtener el correo del usuario logueado)
-import { auth } from "../models/firebase/authService";
+import { auth } from "../firebase/authService";
 
 /**
  * 🗓️ Convierte una fecha ISO (YYYY-MM-DD) en formato español "10 OCTUBRE 2025"

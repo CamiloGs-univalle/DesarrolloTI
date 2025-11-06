@@ -1,5 +1,5 @@
 // src/utils/sendEmail.js
-import { auth } from "../models/firebase/authService";
+import { auth } from "../firebase/authService";
 
 /**
  * Convierte una fecha ISO (YYYY-MM-DD) en "06 SEPTIEMBRE 2025"
