@@ -1,12 +1,79 @@
 import { useState } from "react";
 import "./CargoNuevoForm.css";
 import { guardarPeticionConUsuarioSiNoExiste } from "../../../controllers/userController.js";
+import { enviarSolicitudCorreo } from "../../../models/utils/sendEmail.js"; // 📨 Importa función de correo
 
-export default function CargoNuevoForm({ formData, onChange, formType = "Cargo Nuevo" }) {
+export default function CargoNuevoForm({
+  formData,
+  onChange,
+  formType = "Cargo Nuevo",
+}) {
   const [estadoEnvio, setEstadoEnvio] = useState("idle");
   const [loading, setLoading] = useState(false);
-  const esCorporativo = formData.correoCorporativo;
 
+  // 📧 Destinatarios del área de TI
+  const DESTINATARIOS_CORREO = [
+    "aprendiz.ti1@proservis.com.co",
+    "auxiliar.ti@proservis.com.co",
+    "coordinador.ti@proservis.com.co",
+  ];
+
+  // 🧩 Evento principal de envío
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setEstadoEnvio("enviando");
+
+    try {
+      // 🧾 Datos de usuario
+      const datosUsuario = {
+        nombre: formData.nombre?.trim().toUpperCase() || "",
+        cedula: formData.cedula?.trim() || "",
+        correo: formData.correo?.trim().toLowerCase() || "",
+        cargo: formData.cargo?.trim().toUpperCase() || "",
+        empresa: formData.empresa?.trim().toUpperCase() || "",
+        ciudad: formData.ciudad?.trim().toUpperCase() || "",
+        fechaIngreso: formData.fechaIngreso || "",
+      };
+
+      // 🧾 Datos de la solicitud
+      const datosPeticion = {
+        solicitante: formData.nombre?.trim().toUpperCase() || "",
+        tipoSolicitud: formType,
+        cargo: formData.cargo?.trim().toUpperCase() || "",
+        empresa: formData.empresa?.trim().toUpperCase() || "",
+        ciudad: formData.ciudad?.trim().toUpperCase() || "",
+        comentario: formData.comentario?.trim() || "",
+        correoCorporativo: formData.correoCorporativo || "",
+        nuevoCorreo: formData.nuevoCorreo || "",
+        fechaIngreso: formData.fechaIngreso || "",
+      };
+
+      // 💾 Guardar datos en Firebase + Google Sheets
+      const resultado = await guardarPeticionConUsuarioSiNoExiste(
+        datosUsuario,
+        datosPeticion
+      );
+
+      console.log("✅ Resultado de guardado:", resultado);
+
+      // 📨 Enviar correo automáticamente a TI
+      enviarSolicitudCorreo(DESTINATARIOS_CORREO, {
+        ...datosUsuario,
+        ...datosPeticion,
+      });
+
+      // ✅ Confirmar estado
+      setEstadoEnvio("enviado");
+      alert("✅ Solicitud guardada y correo abierto correctamente.");
+    } catch (error) {
+      console.error("❌ Error al enviar solicitud:", error);
+      setEstadoEnvio("error");
+      alert("❌ Error al guardar o enviar el correo.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // --- LISTA DE CARGOS PARA AUTOCOMPLETAR ---
   const cargos = [
@@ -89,46 +156,6 @@ export default function CargoNuevoForm({ formData, onChange, formType = "Cargo N
     "PRESIDENTE",
   ];
 
-  // --- MANEJO DE ENVÍO ---
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setEstadoEnvio("enviando");
-
-    try {
-      const datosUsuario = {
-        nombre: formData.nombre.trim(),
-        cedula: formData.cedula.trim(),
-        correo: formData.correo.trim(),
-        cargo: formData.cargo.trim(),
-        empresa: formData.empresa.trim(),
-        ciudad: formData.ciudad.trim(),
-        fechaIngreso: formData.fechaIngreso,
-      };
-
-      const datosPeticion = {
-        solicitante: formData.nombre.trim(),
-        tipoSolicitud: formType,
-        cargo: formData.cargo.trim(),
-        empresa: formData.empresa.trim(),
-        ciudad: formData.ciudad.trim(),
-        comentario: formData.comentario || "",
-        correoCorporativo: formData.correoCorporativo,
-        nuevoCorreo: formData.nuevoCorreo,
-      };
-
-      const resultado = await guardarPeticionConUsuarioSiNoExiste(datosUsuario, datosPeticion);
-      //console.log("✅ Proceso completado. Cargo guardado:", resultado.cargo);
-
-      setEstadoEnvio("enviado");
-    } catch (error) {
-      //console.error("❌ Error:", error);
-      setEstadoEnvio("error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // --- FILTRO DE AUTOCOMPLETADO ---
   const sugerenciasCargo = cargos.filter((c) =>
     c.toLowerCase().includes((formData.cargo || "").toLowerCase())
@@ -161,7 +188,7 @@ export default function CargoNuevoForm({ formData, onChange, formType = "Cargo N
             ))}
           </datalist>
         </div>
-        
+
         {/* NUEVO CORREO */}
         <div className="campo">
           <label htmlFor="nuevoCorreo">Correo a crear</label>
