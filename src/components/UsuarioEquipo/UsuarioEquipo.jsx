@@ -7,6 +7,8 @@ import CargoNuevoForm from './Nuevo_Cargo/CargoNuevoForm';
 import { guardarPeticionConUsuarioSiNoExiste } from '../../controllers/userController.js';
 import { enviarSolicitudCorreo } from '../../models/utils/sendEmail.js';
 import FondoHomeAnimado from '../FondosAnimados/FondoHomeAnimado.jsx';
+import ButtonEnviar from '../FondosAnimados/Button/ButtonEnviar.jsx';
+
 
 
 /**
@@ -22,6 +24,19 @@ export default function UsuarioEquipo() {
     "auxiliar.ti@proservis.com.co",
 
   ];
+
+   // ✅ Validación real del formulario
+  const isFormValid = () => {
+    return (
+      formData.nombre.trim() !== '' &&
+      formData.cedula.trim() !== '' &&
+      formData.correo.trim() !== '' &&
+      formData.fechaIngreso.trim() !== '' &&
+      (formType === 'cargo'
+        ? formData.cargo.trim() !== ''
+        : formData.usuarioReemplazar.trim() !== '')
+    );
+  };
 
 
   // 2️⃣ ESTADO PARA TODOS LOS DATOS DEL FORMULARIO
@@ -56,6 +71,9 @@ export default function UsuarioEquipo() {
     // 📊 DATOS ADICIONALES
     proceso: ''
   });
+  // 2.1️⃣ VALIDACIÓN BÁSICA DEL FORMULARIO
+
+
 
   // 3️⃣ MANEJADOR PARA USUARIO SELECCIONADO DEL AUTOCOMPLETADO
   const handleUsuarioSeleccionado = (usuario) => {
@@ -272,15 +290,12 @@ export default function UsuarioEquipo() {
         </div>
 
         {/* 🚀 BOTÓN DE ENVÍO */}
+        {/* 🚀 BOTÓN DE ENVÍO ANIMADO */}
         <div className="submit-container">
-          <button
-            type="submit"
-            className="enviar-btn"
-            disabled={loading}
-          >
-            {loading ? '⏳ Enviando...' : '📤 Enviar Petición'}
-          </button>
+          <ButtonEnviar onClick={handleSubmit} isFormValid={isFormValid()} />
+
         </div>
+
 
 
         {/* ℹ️ INFORMACIÓN DE ESTADO */}

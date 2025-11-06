@@ -1,0 +1,144 @@
+/* ======================================================
+   ButtonEnviar.css - Versión verde corporativa
+   ====================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+/* ------------------ BOTÓN BASE ------------------ */
+.send-button {
+    position: relative;
+    padding: 16px 38px;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, #036610 0%, #018a0c 100%);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 150, 90, 0.3);
+    transition: all 0.3s ease;
+    min-width: 180px;
+}
+
+.send-button:hover:not(.flying):not(.complete):not(.disabled) {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 25px rgba(0, 180, 100, 0.45);
+}
+
+/* ------------------ ESTADO DESHABILITADO ------------------ */
+.send-button.disabled {
+    background: linear-gradient(135deg, #b2bec3 0%, #636e72 100%);
+    cursor: not-allowed;
+    opacity: 0.7;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ------------------ CONTENIDO INTERNO ------------------ */
+.button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+}
+
+.plane-icon {
+    width: 26px;
+    height: 26px;
+    transition: all 0.3s ease;
+}
+
+.text-enviar {
+    transition: all 0.7s ease;
+    opacity: 1;
+}
+
+.runway {
+    position: absolute;
+    bottom: 25%;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 3px;
+    background: white;
+    width: 0;
+    opacity: 0;
+    border-radius: 2px;
+    transition: all 0.7s ease;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0);
+}
+
+.text-listo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: all 0.5s ease;
+    white-space: nowrap;
+}
+
+.checkmark {
+    display: inline-block;
+    margin-right: 5px;
+    font-size: 20px;
+    color: #7cfc00;
+}
+
+/* ------------------ ESTADOS ------------------ */
+.send-button.flying .plane-icon {
+    animation: taxiAndFly 4s cubic-bezier(0.42, 0, 0.22, 1) forwards;
+}
+
+.send-button.flying .text-enviar {
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.send-button.flying .runway {
+    width: 160px;
+    opacity: 1;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.9);
+}
+
+.send-button.complete .text-listo {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.send-button.complete .plane-icon,
+.send-button.complete .runway {
+    opacity: 0;
+}
+
+/* ------------------ ANIMACIÓN: taxi + despegue ------------------ */
+@keyframes taxiAndFly {
+    0% {
+        transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+
+    20% {
+        transform: translateX(60px) translateY(0) rotate(0deg) scale(1);
+    }
+
+    40% {
+        transform: translateX(120px) translateY(-3px) rotate(-5deg) scale(0.95);
+    }
+
+    60% {
+        transform: translateX(200px) translateY(-10px) rotate(-10deg) scale(0.9);
+    }
+
+    80% {
+        transform: translateX(300px) translateY(-40px) rotate(-20deg) scale(0.8);
+    }
+
+    100% {
+        transform: translateX(500px) translateY(-200px) rotate(-30deg) scale(0.6);
+        opacity: 0;
+    }
+}

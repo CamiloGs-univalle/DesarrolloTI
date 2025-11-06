@@ -9,9 +9,21 @@ import { getLogoEmpresa } from "../../../../public/LogoEmpresa/LogoEmpresa";
 import { enviarSolicitudCorreoinactivacio } from "../../../models/utils/sendEmailInactivacion";
 import { guardarPeticionConUsuarioSiNoExiste } from "../../../controllers/userController";
 import { inactivarUsuarioEnSheets } from "../../../models/services/UserGoogleExcel";
+import ButtonEnviar from "../../FondosAnimados/Button/ButtonEnviar";
 
 export default function FormInactivacion({ onSubmitSuccess }) {
   const { usuarios, loading } = useUsuarios();
+
+  const isFormValid = () => {
+    return (
+      formData.nombre.trim() !== '' &&
+      formData.cedula.trim() !== '' &&
+      formData.correo.trim() !== '' &&
+      formData.fechaRetiro.trim() !== '' &&
+      formData.cargo.trim() !== ''
+    );
+  };
+
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -74,7 +86,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
       // 1️⃣ INACTIVAR USUARIO EN GOOGLE SHEETS
       //console.log("🔄 Inactivando usuario en Google Sheets...", formData.cedula);
       await inactivarUsuarioEnSheets(formData.cedula);
-      
+
       // 2️⃣ Datos del usuario para Firebase
       const usuarioData = {
         nombre: formData.nombre,
@@ -94,11 +106,11 @@ export default function FormInactivacion({ onSubmitSuccess }) {
         comentario: formData.comentario,
         solicitante: formData.nombre,
         estado: "PENDIENTE",
-        sistemas: { 
-          solvix: false, 
-          tr3: false, 
-          sap: false, 
-          sortime: false 
+        sistemas: {
+          solvix: false,
+          tr3: false,
+          sap: false,
+          sortime: false
         },
         usuarioReemplazar: {
           nombre: formData.nombre,
@@ -109,7 +121,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
         },
       };
 
-//      console.log("📦 Enviando datos a Firebase...");
+      //      console.log("📦 Enviando datos a Firebase...");
 
       // 4️⃣ Guardar en Firebase
       const resultadoFirebase = await guardarPeticionConUsuarioSiNoExiste(
@@ -118,8 +130,8 @@ export default function FormInactivacion({ onSubmitSuccess }) {
       );
 
       if (resultadoFirebase.success) {
-       // console.log("✅ Solicitud de inactivación guardada correctamente");
-        
+        // console.log("✅ Solicitud de inactivación guardada correctamente");
+
         // 5️⃣ Enviar el correo de notificación
         enviarSolicitudCorreoinactivacio(
           "aprendiz.ti1@proservis.com.co,auxiliar.ti@proservis.com.co",
@@ -185,10 +197,10 @@ export default function FormInactivacion({ onSubmitSuccess }) {
                     getOptionLabel={(option) => option["NOMBRE / APELLIDO"] || ""}
                     onChange={(e, val) => handleUsuarioSeleccionado(val)}
                     renderInput={(params) => (
-                      <TextField 
-                        {...params} 
-                        placeholder="Escribe el nombre del usuario" 
-                        fullWidth 
+                      <TextField
+                        {...params}
+                        placeholder="Escribe el nombre del usuario"
+                        fullWidth
                       />
                     )}
                   />
@@ -197,21 +209,21 @@ export default function FormInactivacion({ onSubmitSuccess }) {
 
               <div className="campo">
                 <label>Cédula</label>
-                <input 
-                  name="cedula" 
-                  value={formData.cedula} 
-                  onChange={handleChange} 
-                  readOnly 
+                <input
+                  name="cedula"
+                  value={formData.cedula}
+                  onChange={handleChange}
+                  readOnly
                 />
               </div>
 
               <div className="campo">
                 <label>Cargo</label>
-                <input 
-                  name="cargo" 
-                  value={formData.cargo} 
-                  onChange={handleChange} 
-                  readOnly 
+                <input
+                  name="cargo"
+                  value={formData.cargo}
+                  onChange={handleChange}
+                  readOnly
                 />
               </div>
 
@@ -230,43 +242,43 @@ export default function FormInactivacion({ onSubmitSuccess }) {
             <div className="grupo-campos">
               <div className="campo">
                 <label>Ciudad</label>
-                <input 
-                  name="ciudad" 
-                  value={formData.ciudad} 
-                  onChange={handleChange} 
-                  readOnly 
+                <input
+                  name="ciudad"
+                  value={formData.ciudad}
+                  onChange={handleChange}
+                  readOnly
                 />
               </div>
 
               <div className="campo">
                 <label>Correo</label>
-                <input 
-                  type="email" 
-                  name="correo" 
-                  value={formData.correo} 
-                  onChange={handleChange} 
-                  readOnly 
+                <input
+                  type="email"
+                  name="correo"
+                  value={formData.correo}
+                  onChange={handleChange}
+                  readOnly
                 />
               </div>
 
               <div className="campo">
                 <label>Empresa</label>
-                <input 
-                  name="empresa" 
-                  value={formData.empresa} 
-                  onChange={handleChange} 
-                  readOnly 
+                <input
+                  name="empresa"
+                  value={formData.empresa}
+                  onChange={handleChange}
+                  readOnly
                 />
               </div>
 
               <div className="campo">
                 <label>Fecha Retiro *</label>
-                <input 
-                  type="date" 
-                  name="fechaRetiro" 
-                  value={formData.fechaRetiro} 
-                  onChange={handleChange} 
-                  required 
+                <input
+                  type="date"
+                  name="fechaRetiro"
+                  value={formData.fechaRetiro}
+                  onChange={handleChange}
+                  required
                 />
               </div>
 
@@ -286,13 +298,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
 
         {/* BOTÓN DE ENVÍO */}
         <div className="submit-container">
-          <button 
-            type="submit" 
-            className="enviar-btn"
-            disabled={enviando}
-          >
-            {enviando ? "Inactivando usuario..." : "Inactivar usuario"}
-          </button>
+          <ButtonEnviar onClick={handleSubmit} isFormValid={isFormValid()} />
         </div>
       </form>
     </div>
