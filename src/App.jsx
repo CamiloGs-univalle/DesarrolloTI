@@ -6,7 +6,7 @@ import { auth } from "./models/firebase/authService";
 import LoginPage from "./components/LoginPage/LoginPage";
 import Home from "./components/Home/Home";
 import HomeTI from "./componentsTI/HomeTI/HomeTI";
-import PruebaGoogle from "./components/PruebaGoogle/PruebaGoogle";
+import PruebaGoogle from "./src/components/PruebaGoogle.jsx";
 
 
 export default function App() {
