@@ -147,7 +147,10 @@ export default function CargoNuevoForm({ formData, onChange, formType = "Cargo N
             id="cargo"
             name="cargo"
             value={formData.cargo}
-            onChange={onChange}
+            onChange={(e) => {
+              e.target.value = e.target.value.toUpperCase();
+              onChange(e);
+            }}
             list="sugerenciasCargo"
             required
             placeholder="Escribe o selecciona un cargo"
@@ -157,29 +160,8 @@ export default function CargoNuevoForm({ formData, onChange, formType = "Cargo N
               <option key={index} value={cargo} />
             ))}
           </datalist>
-        </div>  
-
-        {/* CORREO CORPORATIVO */}
-        <div className="campo">
-          <label>
-            <p>{esCorporativo ? "Correo Corporativo" : "Correo Gratuito"}</p>
-          </label>
-          <label className="switch">
-            <input
-              type="checkbox"
-              name="correoCorporativo"
-              checked={formData.correoCorporativo}
-              onChange={onChange}
-            />
-            <span className="slider round"></span>
-          </label>
-          <p style={{ fontSize: "0.9em", color: "#555" }}>
-            {esCorporativo
-              ? "Se enviará solicitud a gerencia para crear este correo corporativo."
-              : "Se enviará solicitud a TI para crear un correo gratuito."}
-          </p>
         </div>
-
+        
         {/* NUEVO CORREO */}
         <div className="campo">
           <label htmlFor="nuevoCorreo">Correo a crear</label>
@@ -193,37 +175,6 @@ export default function CargoNuevoForm({ formData, onChange, formType = "Cargo N
             placeholder="Ej: usuario@empresa.com"
           />
         </div>
-
-        {/* COMENTARIO */}
-        <div className="campo">
-          <label htmlFor="comentario">Comentario</label>
-          <textarea
-            id="comentario"
-            name="comentario"
-            value={formData.comentario}
-            onChange={onChange}
-            placeholder="Comentarios adicionales sobre el cargo nuevo"
-          ></textarea>
-        </div>
-
-        {/* BOTÓN DE ENVÍO */}
-        <div className="campo">
-          <button
-            type="button"
-            className="boton-enviar"
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            {loading ? "Enviando..." : "Enviar Solicitud"}
-          </button>
-        </div>
-
-        {estadoEnvio === "enviado" && (
-          <p className="mensaje-enviado">✅ Solicitud enviada.</p>
-        )}
-        {estadoEnvio === "error" && (
-          <p className="mensaje-error">❌ Error al enviar. Intenta nuevamente.</p>
-        )}
       </div>
     </div>
   );

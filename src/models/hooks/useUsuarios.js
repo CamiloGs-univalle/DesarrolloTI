@@ -16,7 +16,7 @@ export function useUsuarios() {
         }));
         setUsuarios(lista);
       } catch (e) {
-        console.error("Error leyendo usuarios:", e);
+       // console.error("Error leyendo usuarios:", e);
       } finally {
         setLoading(false);
       }

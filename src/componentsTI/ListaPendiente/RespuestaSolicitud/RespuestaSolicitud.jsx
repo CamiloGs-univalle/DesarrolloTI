@@ -19,7 +19,7 @@ export default function RespuestaSolicitud({ solicitud, onEliminada }) {
       solicitud?.cedula ||
       solicitud?.CEDULA_USUARIO ||
       "CEDULA";
-3177151356
+    3177151356
     let ultimos4 = "****";
     if (cedula && cedula.length >= 4) {
       ultimos4 = cedula.slice(-4);
@@ -62,21 +62,21 @@ Muchas gracias.`;
         console.log(`✅ Petición ${solicitud.id} eliminada definitivamente de 'peticiones'`);
 
         // 🔹 2️⃣ DETECTAR SI ES INACTIVACIÓN Y ELIMINAR USUARIO
-        const tipoSolicitud = solicitud.tipo?.toLowerCase() || 
-                             solicitud.tipoSolicitud?.toLowerCase() || 
-                             "";
-        
+        const tipoSolicitud = solicitud.tipo?.toLowerCase() ||
+          solicitud.tipoSolicitud?.toLowerCase() ||
+          "";
+
         console.log("🔍 Tipo de solicitud detectado:", tipoSolicitud);
-        
+
         if (tipoSolicitud.includes("inactivacion")) {
           console.log("🗑️ Procesando eliminación de usuario por INACTIVACIÓN");
-          
+
           // Obtener el NOMBRE COMPLETO del usuario (que es el ID en "usuarios")
-          const nombreCompletoUsuario = solicitud?.usuarioReemplazar?.nombre || 
-                                      solicitud?.nombre || 
-                                      solicitud?.["NOMBRE USUARIO"] ||
-                                      solicitud?.solicitante ||
-                                      solicitud?.["NOMBRE / APELLIDO"];
+          const nombreCompletoUsuario = solicitud?.usuarioReemplazar?.nombre ||
+            solicitud?.nombre ||
+            solicitud?.["NOMBRE USUARIO"] ||
+            solicitud?.solicitante ||
+            solicitud?.["NOMBRE / APELLIDO"];
 
           console.log("🔍 Buscando usuario para eliminar por nombre:", nombreCompletoUsuario);
 
@@ -87,19 +87,19 @@ Muchas gracias.`;
               console.log(`✅ Usuario eliminado directamente por ID: ${nombreCompletoUsuario}`);
             } catch (error) {
               console.log(`⚠️ No se pudo eliminar por ID directo, buscando por consulta...`);
-              
+
               // 🔍 SI FALLA, BUSCAR POR CÉDULA COMO FALLBACK
-              const cedulaUsuario = solicitud?.usuarioReemplazar?.cedula || 
-                                  solicitud?.cedula || 
-                                  solicitud?.CEDULA_USUARIO;
+              const cedulaUsuario = solicitud?.usuarioReemplazar?.cedula ||
+                solicitud?.cedula ||
+                solicitud?.CEDULA_USUARIO;
 
               if (cedulaUsuario) {
                 const qCedula = query(
-                  collection(db, "usuarios"), 
+                  collection(db, "usuarios"),
                   where("CEDULA", "==", cedulaUsuario)
                 );
                 const snapshotCedula = await getDocs(qCedula);
-                
+
                 if (!snapshotCedula.empty) {
                   for (const docUsuario of snapshotCedula.docs) {
                     await deleteDoc(doc(db, "usuarios", docUsuario.id));
@@ -107,14 +107,14 @@ Muchas gracias.`;
                   }
                 } else {
                   console.log("⚠️ No se encontró usuario con cédula:", cedulaUsuario);
-                  
+
                   // 🔍 ÚLTIMO INTENTO: BUSCAR POR NOMBRE SIMILAR
                   const qNombre = query(
-                    collection(db, "usuarios"), 
+                    collection(db, "usuarios"),
                     where("NOMBRE / APELLIDO", "==", nombreCompletoUsuario.toUpperCase())
                   );
                   const snapshotNombre = await getDocs(qNombre);
-                  
+
                   if (!snapshotNombre.empty) {
                     for (const docUsuario of snapshotNombre.docs) {
                       await deleteDoc(doc(db, "usuarios", docUsuario.id));

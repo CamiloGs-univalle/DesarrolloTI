@@ -78,7 +78,10 @@ export default function UsuarioNuevoForm({ formData, onChange }) {
             id="empresa"
             name="empresa"
             value={formData.empresa}
-            onChange={onChange}
+            onChange={(e) => {
+              e.target.value = e.target.value.toUpperCase();
+              onChange(e);
+            }}
             list="sugerenciasEmpresa"
             required
             placeholder="Escribe o selecciona un cargo"
@@ -98,7 +101,10 @@ export default function UsuarioNuevoForm({ formData, onChange }) {
             id="ciudad"
             name="ciudad"
             value={formData.ciudad}
-            onChange={onChange}
+            onChange={(e) => {
+              e.target.value = e.target.value.toUpperCase();
+              onChange(e);
+            }}
             list="sugerenciasCiudad"
             required
             placeholder="Escribe o selecciona un cargo"
