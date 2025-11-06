@@ -1,5 +1,5 @@
 // src/services/firestoreService.js
-import { db } from '../firebase/firebase';
+import { db } from './firebase';
 import {
   collection,
   query,
@@ -30,14 +30,14 @@ export class FirestoreService {
 
       if (!snapshot.empty) {
         const userData = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
-        console.log('✅ Usuario encontrado:', userData.nombre);
+        //console.log('✅ Usuario encontrado:', userData.nombre);
         return userData;
       }
 
-      console.log('ℹ️ Usuario no encontrado con cédula:', cedula);
+      //console.log('ℹ️ Usuario no encontrado con cédula:', cedula);
       return null;
     } catch (error) {
-      console.error('❌ Error al buscar usuario:', error.message);
+      //console.error('❌ Error al buscar usuario:', error.message);
       throw new Error(`Error al buscar usuario: ${error.message}`);
     }
   }
@@ -56,10 +56,10 @@ export class FirestoreService {
       };
 
       const docRef = await addDoc(collection(db, 'usuarios'), usuarioCompleto);
-      console.log('✅ Usuario creado con ID:', docRef.id);
+      //console.log('✅ Usuario creado con ID:', docRef.id);
       return docRef.id;
     } catch (error) {
-      console.error('❌ Error al crear usuario:', error.message);
+      //console.error('❌ Error al crear usuario:', error.message);
       throw new Error(`Error al crear usuario: ${error.message}`);
     }
   }
@@ -78,10 +78,10 @@ export class FirestoreService {
       };
 
       const docRef = await addDoc(collection(db, 'peticiones'), peticionCompleta);
-      console.log('✅ Petición guardada con ID:', docRef.id);
+      //console.log('✅ Petición guardada con ID:', docRef.id);
       return docRef.id;
     } catch (error) {
-      console.error('❌ Error al guardar petición:', error.message);
+      //console.error('❌ Error al guardar petición:', error.message);
       throw new Error(`Error al guardar petición: ${error.message}`);
     }
   }
@@ -97,10 +97,10 @@ export class FirestoreService {
         ...datosInactivacion,
         fechaSolicitud: Timestamp.now(),
       });
-      console.log('✅ Inactivación guardada con ID:', docRef.id);
+      //console.log('✅ Inactivación guardada con ID:', docRef.id);
       return { success: true, id: docRef.id };
     } catch (error) {
-      console.error('❌ Error guardando inactivación en Firebase:', error);
+      //console.error('❌ Error guardando inactivación en Firebase:', error);
       return { success: false, error };
     }
   }

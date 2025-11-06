@@ -122,7 +122,7 @@ export default function CargoNuevoForm({ formData, onChange, formType = "Cargo N
 
       setEstadoEnvio("enviado");
     } catch (error) {
-      console.error("❌ Error:", error);
+      //console.error("❌ Error:", error);
       setEstadoEnvio("error");
     } finally {
       setLoading(false);

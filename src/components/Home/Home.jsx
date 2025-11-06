@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import './Home.css';
 import UsuarioEquipo from '../UsuarioEquipo/UsuarioEquipo';
-import { auth, signInWithGoogle } from '../../firebase/authService';
+import { auth, signInWithGoogle } from '../../models/firebase/authService';
 import InactivacionUsuario from '../InactivacionUsuario/InactivacionUsuario';
 // arriba junto a otros imports
 import { collection, onSnapshot, query, where } from "firebase/firestore";
-import { db } from "../../firebase/firebase";
+import { db } from "../../models/firebase/firebase";
 
 // Logger configurado para desarrollo 
 //const logger = {

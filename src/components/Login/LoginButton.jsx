@@ -5,7 +5,7 @@
 
 import React, { useState } from "react";
 // importa tu función real de autenticación con Google desde tu servicio Firebase
-import { signInWithGoogle } from "../../firebase/authService";
+import { signInWithGoogle } from "../../models/firebase/authService";
 // icono y spinner (material icons)
 // si no usas MUI, reemplaza por cualquier icono / texto simple
 import GoogleIcon from "@mui/icons-material/Google";

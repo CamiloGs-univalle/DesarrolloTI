@@ -6,9 +6,9 @@ import { useState } from "react";
 import { Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { useUsuarios } from "../../../hooks/useUsuarios";
 import { getLogoEmpresa } from "../../../../public/LogoEmpresa/LogoEmpresa";
-import { enviarSolicitudCorreoinactivacio } from "../../../utils/sendEmailInactivacion";
+import { enviarSolicitudCorreoinactivacio } from "../../../models/utils/sendEmailInactivacion";
 import { guardarPeticionConUsuarioSiNoExiste } from "../../../controllers/userController";
-import { inactivarUsuarioEnSheets } from "../../../services/UserGoogleExcel";
+import { inactivarUsuarioEnSheets } from "../../../models/services/UserGoogleExcel";
 
 export default function FormInactivacion({ onSubmitSuccess }) {
   const { usuarios, loading } = useUsuarios();
@@ -151,7 +151,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
       }
 
     } catch (error) {
-      console.error("❌ Error en la solicitud de inactivación:", error);
+      //console.error("❌ Error en la solicitud de inactivación:", error);
       alert(`Error al procesar la solicitud: ${error.message}`);
     } finally {
       setEnviando(false);
