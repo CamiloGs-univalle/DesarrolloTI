@@ -118,7 +118,7 @@ export default function CargoNuevoForm({ formData, onChange, formType = "Cargo N
       };
 
       const resultado = await guardarPeticionConUsuarioSiNoExiste(datosUsuario, datosPeticion);
-      console.log("✅ Proceso completado. Cargo guardado:", resultado.cargo);
+      //console.log("✅ Proceso completado. Cargo guardado:", resultado.cargo);
 
       setEstadoEnvio("enviado");
     } catch (error) {
