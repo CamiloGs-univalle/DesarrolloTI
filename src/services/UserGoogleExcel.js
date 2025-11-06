@@ -28,6 +28,8 @@ export async function enviarUsuarioAAppsScript(datos) {
       const cedula = datos.cedula || datos.CEDULA;
       const nombre = datos.nombre || datos["NOMBRE / APELLIDO"];
       const correo = datos.correo || datos.CORREO;
+      const cargo = datos.cargo || datos.CARGO;
+      const empresa = datos.empresa || datos.EMPRESA;
 
       if (!cedula || !nombre || !correo) {
         throw new Error('Datos incompletos. Se requieren: cédula, nombre y correo');
@@ -37,6 +39,9 @@ export async function enviarUsuarioAAppsScript(datos) {
       datos.cedula = cedula;
       datos.nombre = nombre;
       datos.correo = correo;
+      datos.cargo = cargo || '';
+      datos.empresa = empresa || '';
+
     }
 
 
