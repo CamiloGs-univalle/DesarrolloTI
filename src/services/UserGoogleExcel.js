@@ -25,11 +25,21 @@ export async function enviarUsuarioAAppsScript(datos) {
 
     // 🟢 Para NUEVO_USUARIO: validar todos los campos
     if (datos.action === 'nuevo_usuario') {
-      if (!datos.cedula || !datos.nombre || !datos.correo) {
+      const cedula = datos.cedula || datos.CEDULA;
+      const nombre = datos.nombre || datos["NOMBRE / APELLIDO"];
+      const correo = datos.correo || datos.CORREO;
+
+      if (!cedula || !nombre || !correo) {
         throw new Error('Datos incompletos. Se requieren: cédula, nombre y correo');
       }
+
+      // Sobrescribir en formato estándar (minúsculas)
+      datos.cedula = cedula;
+      datos.nombre = nombre;
+      datos.correo = correo;
     }
-    
+
+
     // 🟡 Para INACTIVAR_USUARIO: solo validar cédula
     if (datos.action === 'inactivar_usuario') {
       if (!datos.cedula) {
@@ -91,14 +101,14 @@ export async function enviarUsuarioAAppsScript(datos) {
 export async function inactivarUsuarioEnSheets(cedula) {
   try {
     console.log('🔄 Inactivando usuario en Google Sheets...', cedula);
-    
+
     const datosInactivacion = {
       action: 'inactivar_usuario',
       cedula: cedula
     };
 
     const resultado = await enviarUsuarioAAppsScript(datosInactivacion);
-    
+
     if (resultado.success) {
       console.log("✅ Usuario inactivado en Google Sheets:", resultado);
       return resultado;
