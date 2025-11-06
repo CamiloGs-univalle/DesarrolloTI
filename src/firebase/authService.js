@@ -13,10 +13,10 @@ export async function signInWithGoogle() {
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
-    console.log("✅ Usuario autenticado:", user);
+    //console.log("✅ Usuario autenticado:", user);
     return user;
   } catch (error)  {
-    console.error("❌ Error en el login:", error);
+    //console.error("❌ Error en el login:", error);
     throw error;
   }
 }
@@ -29,9 +29,9 @@ import { signOut } from "firebase/auth";
 export async function logout() {
   try {
     await signOut(auth);
-    console.log("✅ Usuario cerró sesión");
+    //console.log("✅ Usuario cerró sesión");
   } catch (error) {
-    console.error("❌ Error al cerrar sesión:", error);
+    //console.error("❌ Error al cerrar sesión:", error);
   }
 }
 

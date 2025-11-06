@@ -72,7 +72,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
 
     try {
       // 1️⃣ INACTIVAR USUARIO EN GOOGLE SHEETS
-      console.log("🔄 Inactivando usuario en Google Sheets...", formData.cedula);
+      //console.log("🔄 Inactivando usuario en Google Sheets...", formData.cedula);
       await inactivarUsuarioEnSheets(formData.cedula);
       
       // 2️⃣ Datos del usuario para Firebase
@@ -109,7 +109,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
         },
       };
 
-      console.log("📦 Enviando datos a Firebase...");
+//      console.log("📦 Enviando datos a Firebase...");
 
       // 4️⃣ Guardar en Firebase
       const resultadoFirebase = await guardarPeticionConUsuarioSiNoExiste(
@@ -118,7 +118,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
       );
 
       if (resultadoFirebase.success) {
-        console.log("✅ Solicitud de inactivación guardada correctamente");
+       // console.log("✅ Solicitud de inactivación guardada correctamente");
         
         // 5️⃣ Enviar el correo de notificación
         enviarSolicitudCorreoinactivacio(
