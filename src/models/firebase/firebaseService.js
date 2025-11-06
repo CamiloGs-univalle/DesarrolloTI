@@ -1,5 +1,5 @@
 // src/services/firestoreService.js
-import { db } from './firebase';
+import { db } from '../../firebase/firebase';
 import {
   collection,
   query,
