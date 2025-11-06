@@ -1,4 +1,7 @@
-/* Estilos generales */
+/* ============================= */
+/*         ESTILOS GENERALES      */
+/* ============================= */
+
 /* Estilo del encabezado */
 .app-header {
   display: flex;
@@ -6,7 +9,6 @@
   align-items: center;
   background-color: #ffffff;
   padding: 10px 5px;
-
   flex-wrap: wrap;
   gap: 10px;
 }
@@ -19,7 +21,6 @@ h1 {
   font-size: 24px;
   text-transform: uppercase;
   padding-bottom: 10px;
-
 }
 
 /* Campo del solicitante */
@@ -115,9 +116,9 @@ h1 {
   height: 100%;
 }
 
-/* ----------------------------- */
-/* 👤 Estilos de avatar en barra */
-/* ----------------------------- */
+/* ============================= */
+/*        AVATAR / CABECERA       */
+/* ============================= */
 
 .header-avatar {
   width: 45px;
@@ -127,6 +128,10 @@ h1 {
   cursor: pointer;
   border: 2px solid #5c5c5c;
   margin-left: auto;
+}
+
+.header-avatar.avatar-fallback {
+  border-color: #77ff07;
 }
 
 .header-left {
@@ -142,62 +147,131 @@ h1 {
   margin: 0;
 }
 
-.header-avatar.avatar-fallback {
-  border-color: #77ff07;
-}
-
 .avatar-container {
   position: relative;
 }
 
-/* ----------------------------- */
-/* 🔽 Menú desplegable animado   */
-/* ----------------------------- */
+/* ============================= */
+/*        MENÚ DESPLEGABLE        */
+/* ============================= */
 
 .dropdown-menu {
-  animation: fadeIn 0.2s ease-out;
-  background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  padding: 15px;
-  border-radius: 6px;
   position: absolute;
   right: 0;
   top: 70px;
-  margin: 0px 10px 0;
-  min-width: 220px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 18px 16px;
+  min-width: 230px;
   max-width: 95vw;
-  z-index: 10;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(230, 230, 230, 0.8);
+  animation: slideDown 0.25s ease-out;
+  z-index: 100;
   box-sizing: border-box;
 }
 
+/* Animaciones */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* ----------------------------- */
-/* ♿️ Mejoras de accesibilidad   */
-/* ----------------------------- */
-
-button:focus {
-  outline: 2px solid #4285F4;
-  outline-offset: 2px;
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
+/* Info del usuario */
+.dropdown-user-info {
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.dropdown-user-info strong {
+  display: block;
+  font-size: 1rem;
+  color: #222;
+}
+
+.dropdown-user-info p {
+  margin: 3px 0 0;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+/* Separador */
+.dropdown-menu hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 10px 0;
+}
+
+/* Botones del menú */
+.dropdown-menu button {
+  width: 100%;
+  padding: 10px 14px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.25s ease;
+  background-color: #f5f6f7;
+  color: #333;
+}
+
+.dropdown-menu button:first-of-type {
+  background-color: #eef5ff;
+  color: #1a73e8;
+}
+
+.dropdown-menu button:last-of-type {
+  background-color: #fff3f3;
+  color: #d93025;
+}
+
+/* Hover */
+.dropdown-menu button:hover {
+  transform: translateX(4px);
+  background-color: #ebedf0;
+}
+
+.dropdown-menu button:first-of-type:hover {
+  background-color: #dce9ff;
+  box-shadow: 0 0 6px rgba(26, 115, 232, 0.25);
+}
+
+.dropdown-menu button:last-of-type:hover {
+  background-color: #ffe0e0;
+  box-shadow: 0 0 6px rgba(217, 48, 37, 0.25);
+}
+
+/* Iconos dentro de botones */
+.dropdown-menu button i {
+  font-size: 1rem;
+  width: 18px;
+  text-align: center;
+}
+
+/* ============================= */
+/*      ACCESIBILIDAD / FOCUS     */
+/* ============================= */
+
+button:focus,
 input:focus {
   outline: 2px solid #4285F4;
   outline-offset: 2px;
 }
 
-/* ----------------------------- */
-/* 📱 Responsividad adicional    */
-/* ----------------------------- */
+/* ============================= */
+/*          RESPONSIVIDAD         */
+/* ============================= */
 
 @media (max-width: 768px) {
   .main-panel {
@@ -229,9 +303,7 @@ input:focus {
   }
 }
 
-/* Mejora de espaciado superior general */
+/* Mejora de espaciado general */
 .home-wrapper {
   box-sizing: border-box;
 }
-
-

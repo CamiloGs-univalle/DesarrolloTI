@@ -12,7 +12,7 @@
   z-index: 0;
   overflow: hidden;
   /* Gradiente base oscuro para contraste */
-  background: linear-gradient(135deg, #001a0d 0%, #28692e 30%, #003319 70%, #001a0d 100%);
+  background: linear-gradient(135deg, #025a2e 0%, #28692e 30%, #014b25 70%, #052b18 100%);
 }
 
 /* Contenedor principal de las ondas */

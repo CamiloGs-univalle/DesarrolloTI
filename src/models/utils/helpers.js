@@ -27,8 +27,8 @@ export class Helpers {
    * @returns {boolean} Es válida
    */
   static validarCedula(cedula) {
-    return cedula && 
-           typeof cedula === 'string' && 
-           cedula.trim().length >= APP_CONFIG.VALIDATION.CEDULA_MIN_LENGTH;
+    return cedula &&
+      typeof cedula === 'string' &&
+      cedula.trim().length >= APP_CONFIG.VALIDATION.CEDULA_MIN_LENGTH;
   }
 }

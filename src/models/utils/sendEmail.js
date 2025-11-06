@@ -30,14 +30,14 @@ export function buildSolicitudEmailBody(data) {
       `Cordial saludo Equipo TI.
 Por favor tu apoyo con la gestión de Permisos, Equipo y Correo para la siguiente persona que ingresa el día ${fechaTexto}, en la ciudad de ${data.ciudad}.
 
-Nombre: ${data.nombre}
-C.C: ${data.cedula}
-Cargo: ${data.cargo}
-Ciudad: ${data.ciudad}
-Empresa: ${data.empresa}
-Licencia: Utilizaba ${data.usuarioReemplazar || "Los que utiliza " + data.cargo || 'N/A'}
-Permisos: Utilizaba ${data.usuarioReemplazar || "Los que utiliza " + data.cargo || 'N/A'}
-Correo: ${data.correo || data.nuevoCorreo || 'N/A'}
+  Nombre: ${data.nombre}
+  C.C: ${data.cedula}
+  Cargo: ${data.cargo}
+  Ciudad: ${data.ciudad}
+  Empresa: ${data.empresa}
+  Licencia: Utilizaba ${data.usuarioReemplazar || "Los que utiliza " + data.cargo || 'N/A'}
+  Permisos: Utilizaba ${data.usuarioReemplazar || "Los que utiliza " + data.cargo || 'N/A'}
+  Correo: ${data.correo || data.nuevoCorreo || 'N/A'}
 
 Muchas gracias, quedamos atentos.`
     );
@@ -48,14 +48,14 @@ Muchas gracias, quedamos atentos.`
     `Cordial saludo, Equipo TI.
 Por favor tu apoyo con la gestión de Permisos, Equipo y Correo para la siguiente persona que ingresa el día ${fechaTexto}, en la ciudad de ${data.ciudad}.
 
-Nombre: ${data.nombre}
-C.C: ${data.cedula}
-Cargo: ${data.cargo}
-Ciudad: ${data.ciudad}
-Empresa: ${data.empresa}
-Licencia: Utilizaba ${data.usuarioReemplazar || "Los que utiliza " + data.cargo || 'N/A'}
-Permisos: Utilizaba ${data.usuarioReemplazar || "Los que utiliza " + data.cargo || 'N/A'}
-Correo: ${data.correo || data.nuevoCorreo || 'N/A'}
+  Nombre: ${data.nombre}
+  C.C: ${data.cedula}
+  Cargo: ${data.cargo}
+  Ciudad: ${data.ciudad}
+  Empresa: ${data.empresa}
+  Licencia: Utilizaba ${data.usuarioReemplazar || "Los que utiliza " + data.cargo || 'N/A'}
+  Permisos: Utilizaba ${data.usuarioReemplazar || "Los que utiliza " + data.cargo || 'N/A'}
+  Correo: ${data.correo || data.nuevoCorreo || 'N/A'}
 
 Muchas gracias, quedamos atentos.`
   );
