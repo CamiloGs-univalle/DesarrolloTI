@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     // 🌐 URL del Apps Script que maneja el envío de correos
     // ⚠️ Debe estar publicado como Web App con acceso “Cualquiera, incluso anónimo”
     const GOOGLE_APPS_SCRIPT_EMAIL =
-      "https://script.google.com/macros/s/AKfycbzzbp9QRUdVwJb-QLI69M4l0cCPExJUYneq7b90mgwzJ1oCQWCDgnyHHQJZ1Exr0UmD/exec";
+      "https://script.google.com/macros/s/AKfycbyd4vUO_ErNp0NLxxwV3_ebx0vzFrVhRI9uBUG2OLh5RzGv26K0A9LdQ-z3v2ZN6gKv/exec";
 
     // ⏱ Controlador para timeout (10 segundos)
     const controller = new AbortController();
