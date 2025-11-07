@@ -281,17 +281,6 @@ export default function FormInactivacion({ onSubmitSuccess }) {
                   required
                 />
               </div>
-
-              <div className="campo campo-full">
-                <label>Comentario</label>
-                <textarea
-                  name="comentario"
-                  value={formData.comentario}
-                  onChange={handleChange}
-                  rows={4}
-                  placeholder="Motivo o detalles adicionales..."
-                />
-              </div>
             </div>
           </div>
         </div>
