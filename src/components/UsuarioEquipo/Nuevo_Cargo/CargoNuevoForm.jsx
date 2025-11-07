@@ -2,6 +2,8 @@ import { useState } from "react";
 import "./CargoNuevoForm.css";
 import { guardarPeticionConUsuarioSiNoExiste } from "../../../controllers/userController.js";
 import { enviarSolicitudCorreo } from "../../../models/utils/sendEmail.js"; // 📨 Importa función de correo
+import { getLogoEmpresa } from "../../../../public/LogoEmpresa/LogoEmpresa.js";
+
 
 export default function CargoNuevoForm({
   formData,
@@ -17,6 +19,10 @@ export default function CargoNuevoForm({
     "auxiliar.ti@proservis.com.co",
     "coordinador.ti@proservis.com.co",
   ];
+  // ============================================================
+  // 🏢 Logo de la empresa
+  // ============================================================
+  const logoEmpresa = getLogoEmpresa(formData.empresa) || getLogoEmpresa(formData.correo);
 
   // 🧩 Evento principal de envío
   const handleSubmit = async (e) => {
@@ -202,6 +208,12 @@ export default function CargoNuevoForm({
             placeholder="Ej: usuario@empresa.com"
           />
         </div>
+
+        {logoEmpresa && (
+                <div className="campo logo-empresa">
+                  <img src={logoEmpresa} alt="logo empresa" width="180" />
+                </div>
+              )}
       </div>
     </div>
   );
