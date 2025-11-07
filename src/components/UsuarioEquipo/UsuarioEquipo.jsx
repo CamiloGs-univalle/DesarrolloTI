@@ -309,14 +309,6 @@ export default function UsuarioEquipo() {
 
         </div>
 
-
-
-        {/* ℹ️ INFORMACIÓN DE ESTADO */}
-        {loading && (
-          <div className="loading-info">
-            <p>🔄 Guardando en Firebase y enviando a Google Sheets...</p>
-          </div>
-        )}
       </form>
     </div>
   );
