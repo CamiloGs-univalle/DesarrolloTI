@@ -1,3 +1,5 @@
+// src/components/UsuarioEquipo/Remplazo/UsuarioReemplazoForm.jsx
+
 import { Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { useUsuarios } from "../../../models/hooks/useUsuarios";
 import { getLogoEmpresa } from "../../../../public/LogoEmpresa/LogoEmpresa";
