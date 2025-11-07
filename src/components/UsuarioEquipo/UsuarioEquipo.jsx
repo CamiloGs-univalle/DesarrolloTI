@@ -25,17 +25,30 @@ export default function UsuarioEquipo() {
 
   ];
 
-   // ✅ Validación real del formulario
+  // ✅ Validación real del formulario
+  // ✅ Validación real del formulario
   const isFormValid = () => {
-    return (
-      formData.nombre.trim() !== '' &&
-      formData.cedula.trim() !== '' &&
-      formData.correo.trim() !== '' &&
-      formData.fechaIngreso.trim() !== '' &&
-      (formType === 'cargo'
-        ? formData.cargo.trim() !== ''
-        : formData.usuarioReemplazar.trim() !== '')
-    );
+    const camposComunesLlenos =
+      formData.nombre?.trim() !== '' &&
+      formData.cedula?.trim() !== '' &&
+      formData.fechaIngreso?.trim() !== '';
+
+    if (!camposComunesLlenos) return false;
+
+    // Si es "Cargo Nuevo"
+    if (formType === 'cargo') {
+      return (
+        formData.cargo?.trim() !== '' &&
+        formData.nuevoCorreo?.trim() !== ''
+      );
+    }
+
+    // Si es "Usuario a Reemplazar"
+    if (formType === 'reemplazo') {
+      return formData.usuarioReemplazar?.trim() !== '' && formData.correo?.trim() !== '';
+    }
+
+    return false;
   };
 
 
