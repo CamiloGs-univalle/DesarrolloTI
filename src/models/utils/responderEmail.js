@@ -4,62 +4,43 @@ import { db } from "../../models/firebase/firebase";
 
 //const URL_APPS_SCRIPT ="http://localhost:8020/proxy/macros/s/AKfycbzzbp9QRUdVwJb-QLI69M4l0cCPExJUYneq7b90mgwzJ1oCQWCDgnyHHQJZ1Exr0UmD/exec";
 
-const URL_APPS_SCRIPT = '/api/proxyEmail';
 
-export async function enviarRespuesta(solicitud, textoRespuesta) {
+/**
+ * ✅ Enviar respuesta a un correo desde React hacia Google Apps Script.
+ * Si el correo existe en un hilo previo, el backend responderá en la misma cola.
+ */
+
+export async function enviarRespuesta(solicitud, respuesta) {
   try {
-    // 🧠 Detectar correctamente el nombre del usuario
-    const nombreUsuario =
-      solicitud["NOMBRE USUARIO"]?.trim() ||
-      solicitud.NOMBRE_USUARIO?.trim() ||
-      solicitud.nombreUsuario?.trim() ||
-      solicitud.solicitante?.trim() ||
-      solicitud.usuarioReemplazar?.nombre?.trim() ||
-      solicitud["USUARIO ID"]?.trim() ||
-      "Desconocido";
+    const correoDestino =
+      solicitud?.correo ||
+      solicitud?.usuarioReemplazar?.correo ||
+      solicitud?.CORREO ||
+      "";
 
-    // 🧩 Construir el asunto correcto
-    const asunto =
-      solicitud.asunto ||
-      `Solicitud ${solicitud.tipoSolicitud?.toLowerCase() || "nuevo usuario"} - ${nombreUsuario}`;
+    const asunto = `Respuesta - ${solicitud.tipo || solicitud.tipoSolicitud || "Solicitud TI"}`;
 
-    // 📧 Crear el cuerpo con los datos que el Apps Script necesita
-    const data = {
-      asunto: asunto,
-      respuestaHtml: textoRespuesta, // 👈 Enviamos HTML, no texto plano
-      correoDestino:
-        solicitud?.usuarioReemplazar?.correo ||
-        solicitud?.correo ||
-        solicitud?.CORREO ||
-        "auxiliar.ti@proservis.com.co", // fallback
+    const payload = {
+      correoDestino,
+      asunto,
+      cuerpo: respuesta,
     };
 
-    //console.log("📨 Enviando respuesta:", data);
-
-    // 🚀 Enviar al Apps Script
-    const response = await fetch(URL_APPS_SCRIPT, {
+    // 🔹 Cambia la URL por la de tu Apps Script publicado como Web App
+    const URL_APPS_SCRIPT = '/api/proxyEmail';
+    
+    const res = await fetch(URL_APPS_SCRIPT, {
       method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     });
 
-    const result = await response.json();
-    //console.log("🔁 Respuesta del servidor:", result);
+    const data = await res.json();
+    console.log("📩 Respuesta del servidor:", data);
 
-    if (!result.ok) throw new Error(result.msg || "Error desconocido al enviar correo");
-
-    // ✅ Eliminar la solicitud automáticamente después del envío
-    if (solicitud.id) {
-      const solicitudRef = doc(collection(db, "solicitudes"), solicitud.id);
-      await deleteDoc(solicitudRef);
-      //console.log(`🗑️ Solicitud ${solicitud.id} eliminada correctamente`);
-    }
-
-    return { ok: true, msg: "Correo enviado y solicitud eliminada correctamente" };
-  } catch (err) {
-    console.error("❌ Error al enviar respuesta:", err);
-    return { ok: false, msg: err.message };
+    return data.success === true;
+  } catch (error) {
+    console.error("❌ Error enviando respuesta:", error);
+    return false;
   }
 }
