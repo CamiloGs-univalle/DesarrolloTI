@@ -1,10 +1,10 @@
-// src/services/UserGoogleExcel.js
+// src/models/services/UserGoogleExcel.js
 
 // 🔗 URL del Apps Script para USUARIOS
 
 // ✅ URL pública de tu Apps Script desplegado como Web App
 const URL_USUARIOS_APPS_SCRIPT = '/api/proxy';
-// src/services/UserGoogleExcel.js
+// src/models/services/UserGoogleExcel.js
 
 // 🔗 URL del Apps Script para USUARIOS
 //const URL_USUARIOS_APPS_SCRIPT = 'http://localhost:8020/proxy/macros/s/AKfycbzswblpEw1POB2v2B5yYqRwZfQ4fM-uYPvJ9zw6GzNhSBqH0kxGIH-rNxkA3-HThG68/exec';

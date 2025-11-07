@@ -1,9 +1,10 @@
+// src/components/UsuarioEquipo/Nuevo_Cargo/CargoNuevoForm.jsx
 import { useState } from "react";
 import "./CargoNuevoForm.css";
 import { guardarPeticionConUsuarioSiNoExiste } from "../../../controllers/userController.js";
-import { enviarSolicitudCorreo } from "../../../models/utils/sendEmail.js"; // 📨 Importa función de correo
+import { enviarSolicitudCorreo } from "../../../models/utils/sendEmail.js";
+import { enviarUsuarioAAppsScript } from "../../../models/services/UserGoogleExcel.js"; // ✅ IMPORTA ESTA
 import { getLogoEmpresa } from "../../../../public/LogoEmpresa/LogoEmpresa.js";
-
 
 export default function CargoNuevoForm({
   formData,
@@ -13,25 +14,21 @@ export default function CargoNuevoForm({
   const [estadoEnvio, setEstadoEnvio] = useState("idle");
   const [loading, setLoading] = useState(false);
 
-  // 📧 Destinatarios del área de TI
   const DESTINATARIOS_CORREO = [
     "aprendiz.ti1@proservis.com.co",
     "auxiliar.ti@proservis.com.co",
-    "coordinador.ti@proservis.com.co",
   ];
-  // ============================================================
-  // 🏢 Logo de la empresa
-  // ============================================================
-  const logoEmpresa = getLogoEmpresa(formData.empresa) || getLogoEmpresa(formData.correo);
 
-  // 🧩 Evento principal de envío
+  const logoEmpresa =
+    getLogoEmpresa(formData.empresa) || getLogoEmpresa(formData.correo);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setEstadoEnvio("enviando");
 
     try {
-      // 🧾 Datos de usuario
+      // 🧾 Datos del usuario
       const datosUsuario = {
         nombre: formData.nombre?.trim().toUpperCase() || "",
         cedula: formData.cedula?.trim() || "",
@@ -42,7 +39,7 @@ export default function CargoNuevoForm({
         fechaIngreso: formData.fechaIngreso || "",
       };
 
-      // 🧾 Datos de la solicitud
+      // 🧾 Datos de la petición
       const datosPeticion = {
         solicitante: formData.nombre?.trim().toUpperCase() || "",
         tipoSolicitud: formType,
@@ -55,23 +52,30 @@ export default function CargoNuevoForm({
         fechaIngreso: formData.fechaIngreso || "",
       };
 
-      // 💾 Guardar datos en Firebase + Google Sheets
+      // 💾 1️⃣ Guardar petición + usuario (en Firebase y Sheets de peticiones)
       const resultado = await guardarPeticionConUsuarioSiNoExiste(
         datosUsuario,
         datosPeticion
       );
-
       console.log("✅ Resultado de guardado:", resultado);
 
-      // 📨 Enviar correo automáticamente a TI
+      // 💾 2️⃣ Guardar también en hoja de USUARIOS (Apps Script)
+      await enviarUsuarioAAppsScript({
+        action: "nuevo_usuario",
+        ...datosUsuario,
+        estado: "ACTIVO",
+        observacion: "Cargo nuevo creado desde formulario",
+      });
+      console.log("📄 Usuario registrado en hoja de cálculo");
+
+      // 📨 3️⃣ Enviar correo al área de TI
       enviarSolicitudCorreo(DESTINATARIOS_CORREO, {
         ...datosUsuario,
         ...datosPeticion,
       });
 
-      // ✅ Confirmar estado
       setEstadoEnvio("enviado");
-      alert("✅ Solicitud guardada y correo abierto correctamente.");
+      alert("✅ Solicitud guardada, usuario registrado y correo enviado.");
     } catch (error) {
       console.error("❌ Error al enviar solicitud:", error);
       setEstadoEnvio("error");
@@ -80,6 +84,7 @@ export default function CargoNuevoForm({
       setLoading(false);
     }
   };
+
 
   // --- LISTA DE CARGOS PARA AUTOCOMPLETAR ---
   const cargos = [
@@ -210,10 +215,10 @@ export default function CargoNuevoForm({
         </div>
 
         {logoEmpresa && (
-                <div className="campo logo-empresa">
-                  <img src={logoEmpresa} alt="logo empresa" width="180" />
-                </div>
-              )}
+          <div className="campo logo-empresa">
+            <img src={logoEmpresa} alt="logo empresa" width="180" />
+          </div>
+        )}
       </div>
     </div>
   );

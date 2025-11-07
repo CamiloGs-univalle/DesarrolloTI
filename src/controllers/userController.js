@@ -1,5 +1,6 @@
 // ============================================================================
 // 📄 Archivo: guardarPeticionConUsuarioSiNoExiste.js
+// 📍 Ruta: src/controllers/userController.js
 // ----------------------------------------------------------------------------
 // ✅ Su función es:
 //   1️⃣ Verificar si un usuario existe (por cédula) y crearlo si no.
