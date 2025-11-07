@@ -1,5 +1,6 @@
 import { Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { useUsuarios } from "../../../models/hooks/useUsuarios";
+import { getLogoEmpresa } from "../../../../public/LogoEmpresa/LogoEmpresa";
 import React from "react";
 
 export default function UsuarioReemplazoForm({ formData, onChange, onUsuarioSeleccionado }) {
@@ -11,23 +12,10 @@ export default function UsuarioReemplazoForm({ formData, onChange, onUsuarioSele
     }
   };
 
-  // 🔎 Función para detectar el logo según el correo o la empresa
-  const getLogoEmpresa = (texto) => {
-    if (!texto) return null;
-    const valor = texto.toLowerCase();
-
-    if (valor.includes("proservis")) return "/logo/ProservisTemporales.png";
-    if (valor.includes("affine")) return "/logo/Affine.png";
-    if (valor.includes("siamo")) return "/logo/Siamo.png";
-    if (valor.includes("mendiola")) return "/logo/Mendiola.png";
-    if (valor.includes("anfibia")) return "/logo/Anfibia.png";
-    if (valor.includes("samalo")) return "/logo/Samalo.png";
-
-    return null;
-  };
-
-  const logoEmpresa =
-    getLogoEmpresa(formData.empresa) || getLogoEmpresa(formData.correo);
+  // ============================================================
+  // 🏢 Logo de la empresa
+  // ============================================================
+  const logoEmpresa = getLogoEmpresa(formData.empresa) || getLogoEmpresa(formData.correo);
 
   return (
     <div className="seccion seccion-dinamica">
@@ -81,26 +69,9 @@ export default function UsuarioReemplazoForm({ formData, onChange, onUsuarioSele
           />
         </div>
 
-        {/* 👇 Aquí se muestra dinámicamente el logo de la empresa */}
         {logoEmpresa && (
-          <div
-            className="campo logo-empresa"
-            style={{
-              textAlign: "center",
-              marginTop: "10px",
-            }}
-          >
-            <img
-              src={logoEmpresa}
-              alt="Logo de la empresa"
-              style={{
-                width: "180px",
-                maxWidth: "100%",
-                height: "auto",
-                borderRadius: "10px",
-                objectFit: "contain",
-              }}
-            />
+          <div className="campo logo-empresa">
+            <img src={logoEmpresa} alt="logo empresa" width="180" />
           </div>
         )}
       </div>
