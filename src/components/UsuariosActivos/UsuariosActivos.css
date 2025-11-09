@@ -1,0 +1,481 @@
+/* src/components/ModuloUsuariosActivos/ModuloUsuariosActivos.css */
+
+.modulo-usuarios-activos {
+    padding: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ============================================
+   📊 MÉTRICAS PRINCIPALES
+============================================ */
+.metricas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.metrica-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.25rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.metrica-card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.metrica-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.metrica-icon {
+    padding: 0.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.metrica-icon.bg-green {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+.metrica-icon.bg-yellow {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.metrica-icon.bg-blue {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+.metrica-valor {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #111827;
+}
+
+.metrica-capacidad {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+}
+
+.capacidad-activos {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #111827;
+}
+
+.capacidad-separador {
+    font-size: 1.25rem;
+    color: #9ca3af;
+}
+
+.capacidad-total {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.metrica-titulo {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin: 0;
+}
+
+.metrica-subtitulo {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin: 0.25rem 0 0 0;
+}
+
+/* ============================================
+   🏢 CAPACIDAD POR EMPRESA
+============================================ */
+.capacidad-empresas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.empresa-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.25rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.empresa-card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.empresa-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.empresa-icon {
+    background-color: #dcfce7;
+    color: #16a34a;
+    padding: 0.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empresa-info h3 {
+    font-size: 0.875rem;
+    font-weight: bold;
+    color: #111827;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.empresa-info p {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+}
+
+.empresa-capacidad {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.capacidad-numero-activo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #111827;
+}
+
+.capacidad-numero-total {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.empresa-progreso {
+    width: 100%;
+    height: 8px;
+    background-color: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+
+.progreso-barra {
+    height: 100%;
+    background-color: #16a34a;
+    transition: width 0.5s ease;
+}
+
+.empresa-detalles {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+}
+
+.detalle-activos {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.detalle-pendientes {
+    color: #d97706;
+    font-weight: 600;
+}
+
+/* ============================================
+   🔍 FILTROS
+============================================ */
+.filtros-container {
+    background: white;
+    border-radius: 8px;
+    padding: 1.25rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.filtro-busqueda {
+    flex: 1;
+    min-width: 300px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.filtro-icon {
+    position: absolute;
+    left: 0.75rem;
+    color: #9ca3af;
+}
+
+.filtro-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.filtro-input:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+.filtro-select {
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background-color: white;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+}
+
+.filtro-select:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+.filtro-contador {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+/* ============================================
+   📋 TABLA
+============================================ */
+.tabla-container {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.tabla-usuarios {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-usuarios thead {
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tabla-usuarios th {
+    padding: 0.75rem 1.5rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.tabla-usuarios tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s ease;
+}
+
+.tabla-usuarios tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.tabla-usuarios td {
+    padding: 1rem 1.5rem;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+.usuario-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.usuario-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #16a34a;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.usuario-nombre {
+    font-weight: 500;
+    color: #111827;
+}
+
+.usuario-cargo {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.125rem;
+}
+
+.td-correo {
+    font-family: 'Courier New', monospace;
+    font-size: 0.8125rem;
+}
+
+.badge-empresa {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background-color: #f3f4f6;
+    color: #374151;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid;
+}
+
+.badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
+.badge-activo {
+    background-color: #dcfce7;
+    color: #15803d;
+    border-color: #bbf7d0;
+}
+
+.badge-pendiente {
+    background-color: #fef3c7;
+    color: #b45309;
+    border-color: #fde68a;
+}
+
+.badge-otro {
+    background-color: #f3f4f6;
+    color: #6b7280;
+    border-color: #e5e7eb;
+}
+
+.tabla-vacia {
+    padding: 3rem;
+    text-align: center;
+    color: #9ca3af;
+}
+
+/* ============================================
+   ⏳ LOADING
+============================================ */
+.usuarios-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #f3f4f6;
+    border-top-color: #16a34a;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================================
+   📱 RESPONSIVE
+============================================ */
+@media (max-width: 768px) {
+    .modulo-usuarios-activos {
+        padding: 1rem;
+    }
+
+    .metricas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .capacidad-empresas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filtros-container {
+        flex-direction: column;
+    }
+
+    .filtro-busqueda {
+        min-width: 100%;
+    }
+
+    .filtro-select {
+        width: 100%;
+    }
+
+    .tabla-container {
+        overflow-x: auto;
+    }
+
+    .tabla-usuarios {
+        min-width: 800px;
+    }
+}

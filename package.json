@@ -18,8 +18,9 @@
     "@mui/material": "^7.2.0",
     "@paper-design/shaders-react": "^0.0.61",
     "firebase": "^11.9.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "lucide-react": "^0.553.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "react-router-dom": "^7.6.3"
   },
   "devDependencies": {

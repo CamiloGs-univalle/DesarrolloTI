@@ -3,9 +3,12 @@ import './Home.css';
 import UsuarioEquipo from '../UsuarioEquipo/UsuarioEquipo';
 import { auth, signInWithGoogle } from '../../models/firebase/authService';
 import InactivacionUsuario from '../InactivacionUsuario/InactivacionUsuario';
+
 // arriba junto a otros imports
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../models/firebase/firebase";
+import UsuariosActivos from '../UsuariosActivos/UsuariosActivos';
+
 
 // Logger configurado para desarrollo 
 //const logger = {
@@ -110,6 +113,8 @@ export default function Home({ user }) {
         return <UsuarioEquipo user={user} />;
       case 'inactivacion-usuario':
         return <InactivacionUsuario />;
+      case 'usuario-activos':
+        return <UsuariosActivos />;
       default:
         return <div className="empty-view">Seleccione una opción del menú</div>;
     }
@@ -199,6 +204,24 @@ export default function Home({ user }) {
                 src="/logo/icono-inactivar usuario.png"
                 alt="Icono derecha"
                 style={{ width: '25px', height: '25px', marginRight: '8px', verticalAlign: 'middle' }}
+              />
+            </button>
+
+            <button
+              onClick={() => setCurrentView('usuario-activos')}
+              className={currentView === 'usuario-activos' ? 'active' : ''}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '100%', // opcional, para que ocupe todo el ancho disponible
+              }}
+            >
+              Usuarios Activos
+              <img
+                src="/logo/UserActive.png"
+                alt="Icono Usuario"
+                style={{ width: '23px', height: '23px', marginRight: '10px', verticalAlign: 'middle' }}
               />
 
             </button>
