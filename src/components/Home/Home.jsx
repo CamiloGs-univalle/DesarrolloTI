@@ -125,7 +125,7 @@ export default function Home({ user }) {
       <header className="app-header">
         <h1 className="header-title">Solicitud al Área TI</h1>
         <div className="header-left">
-          {user && (
+          {user && avatarUrl && (
             <img
               src={avatarUrl}
               alt={user.displayName || user.email}
@@ -135,6 +135,7 @@ export default function Home({ user }) {
               loading="lazy"
             />
           )}
+
 
         </div>
 

@@ -28,12 +28,11 @@ export function FiltrosUsuarios({
                 value={filtroEmpresa}
                 onChange={e => setFiltroEmpresa(e.target.value)}
                 className="filtro-select"
-            >
-                {empresas.map(emp => (
-                    <option key={emp} value={emp}>
-                        {emp}
-                    </option>
-                ))}
+            >{empresas.map((emp, index) => (
+                <option key={`${emp}-${index}`} value={emp}>
+                    {emp}
+                </option>
+            ))}
             </select>
 
             <select
@@ -41,8 +40,8 @@ export function FiltrosUsuarios({
                 onChange={e => setFiltroCiudad(e.target.value)}
                 className="filtro-select"
             >
-                {ciudades.map(ciudad => (
-                    <option key={ciudad} value={ciudad}>
+                {ciudades.map((ciudad, index) => (
+                    <option key={`${ciudad}-${index}`} value={ciudad}>
                         {ciudad}
                     </option>
                 ))}

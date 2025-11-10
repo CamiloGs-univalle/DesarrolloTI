@@ -172,3 +172,26 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
     throw new Error(`Error al guardar la petición: ${error.message}`);
   }
 }
+
+// ============================================================================
+// 🔧 Cambiar estado de usuario (activar o inactivar)
+// ============================================================================
+
+export async function cambiarEstadoUsuario(cedula, nuevoEstado) {
+  try {
+    const q = query(collection(db, "usuarios"), where("CEDULA", "==", cedula));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      throw new Error(`No se encontró usuario con cédula ${cedula}`);
+    }
+
+    const usuarioRef = snapshot.docs[0].ref;
+    await updateDoc(usuarioRef, { ESTADO: nuevoEstado.toUpperCase() });
+
+    return { success: true, mensaje: `Usuario ${cedula} actualizado a ${nuevoEstado}` };
+  } catch (error) {
+    throw new Error(`Error cambiando estado de usuario: ${error.message}`);
+  }
+}
+
