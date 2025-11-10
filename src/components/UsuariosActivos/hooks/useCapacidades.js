@@ -1,11 +1,16 @@
+// src/hooks/useCapacidades.js - VERSIÓN ACTUALIZADA
 import { useMemo } from "react";
 import { CAPACIDAD_TOTAL } from "../constants/capacidades";
+import { usePeticionesPendientes } from "../../../models/hooks/usePeticionesPendientes"; // ← Importa el hook de peticiones
 
 /**
  * Hook para manejar filtrado de usuarios y estadísticas
  */
 export function useCapacidades(usuarios, filtros) {
     const { filtroEmpresa, filtroCiudad, busqueda } = filtros;
+    
+    // 🔥 Obtener peticiones pendientes de TI
+    const { peticiones: peticionesPendientes } = usePeticionesPendientes();
 
     // 🔍 Filtrar usuarios activos y pendientes
     const usuariosFiltrados = useMemo(() => {
@@ -37,18 +42,17 @@ export function useCapacidades(usuarios, filtros) {
         });
     }, [usuarios, filtroEmpresa, filtroCiudad, busqueda]);
 
-    // 📊 Estadísticas globales
+    // 📊 Estadísticas globales ACTUALIZADAS
     const estadisticasGlobales = useMemo(() => {
         if (!usuarios || usuarios.length === 0)
             return { activos: 0, pendientes: 0, totalCapacidad: 0 };
 
         const activos = usuarios.filter(
-            u => (u.ESTADO || u.estado || "").toUpperCase() !== "INACTIVO"
+            u => (u.ESTADO || u.estado || "").toUpperCase() === "ACTIVO"
         ).length;
 
-        const pendientes = usuarios.filter(
-            u => (u.ESTADO || u.estado || "").toUpperCase() === "PENDIENTE"
-        ).length;
+        // 🔥 CONTAR PENDIENTES DE TI (de la colección peticiones)
+        const pendientes = peticionesPendientes.length;
 
         const totalCapacidad = Object.values(CAPACIDAD_TOTAL).reduce(
             (a, b) => a + b,
@@ -56,7 +60,7 @@ export function useCapacidades(usuarios, filtros) {
         );
 
         return { activos, pendientes, totalCapacidad };
-    }, [usuarios]);
+    }, [usuarios, peticionesPendientes]); // ← Agrega peticionesPendientes como dependencia
 
     // 📈 Capacidad por empresa
     const capacidadesPorEmpresa = useMemo(() => {
@@ -81,9 +85,7 @@ export function useCapacidades(usuarios, filtros) {
             });
 
             const activos = usuariosEmpresa.filter(
-                u =>
-                    (u.ESTADO || u.estado || "").toUpperCase() === "ACTIVO" ||
-                    (u.ESTADO || u.estado || "") === ""
+                u => (u.ESTADO || u.estado || "").toUpperCase() === "ACTIVO"
             ).length;
 
             const pendientes = usuariosEmpresa.filter(
