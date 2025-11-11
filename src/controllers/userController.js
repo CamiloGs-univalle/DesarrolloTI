@@ -13,7 +13,7 @@
 // - Módulos locales de Firebase y Apps Script
 // ============================================================================
 
-import { doc, setDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { doc, setDoc, collection, getDocs, query, where, updateDoc  } from 'firebase/firestore';
 import { db } from '../models/firebase/firebase';
 import { enviarUsuarioAAppsScript } from '../models/services/UserGoogleExcel';
 import { enviarPeticionAAppsScript } from '../models/services/PeticionGoogleExcel';
@@ -173,10 +173,10 @@ export async function guardarPeticionConUsuarioSiNoExiste(usuario, peticion) {
   }
 }
 
-// ============================================================================
-// 🔧 Cambiar estado de usuario (activar o inactivar)
-// ============================================================================
 
+// ============================================================================
+// 🔧 Cambiar estado de usuario (activar o inactivar) - FUNCIÓN CORREGIDA
+// ============================================================================
 export async function cambiarEstadoUsuario(cedula, nuevoEstado) {
   try {
     const q = query(collection(db, "usuarios"), where("CEDULA", "==", cedula));
@@ -187,11 +187,10 @@ export async function cambiarEstadoUsuario(cedula, nuevoEstado) {
     }
 
     const usuarioRef = snapshot.docs[0].ref;
-    await updateDoc(usuarioRef, { ESTADO: nuevoEstado.toUpperCase() });
+    await updateDoc(usuarioRef, { ESTADO: nuevoEstado.toUpperCase() }); // ✅ Ahora updateDoc está definido
 
     return { success: true, mensaje: `Usuario ${cedula} actualizado a ${nuevoEstado}` };
   } catch (error) {
     throw new Error(`Error cambiando estado de usuario: ${error.message}`);
   }
 }
-
