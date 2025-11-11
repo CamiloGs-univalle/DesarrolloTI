@@ -7,6 +7,7 @@ import { EmpresaCard } from "./subcomponents/EmpresaCard";
 import { FiltrosUsuarios } from "./subcomponents/FiltrosUsuarios";
 import { TablaUsuarios } from "./subcomponents/TablaUsuarios";
 import "./UsuariosActivos.css";
+import FondoHomeAnimado from "../FondosAnimados/FondoHomeAnimado";
 
 export default function UsuariosActivos() {
     const { usuarios, loading } = useUsuarios();
@@ -32,13 +33,23 @@ export default function UsuariosActivos() {
         );
 
     return (
-        <div className="modulo-usuarios-activos">
-            <MetricasGlobales stats={estadisticasGlobales} />
 
-            <div className="capacidad-empresas-grid">
-                {capacidadesPorEmpresa.map(e => (
-                    <EmpresaCard key={e.empresa} {...e} />
-                ))}
+        <div children="formulario-usuarios-activos">
+
+            <div className="ModuloUsuariosActivos">
+                <FondoHomeAnimado />
+                <div className="modulo-usuarios-activos">
+
+                    <MetricasGlobales stats={estadisticasGlobales} />
+
+                    <div className="capacidad-empresas-grid">
+                        {capacidadesPorEmpresa.map(e => (
+                            <EmpresaCard key={e.empresa} {...e} />
+                        ))}
+                    </div>
+
+                </div>
+
             </div>
 
             <FiltrosUsuarios
@@ -54,6 +65,8 @@ export default function UsuariosActivos() {
             />
 
             <TablaUsuarios usuarios={usuariosFiltrados} />
+
         </div>
+
     );
 }

@@ -37,7 +37,7 @@ export function MetricasGlobales({ stats }) {
                         <div className="metrica-icon bg-blue">
                             <Users size={24} />
                         </div>
-                        <span className="metrica-valor">{totalCapacidad}</span>
+                        <span className="metrica-valor">{activos}</span>
                     </div>
                     <p className="metrica-titulo">Capacidad Total</p>
                 </div>
@@ -66,9 +66,6 @@ export function MetricasGlobales({ stats }) {
                 </div>
                 <p className="metrica-titulo">Pendientes TI</p>
                 <p className="metrica-subtitulo">
-                    {peticionesPendientes.length === 0 
-                        ? "✅ Todas las solicitudes procesadas" 
-                        : "📋 Solicitudes por atender"}
                 </p>
             </div>
 
@@ -77,7 +74,7 @@ export function MetricasGlobales({ stats }) {
                     <div className="metrica-icon bg-blue">
                         <Users size={24} />
                     </div>
-                    <span className="metrica-valor">{totalCapacidad}</span>
+                    <span className="metrica-valor">{activos}</span>
                 </div>
                 <p className="metrica-titulo">Capacidad Total</p>
             </div>

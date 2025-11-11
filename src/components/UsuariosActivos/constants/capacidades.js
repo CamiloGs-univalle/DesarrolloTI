@@ -1,8 +1,8 @@
 export const CAPACIDAD_TOTAL = {
-    "PROSERVIS TEMPORALES": 150,
-    "AFFINE": 12,
-    "SIAMO": 8,
-    "SAMALO": 6,
-    "ANFIBIA": 5,
-    "MENDIOLA": 4
+    "PROSERVIS TEMPORALES": 130,
+    "AFFINE": 13,
+    "SIAMO": 34,
+    "SAMALO": 1,
+    "ANFIBIA": 6,
+    "MENDIOLA": 1
 };

@@ -7,7 +7,7 @@ import { Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { useUsuarios } from "../../../models/hooks/useUsuarios";
 import { getLogoEmpresa } from "../../../../public/LogoEmpresa/LogoEmpresa";
 import { enviarSolicitudCorreoinactivacio } from "../../../models/utils/sendEmailInactivacion";
-import { guardarPeticionConUsuarioSiNoExiste } from "../../../controllers/userController";
+import { guardarPeticionConUsuarioSiNoExiste, cambiarEstadoUsuario } from "../../../controllers/userController";
 import { inactivarUsuarioEnSheets } from "../../../models/services/UserGoogleExcel";
 import ButtonEnviar from "../../FondosAnimados/Button/ButtonEnviar";
 
@@ -24,7 +24,6 @@ export default function FormInactivacion({ onSubmitSuccess }) {
     );
   };
 
-
   const [formData, setFormData] = useState({
     nombre: "",
     cedula: "",
@@ -39,7 +38,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
   const [enviando, setEnviando] = useState(false);
 
   // ============================================================
-  // ✏️ Manejo de cambios manuales
+  // ✏️ Manejo de cambios manuales - FUNCIÓN FALTANTE
   // ============================================================
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,7 +46,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
   };
 
   // ============================================================
-  // 🔍 Selección automática de usuario
+  // 🔍 Selección automática de usuario - FUNCIÓN FALTANTE
   // ============================================================
   const handleUsuarioSeleccionado = (usuario) => {
     if (!usuario) return;
@@ -64,7 +63,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
   };
 
   // ============================================================
-  // 📤 Envío del formulario (inactivar → guardar → correo)
+  // 📤 Envío del formulario
   // ============================================================
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,8 +83,12 @@ export default function FormInactivacion({ onSubmitSuccess }) {
 
     try {
       // 1️⃣ INACTIVAR USUARIO EN GOOGLE SHEETS
-      //console.log("🔄 Inactivando usuario en Google Sheets...", formData.cedula);
+      console.log("🔄 Inactivando usuario en Google Sheets...", formData.cedula);
       await inactivarUsuarioEnSheets(formData.cedula);
+
+      // 🔥 **NUEVO: INACTIVAR USUARIO EN FIREBASE TAMBIÉN**
+      console.log("🔄 Inactivando usuario en Firebase...", formData.cedula);
+      await cambiarEstadoUsuario(formData.cedula, "INACTIVO");
 
       // 2️⃣ Datos del usuario para Firebase
       const usuarioData = {
@@ -121,7 +124,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
         },
       };
 
-      //      console.log("📦 Enviando datos a Firebase...");
+      console.log("📦 Enviando datos a Firebase...");
 
       // 4️⃣ Guardar en Firebase
       const resultadoFirebase = await guardarPeticionConUsuarioSiNoExiste(
@@ -130,7 +133,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
       );
 
       if (resultadoFirebase.success) {
-        // console.log("✅ Solicitud de inactivación guardada correctamente");
+        console.log("✅ Solicitud de inactivación guardada correctamente");
 
         // 5️⃣ Enviar el correo de notificación
         enviarSolicitudCorreoinactivacio(
@@ -163,7 +166,7 @@ export default function FormInactivacion({ onSubmitSuccess }) {
       }
 
     } catch (error) {
-      //console.error("❌ Error en la solicitud de inactivación:", error);
+      console.error("❌ Error en la solicitud de inactivación:", error);
       alert(`Error al procesar la solicitud: ${error.message}`);
     } finally {
       setEnviando(false);

@@ -69,8 +69,10 @@ export default async function handler(req, res) {
     // ---------- Línea: URL del Google Apps Script (destino final) ----------
     // ⚠️ IMPORTANTE: El Apps Script debe estar publicado como Web App
     // con: "Ejecutar como: Yo" y "Acceso: Cualquiera, incluso anónimo"
-    const GOOGLE_APPS_SCRIPT_EMAIL =
-      "https://script.google.com/macros/s/AKfycbyd4vUO_ErNp0NLxxwV3_ebx0vzFrVhRI9uBUG2OLh5RzGv26K0A9LdQ-z3v2ZN6gKv/exec";
+    const GOOGLE_APPS_SCRIPT_EMAIL = "https://script.google.com/macros/s/AKfycbyd4vUO_ErNp0NLxxwV3_ebx0vzFrVhRI9uBUG2OLh5RzGv26K0A9LdQ-z3v2ZN6gKv/exec";
+
+    //const GOOGLE_APPS_SCRIPT_EMAIL = "http://localhost:8020/proxy/macros/s/AKfycbyd4vUO_ErNp0NLxxwV3_ebx0vzFrVhRI9uBUG2OLh5RzGv26K0A9LdQ-z3v2ZN6gKv/exec";
+
 
     // ---------- Línea: Preparamos el AbortController para timeout ----------
     // Creamos un controller para poder abortar la petición si excede 15s.
