@@ -482,16 +482,17 @@
 
 
 .ModuloUsuariosActivos {
-  position: relative;
-  max-width: 2000px;
-  margin: 0 auto;
-  padding: 0px;
-  border-radius: 10px;
-  font-family: Arial, sans-serif;
-  overflow: hidden;
+    position: relative;
+    max-width: 2000px;
+    margin: 0 auto;
+    padding: 0px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
 }
 
 .ModuloUsuariosActivos .modulo-usuarios-activos {
-  position: relative;
-  z-index: 1; /* asegura que el contenido quede encima del fondo animado */
+    position: relative;
+    z-index: 1;
+    /* asegura que el contenido quede encima del fondo animado */
 }
