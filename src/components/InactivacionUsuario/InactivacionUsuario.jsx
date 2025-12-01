@@ -11,6 +11,7 @@ import FormInactivacion from "./FormInactivacion/FormInactivacion";
 import ModalCorreoInactivacion from "./FormInactivacion/ModalCorreoInactivacion";
 import FondoHomeAnimado from "../FondosAnimados/FondoHomeAnimado";
 
+
 export default function InactivacionUsuario() {
   const [formData, setFormData] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);

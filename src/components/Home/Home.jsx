@@ -8,6 +8,9 @@ import InactivacionUsuario from '../InactivacionUsuario/InactivacionUsuario';
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../models/firebase/firebase";
 import UsuariosActivos from '../UsuariosActivos/UsuariosActivos';
+import InventarioEquipos from '../Inventario_User_Equipo/pages/InventarioEquipos';
+
+
 
 
 // Logger configurado para desarrollo 
@@ -25,6 +28,10 @@ export default function Home({ user }) {
   const [avatarUrl, setAvatarUrl] = useState('');
   const [avatarLoadError, setAvatarLoadError] = useState(false);
   const menuRef = useRef(null);
+
+  // --- NUEVO (Usuario autorizado para ver los 4 módulos) ---
+  const superAdmin = "jhojan.garcia@correounivalle.edu.co";
+
 
   // Efecto para manejar cambios en el usuario
   useEffect(() => {
@@ -115,6 +122,9 @@ export default function Home({ user }) {
         return <InactivacionUsuario />;
       case 'usuario-activos':
         return <UsuariosActivos />;
+      case 'inventario-equipos':
+        return <InventarioEquipos user={user} />;
+
       default:
         return <div className="empty-view">Seleccione una opción del menú</div>;
     }
@@ -171,61 +181,81 @@ export default function Home({ user }) {
 
         <div className="main-panel">
           <div className="button-panel">
+
+            {/* 🔒 SOLO JHOJAN VE ESTOS 3 BOTONES */}
+            {user?.email === "jhojan.garcia@correounivalle.edu.co" && (
+              <>
+                <button
+                  onClick={() => setCurrentView('usuario-equipo')}
+                  className={currentView === 'usuario-equipo' ? 'active' : ''}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                  }}
+                >
+                  Usuario y Equipo
+                  <img
+                    src="/logo/icono_usuario.png"
+                    alt="Icono Usuario"
+                    style={{ width: '25px', height: '25px', marginRight: '8px', verticalAlign: 'middle' }}
+                  />
+                </button>
+
+                <button
+                  onClick={() => setCurrentView('inactivacion-usuario')}
+                  className={currentView === 'inactivacion-usuario' ? 'active' : ''}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                  }}
+                >
+                  Inactivar Usuario
+                  <img
+                    src="/logo/icono-inactivar usuario.png"
+                    alt="Icono derecha"
+                    style={{ width: '25px', height: '25px', marginRight: '8px', verticalAlign: 'middle' }}
+                  />
+                </button>
+
+                <button
+                  onClick={() => setCurrentView('usuario-activos')}
+                  className={currentView === 'usuario-activos' ? 'active' : ''}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                  }}
+                >
+                  Usuarios Activosss
+                  <img
+                    src="/logo/UserActive.png"
+                    alt="Icono Usuario"
+                    style={{ width: '23px', height: '23px', marginRight: '10px', verticalAlign: 'middle' }}
+                  />
+                </button>
+              </>
+            )}
+
+            {/* 🔧 MÓDULO NUEVO (ESTE LO VEN TODOS) */}
             <button
-              onClick={() => setCurrentView('usuario-equipo')}
-              className={currentView === 'usuario-equipo' ? 'active' : ''}
+              onClick={() => setCurrentView('inventario-equipos')}
+              className={currentView === 'inventario-equipos' ? 'active' : ''}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                width: '100%', // opcional, para que ocupe todo el ancho disponible
+                width: '100%',
               }}
             >
-              Usuario y Equipo
-              <img
-                src="/logo/icono_usuario.png"
-                alt="Icono Usuario"
-                style={{ width: '25px', height: '25px', marginRight: '8px', verticalAlign: 'middle' }}
-              />
-
+              Inventario de Equipos
+            
             </button>
 
-            <button
-              onClick={() => setCurrentView('inactivacion-usuario')}
-              className={currentView === 'inactivacion-usuario' ? 'active' : ''}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                width: '100%', // opcional, para que ocupe todo el ancho disponible
-              }}
-            >
-              Inactivar Usuario
-              <img
-                src="/logo/icono-inactivar usuario.png"
-                alt="Icono derecha"
-                style={{ width: '25px', height: '25px', marginRight: '8px', verticalAlign: 'middle' }}
-              />
-            </button>
-
-            <button
-              onClick={() => setCurrentView('usuario-activos')}
-              className={currentView === 'usuario-activos' ? 'active' : ''}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                width: '100%', // opcional, para que ocupe todo el ancho disponible
-              }}
-            >
-              Usuarios Activos
-              <img
-                src="/logo/UserActive.png"
-                alt="Icono Usuario"
-                style={{ width: '23px', height: '23px', marginRight: '10px', verticalAlign: 'middle' }}
-              />
-
-            </button>
           </div>
 
           <div className="form-panel">{renderView()}</div>
