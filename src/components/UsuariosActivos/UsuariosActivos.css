@@ -1,7 +1,12 @@
 /* src/components/ModuloUsuariosActivos/ModuloUsuariosActivos.css */
+.formulario-usuarios-activos{
+    margin: 1;
+    flex-direction: column;
+}
+
 
 .modulo-usuarios-activos {
-    padding: 1.5rem;
+    padding: 0.5rem;
     max-width: 1400px;
     margin: 0 auto;
 }

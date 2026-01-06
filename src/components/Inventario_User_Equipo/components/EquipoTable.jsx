@@ -8,7 +8,7 @@ const defaultEstadosConfig = {
   'DISPONIBLE': { badge: 'bg-blue-100 text-blue-800', emoji: '✅' },
   'MANTENIMIENTO': { badge: 'bg-yellow-100 text-yellow-800', emoji: '🔧' },
   'BAJA': { badge: 'bg-red-100 text-red-800', emoji: '❌' },
-  'SIN ASIGNAR': { badge: 'bg-gray-100 text-gray-800', emoji: '⏸️' }
+  'PAZ Y SALVO': { badge: 'bg-gray-100 text-gray-800', emoji: '⏸️' }
 };
 
 const EquipoTable = ({ equiposFiltrados, userMode, setSelectedEquipo, setShowDetailModal, setShowModal }) => {
@@ -41,7 +41,7 @@ const EquipoTable = ({ equiposFiltrados, userMode, setSelectedEquipo, setShowDet
 
                             // ✔ Usamos la configuración correcta
                             const estadoConfig = defaultEstadosConfig[equipo.estado] ||
-                                                 defaultEstadosConfig['SIN ASIGNAR'];
+                                                defaultEstadosConfig['SIN ASIGNAR'];
 
                             return (
                                 <tr 

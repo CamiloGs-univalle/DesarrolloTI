@@ -306,4 +306,5 @@ input:focus {
 /* Mejora de espaciado general */
 .home-wrapper {
   box-sizing: border-box;
+  margin-left: 10px;
 }

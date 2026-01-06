@@ -28,7 +28,7 @@ const ModalDetalles = ({ equipo, onClose, estadosConfig = {} }) => {
       badge: 'bg-red-100 text-red-800',
       emoji: '❌'
     },
-    'SIN ASIGNAR': { 
+    'PAZ Y SALVO': { 
       color: 'from-gray-500 to-slate-600', 
       badge: 'bg-gray-100 text-gray-800',
       emoji: '⏸️'
