@@ -30,7 +30,7 @@ export default function Home({ user }) {
   const menuRef = useRef(null);
 
   // --- NUEVO (Usuario autorizado para ver los 4 módulos) ---
-  const superAdmin = "jhojan.garcia@correounivalle.edu.co";
+  const superAdmin = ["auxiliar.gh2@proservis.com.co", "auxiliar.gh@proservis.com.co"];
 
 
   // Efecto para manejar cambios en el usuario
@@ -231,7 +231,7 @@ export default function Home({ user }) {
                     width: '100%',
                   }}
                 >
-                  Usuarios Activosss
+                  Usuarios Activos
                   <img
                     src="/logo/UserActive.png"
                     alt="Icono Usuario"
@@ -253,6 +253,12 @@ export default function Home({ user }) {
               }}
             >
               Inventario de Equipos
+
+              <img
+                    src="/logo/icoPC.png"
+                    alt="Icono Usuario"
+                    style={{ width: '28px', height: '28px', marginRight: '5px', verticalAlign: 'middle' }}
+                  />
             
             </button>
 
