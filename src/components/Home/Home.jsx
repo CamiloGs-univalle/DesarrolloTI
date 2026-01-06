@@ -30,7 +30,7 @@ export default function Home({ user }) {
   const menuRef = useRef(null);
 
   // --- NUEVO (Usuario autorizado para ver los 4 módulos) ---
-  const superAdmin = ["auxiliar.gh2@proservis.com.co", "auxiliar.gh@proservis.com.co"];
+  const superAdmin = ["auxiliar.gh2@proservis.com.co", "auxiliar.gh@proservis.com.co" ,"gsc777980@gmail.com", "jhojan.garcia@correounivalle.edu.co"];
 
 
   // Efecto para manejar cambios en el usuario
@@ -130,6 +130,14 @@ export default function Home({ user }) {
     }
   };
 
+  // Lista de correos permitidos mostrar la interfaz modulos
+  const allowedEmails = [
+  "auxiliar.gh2@proservis.com.co",
+  "auxiliar.gh@proservis.com.co",
+  "gsc777980@gmail.com",
+  "jhojan.garcia@correounivalle.edu.co",
+];
+
   return (
     <div className="home-wrapper">
       <header className="app-header">
@@ -183,7 +191,7 @@ export default function Home({ user }) {
           <div className="button-panel">
 
             {/* 🔒 SOLO JHOJAN VE ESTOS 3 BOTONES */}
-            {user?.email === "jhojan.garcia@correounivalle.edu.co" && (
+            {allowedEmails.includes(user?.email) && (
               <>
                 <button
                   onClick={() => setCurrentView('usuario-equipo')}
