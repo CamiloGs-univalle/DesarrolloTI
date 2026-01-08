@@ -203,7 +203,7 @@ export default function Home({ user }) {
                     width: '100%',
                   }}
                 >
-                  Usuario y Equipo
+                  Usuario y Equipossssss es que react ya viene configurado para eso, es mas facil para la parte de frontend
                   <img
                     src="/logo/icono_usuario.png"
                     alt="Icono Usuario"
